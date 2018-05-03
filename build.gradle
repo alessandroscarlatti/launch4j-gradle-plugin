@@ -1,7 +1,8 @@
 group 'com.scarlatti'
 version '0.1.0-SNAPSHOT'
 
-apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin:  'java-gradle-plugin'
 
 sourceCompatibility = 1.8
 
@@ -9,6 +10,42 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+//sourceSets {
+//    main {
+//        groovy {
+//            srcDirs = ['plugin/src/main/groovy']
+//        }
+//
+//        resources {
+//            srcDirs = ['plugin/src/main/resources']
+//        }
+//    }
+//
+//    test {
+//        groovy {
+//            srcDirs = ['plugin/src/test/groovy']
+//        }
+//
+//        resources {
+//            srcDirs = ['plugin/src/test/resources']
+//        }
+//    }
+//}
+
+configurations.all {
+    resolutionStrategy {
+        force 'org.codehaus.groovy:groovy-all:2.4.11'
+    }
 }
+
+dependencies {
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+}
+
+task testLivePluginProject(type: GradleBuild, group: 'verification', description: 'Build the LiveTestProject') {
+    dir = 'LiveTestProject'
+    tasks = ['build']
+}
+
+test.finalizedBy(testLivePluginProject)
+testLivePluginProject.mustRunAfter(build)

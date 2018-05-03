@@ -1,0 +1,19 @@
+group 'com.scarlatti'
+version '0.1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        flatDir dirs: '../build/libs'
+    }
+
+    dependencies {
+        classpath 'com.scarlatti.plugin:gradle-plugin-starter:+'
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'greeting'
+
+sourceCompatibility = 1.8
+
+build.finalizedBy(ork)
