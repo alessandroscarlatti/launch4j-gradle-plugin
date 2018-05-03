@@ -1,8 +1,9 @@
-group 'com.scarlatti'
+group project.properties.pluginGroup
 version '0.1.0-SNAPSHOT'
 
 apply plugin: 'groovy'
 apply plugin:  'java-gradle-plugin'
+apply from: 'plugin.gradle'
 
 sourceCompatibility = 1.8
 
@@ -10,32 +11,14 @@ repositories {
     mavenCentral()
 }
 
-//sourceSets {
-//    main {
-//        groovy {
-//            srcDirs = ['plugin/src/main/groovy']
-//        }
-//
-//        resources {
-//            srcDirs = ['plugin/src/main/resources']
-//        }
-//    }
-//
-//    test {
-//        groovy {
-//            srcDirs = ['plugin/src/test/groovy']
-//        }
-//
-//        resources {
-//            srcDirs = ['plugin/src/test/resources']
-//        }
-//    }
-//}
-
 configurations.all {
     resolutionStrategy {
         force 'org.codehaus.groovy:groovy-all:2.4.11'
     }
+}
+
+jar {
+    baseName = project.properties.pluginName
 }
 
 dependencies {

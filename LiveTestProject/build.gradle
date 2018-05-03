@@ -1,15 +1,20 @@
-group 'com.scarlatti'
-version '0.1.0-SNAPSHOT'
-
 buildscript {
     repositories {
         flatDir dirs: '../build/libs'
     }
 
+    // read the properties from gradle.properties in the root project
+    def props = new Properties()
+    file("../gradle.properties").withInputStream { props.load(it) }
+
     dependencies {
-        classpath 'com.scarlatti.plugin:gradle-plugin-starter:+'
+        println "looking for plugin: ${props.pluginGroup}:${props.pluginName}:+"
+        classpath "${props.pluginGroup}:${props.pluginName}:+"
     }
 }
+
+group 'com.scarlatti'
+version '0.1.0-SNAPSHOT'
 
 apply plugin: 'groovy'
 apply plugin: 'greeting'
