@@ -31,7 +31,5 @@ dependencies {
 }
 
 testProjects {
-    test("LiveTestProject") {
-        dir = 'what'
-    }
+    test "LiveTestProject"
 }
