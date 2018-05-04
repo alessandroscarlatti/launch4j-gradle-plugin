@@ -15,6 +15,8 @@ import java.nio.file.Paths
  */
 class TestGradleBuildsTask extends DefaultTask {
 
+    private int createProjectTaskCount = -1
+
     /**
      * Sandbox dir is absolute.
      */
@@ -112,8 +114,8 @@ class TestGradleBuildsTask extends DefaultTask {
      * @return the task created
      */
     private Task createBuildTemplateProjectTask(String templateDir, String eventualProjectDir, String gradleFile) {
-
-        String taskName = "createProject_" + dirToTaskName(templateDir)
+        createProjectTaskCount++
+        String taskName = "createProject_" + dirToTaskName(templateDir) + "_" + createProjectTaskCount
         return project.tasks.create(taskName, CreateTestProjectTask.class) { task ->
             task.group = 'build'
             task.description = "Build project from template dir ${templateDir}."
@@ -137,11 +139,12 @@ class TestGradleBuildsTask extends DefaultTask {
     }
 
     private Task createTestGradleBuildTask(String name, String rawDir) {
-
-
+        String pluginName = project.properties.pluginName
+        Objects.requireNonNull(pluginName, "pluginName gradle project property may not be null")
         println "Creating task named ${name}"
         String repoDir = Paths.get(pluginRepoDir)
         println "Using plugin repo dir ${repoDir}"
+        println "Injecting plugin name '${pluginName}'"
 
         project.tasks.create(name, GradleBuild.class) { build ->
             build.mustRunAfter(project.tasks.getByName('build'))
@@ -152,6 +155,7 @@ class TestGradleBuildsTask extends DefaultTask {
             build.startParameter.projectProperties.putAll([
                     group:  project.group,
                     version: project.version,
+                    pluginName: pluginName,
                     pluginRepoDir: repoDir,
                     pluginArtifactName: project.properties.pluginArtifactName
             ])

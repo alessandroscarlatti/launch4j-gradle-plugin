@@ -1,18 +1,17 @@
-buildscript {
+// ============================================================================
+// Everything in this build.gradle is part of the 'basic test project'
+// Specific test scenarios can go in 'test.gradle'.
+// ============================================================================
 
+buildscript {
+    println "looking for plugin: ${project.properties.group}:${project.properties.pluginArtifactName}:+"
     repositories {
         flatDir dirs: project.properties.get("pluginRepoDir")
     }
-
-//    apply from: '../plugin.gradle'
-
     dependencies {
-        println "looking for plugin: ${project.properties.group}:${project.properties.pluginArtifactName}:+"
         classpath "${project.properties.group}:${project.properties.pluginArtifactName}:+"
     }
 }
-
-apply plugin: 'greeting'
 
 /**
  * This task will be called by the plugin project's test task.
@@ -25,10 +24,10 @@ task testPluginProject(group: 'verification', description: 'Tests the plugin in 
     }
 }
 
+// =======================================================================================
+// Now the plugin can be applied.
+// All test scenarios can be applied to the project below (via 'test.gradle')
+// =======================================================================================
+
+apply plugin: project.properties.pluginName
 apply from: 'test.gradle'
-
-apply plugin: 'groovy'
-
-group 'com.scarlatti.test'
-version '0.1.0-SNAPSHOT'
-sourceCompatibility = 1.8
