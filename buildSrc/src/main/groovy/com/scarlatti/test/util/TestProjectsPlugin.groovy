@@ -74,7 +74,7 @@ class TestProjectsPlugin implements Plugin<Project> {
                     group:  project.group,
                     version: project.version,
                     repoDir: Paths.get(project.projectDir.absolutePath, project.properties.pluginRepoDir),
-                    pluginName: project.properties.pluginName
+                    pluginArtifactName: project.properties.pluginArtifactName
             ])
         }
 

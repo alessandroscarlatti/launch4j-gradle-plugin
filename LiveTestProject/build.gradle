@@ -7,8 +7,8 @@ buildscript {
 //    apply from: '../plugin.gradle'
 
     dependencies {
-        println "looking for plugin: ${project.properties.group}:${project.properties.pluginName}:+"
-        classpath "${project.properties.group}:${project.properties.pluginName}:+"
+        println "looking for plugin: ${project.properties.group}:${project.properties.pluginArtifactName}:+"
+        classpath "${project.properties.group}:${project.properties.pluginArtifactName}:+"
     }
 }
 

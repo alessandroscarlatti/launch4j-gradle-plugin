@@ -62,12 +62,16 @@ class TestGradleBuildsTask extends DefaultTask {
      * For right now, support "template" and "gradle"
      */
     void test(Map<String, String> props) {
+        if (props.get("name") == null) {
+            throw new IllegalStateException("Must provide 'name' property for test.")
+        }
+
         if (props.get("template") == null) {
             test(props.get("dir"))
             return
         }
 
-        createTemplateTestGradleBuildTask(props.get("template"), props.get("gradle"))
+        createTemplateTestGradleBuildTask(props.get("name"), props.get("template"), props.get("gradle"))
     }
 
     void test(String dir, @DelegatesTo(GradleBuild) Closure closure) {
@@ -83,12 +87,12 @@ class TestGradleBuildsTask extends DefaultTask {
      * @param templateDir right now expected to be relative to the project
      * @param gradleFile right now expected to be relative to the project
      */
-    private Task createTemplateTestGradleBuildTask(String templateDir, String gradleFile) {
+    private Task createTemplateTestGradleBuildTask(String name, String templateDir, String gradleFile) {
 
         String absoluteEventualProjectDir = Paths.get(sandboxDir, templateDir).toString()
         println "eventualProjectDir ${absoluteEventualProjectDir}"
 
-        Task testProjectTask = createTestGradleBuildTask(absoluteEventualProjectDir)
+        Task testProjectTask = createTestGradleBuildTask(name, absoluteEventualProjectDir)
 
         // now we create a dependency for this task that will create the test project from template.
         String absoluteTemplateDir = Paths.get(project.projectDir.absolutePath, templateDir).toString()
@@ -111,6 +115,8 @@ class TestGradleBuildsTask extends DefaultTask {
 
         String taskName = "createProject_" + dirToTaskName(templateDir)
         return project.tasks.create(taskName, CreateTestProjectTask.class) { task ->
+            task.group = 'build'
+            task.description = "Build project from template dir ${templateDir}."
             task.templateDir = templateDir
             task.eventualProjectDir = eventualProjectDir
             task.gradleFile = gradleFile
@@ -126,29 +132,38 @@ class TestGradleBuildsTask extends DefaultTask {
 
         String dirTaskName = dirToTaskName(rawDir)
         String taskName = "test_" + dirTaskName
-        println "Creating task named ${taskName}"
+
+        return createTestGradleBuildTask(taskName, rawDir)
+    }
+
+    private Task createTestGradleBuildTask(String name, String rawDir) {
+
+
+        println "Creating task named ${name}"
         String repoDir = Paths.get(pluginRepoDir)
         println "Using plugin repo dir ${repoDir}"
 
-        project.tasks.create(taskName, GradleBuild.class) { build ->
+        project.tasks.create(name, GradleBuild.class) { build ->
             build.mustRunAfter(project.tasks.getByName('build'))
+            build.group = 'verification'
+            build.description = 'Run the test project.'
             build.dir = rawDir
             build.tasks = ['testPluginProject']
             build.startParameter.projectProperties.putAll([
                     group:  project.group,
                     version: project.version,
                     pluginRepoDir: repoDir,
-                    pluginName: project.properties.pluginName
+                    pluginArtifactName: project.properties.pluginArtifactName
             ])
         }
 
-        project.tasks.test.finalizedBy(project.tasks.getByName(taskName))
+        project.tasks.test.finalizedBy(project.tasks.getByName(name))
 
-        return project.tasks.getByName(taskName)
+        return project.tasks.getByName(name)
     }
 
     private String dirToTaskName(String rawDir) {
-        return Paths.get(rawDir).toString().replace(File.separatorChar, '_' as char)
+        return Paths.get(rawDir).toString().replace(File.separatorChar, '_' as char).replace(':', '_')
     }
 
     private String getAbsolutePath(String relativePath) {

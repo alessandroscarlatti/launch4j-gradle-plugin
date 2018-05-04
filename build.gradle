@@ -4,7 +4,6 @@ group 'com.scarlatti'
 
 apply plugin: 'groovy'
 apply plugin: 'java-gradle-plugin'
-apply from: 'plugin.gradle'
 apply plugin: TestProjectsPlugin
 
 sourceCompatibility = 1.8
@@ -23,7 +22,7 @@ configurations.all {
 }
 
 jar {
-    baseName = project.properties.pluginName
+    baseName = project.properties.pluginArtifactName
 }
 
 dependencies {
@@ -32,5 +31,5 @@ dependencies {
 
 testProjects {
     test "LiveTestProject"
-    test template: 'LiveTestProject', gradle: 'src/test/resources/test.gradle'
+    test name: 'test template', template: 'LiveTestProject', gradle: 'src/test/resources/sampleTest.gradle'
 }

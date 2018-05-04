@@ -1,6 +1,6 @@
 task pluginTest() {
     doLast {
-        println "special plugin test"
+        println "special plugin test 23"
     }
 }
 
