@@ -1,0 +1,7 @@
+task pluginTest() {
+    doLast {
+        println "special plugin test"
+    }
+}
+
+testPluginProject.dependsOn(pluginTest)

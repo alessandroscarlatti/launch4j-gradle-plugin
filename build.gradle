@@ -32,4 +32,5 @@ dependencies {
 
 testProjects {
     test "LiveTestProject"
+    test template: 'LiveTestProject', gradle: 'src/test/resources/test.gradle'
 }

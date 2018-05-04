@@ -15,32 +15,129 @@ import java.nio.file.Paths
  */
 class TestGradleBuildsTask extends DefaultTask {
 
+    /**
+     * Sandbox dir is absolute.
+     */
+    private String sandboxDir = Paths.get(project.projectDir.absolutePath, 'build/sandbox').toString()
+
+    private String pluginRepoDir = Paths.get(project.projectDir.absolutePath, 'build/libs').toString()
+
+    String getSandboxDir() {
+        return sandboxDir
+    }
+
+    /**
+     * Only support relative dirs for now
+     * @param sandboxDir
+     */
+    void setSandboxDir(String sandboxDir) {
+        this.sandboxDir = Paths.get(project.projectDir.absolutePath, sandboxDir).toString()
+    }
+
+    String getPluginRepoDir() {
+        return pluginRepoDir
+    }
+
+    /**
+     * Only support relative dirs for now
+     * @param pluginRepoDir
+     */
+    void setPluginRepoDir(String pluginRepoDir) {
+        this.pluginRepoDir = Paths.get(project.projectDir.absolutePath, pluginRepoDir).toString()
+    }
+
     void test(String dir) {
-        println "creating task for dir ${dir}"
-        createTestGradleBuildTask(dir)
+        String absoluteDir = getAbsolutePath(dir)
+        println "creating task for dir ${absoluteDir}"
+        createTestGradleBuildTask(absoluteDir)
+    }
+
+    void test(List<String> dirs) {
+        for (String dir : dirs) {
+            test(dir)
+        }
+    }
+
+    /**
+     * For right now, support "template" and "gradle"
+     */
+    void test(Map<String, String> props) {
+        if (props.get("template") == null) {
+            test(props.get("dir"))
+            return
+        }
+
+        createTemplateTestGradleBuildTask(props.get("template"), props.get("gradle"))
     }
 
     void test(String dir, @DelegatesTo(GradleBuild) Closure closure) {
-        println "creating task for dir ${dir}"
-        Task task = createTestGradleBuildTask(dir)
+        String absoluteDir = getAbsolutePath(dir)
+        println "creating task for dir ${absoluteDir}"
+        Task task = createTestGradleBuildTask(absoluteDir)
         closure.setDelegate(task)
         closure()
     }
 
+    /**
+     * If gradleFile is null, don't attempt to overwrite in the template
+     * @param templateDir right now expected to be relative to the project
+     * @param gradleFile right now expected to be relative to the project
+     */
+    private Task createTemplateTestGradleBuildTask(String templateDir, String gradleFile) {
+
+        String absoluteEventualProjectDir = Paths.get(sandboxDir, templateDir).toString()
+        println "eventualProjectDir ${absoluteEventualProjectDir}"
+
+        Task testProjectTask = createTestGradleBuildTask(absoluteEventualProjectDir)
+
+        // now we create a dependency for this task that will create the test project from template.
+        String absoluteTemplateDir = Paths.get(project.projectDir.absolutePath, templateDir).toString()
+        String absoluteGradleFile = Paths.get(project.projectDir.absolutePath, gradleFile).toString()
+
+        Task createProjectTask = createBuildTemplateProjectTask(absoluteTemplateDir, absoluteEventualProjectDir, absoluteGradleFile)
+        testProjectTask.dependsOn(createProjectTask)
+
+        return testProjectTask
+    }
+
+    /**
+     * Create a task that will create a project from a template dir (and optionally a gradle file)
+     * @param templateDir absolute path to template directory
+     * @param eventualProjectDir absolute path to destination project directory
+     * @param gradleFile absolute path to gradle file
+     * @return the task created
+     */
+    private Task createBuildTemplateProjectTask(String templateDir, String eventualProjectDir, String gradleFile) {
+
+        String taskName = "createProject_" + dirToTaskName(templateDir)
+        return project.tasks.create(taskName, CreateTestProjectTask.class) { task ->
+            task.templateDir = templateDir
+            task.eventualProjectDir = eventualProjectDir
+            task.gradleFile = gradleFile
+        }
+    }
+
+    /**
+     * Dir is absolute
+     * @param rawDir absolute rawDir
+     * @return
+     */
     private Task createTestGradleBuildTask(String rawDir) {
 
-        String dirTaskName = Paths.get(rawDir).toString().replace(File.separatorChar, '_' as char)
+        String dirTaskName = dirToTaskName(rawDir)
         String taskName = "test_" + dirTaskName
         println "Creating task named ${taskName}"
+        String repoDir = Paths.get(pluginRepoDir)
+        println "Using plugin repo dir ${repoDir}"
 
         project.tasks.create(taskName, GradleBuild.class) { build ->
             build.mustRunAfter(project.tasks.getByName('build'))
-            build.dir = Paths.get(project.projectDir.absolutePath, rawDir).toString()
+            build.dir = rawDir
             build.tasks = ['testPluginProject']
             build.startParameter.projectProperties.putAll([
                     group:  project.group,
                     version: project.version,
-                    repoDir: Paths.get(project.projectDir.absolutePath, project.properties.pluginRepoDir),
+                    pluginRepoDir: repoDir,
                     pluginName: project.properties.pluginName
             ])
         }
@@ -48,5 +145,13 @@ class TestGradleBuildsTask extends DefaultTask {
         project.tasks.test.finalizedBy(project.tasks.getByName(taskName))
 
         return project.tasks.getByName(taskName)
+    }
+
+    private String dirToTaskName(String rawDir) {
+        return Paths.get(rawDir).toString().replace(File.separatorChar, '_' as char)
+    }
+
+    private String getAbsolutePath(String relativePath) {
+        return Paths.get(project.projectDir.absolutePath, relativePath).toString()
     }
 }

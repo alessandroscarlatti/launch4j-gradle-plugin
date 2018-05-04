@@ -1,7 +1,7 @@
 buildscript {
 
     repositories {
-        flatDir dirs: project.hasProperty("pluginRepo") ? project.properties.pluginRepo : '../build/libs'
+        flatDir dirs: project.properties.get("pluginRepoDir")
     }
 
 //    apply from: '../plugin.gradle'
