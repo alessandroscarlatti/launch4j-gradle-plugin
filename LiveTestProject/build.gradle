@@ -1,24 +1,34 @@
 buildscript {
+
     repositories {
         flatDir dirs: '../build/libs'
     }
 
-    // read the properties from gradle.properties in the root project
-    def props = new Properties()
-    file("../gradle.properties").withInputStream { props.load(it) }
+    apply from: '../plugin.gradle'
 
     dependencies {
-        println "looking for plugin: ${props.pluginGroup}:${props.pluginName}:+"
-        classpath "${props.pluginGroup}:${props.pluginName}:+"
+        println "looking for plugin: ${pluginProps.group}:${pluginProps.name}:+"
+        classpath "${pluginProps.group}:${pluginProps.name}:+"
     }
 }
 
-group 'com.scarlatti'
-version '0.1.0-SNAPSHOT'
-
-apply plugin: 'groovy'
 apply plugin: 'greeting'
 
-sourceCompatibility = 1.8
+/**
+ * This task will be called by the plugin project's test task.
+ * It may be used as a hook for tasks which will form part of
+ * build-time tests for the plugin.
+ */
+task testLivePluginProject(group: 'verification', description: 'Tests the plugin in this project') {
+    doLast {
+        println "Gradle plugin successfully tested in live test project."
+    }
+}
 
-build.finalizedBy(ork)
+apply from: 'test.gradle'
+
+apply plugin: 'groovy'
+
+group 'com.scarlatti.test'
+version '0.1.0-SNAPSHOT'
+sourceCompatibility = 1.8

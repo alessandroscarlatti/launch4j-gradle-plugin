@@ -1,0 +1,11 @@
+/**
+ * Configure plugin definition here.
+ * These settings will be applied to any test projects as well to ensure
+ * that the gradle project under test is trying to pull in the correct plugin jar name.
+ */
+ext {
+    pluginProps = [
+            name: 'my-newest-plugin',
+            group: 'com.scarlatti'
+    ]
+}

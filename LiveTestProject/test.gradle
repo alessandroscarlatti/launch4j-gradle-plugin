@@ -1,0 +1,7 @@
+task pluginTest() {
+    doLast {
+        println "pluginTest"
+    }
+}
+
+testLivePluginProject.dependsOn(pluginTest)

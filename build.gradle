@@ -2,7 +2,7 @@ group project.properties.pluginGroup
 version '0.1.0-SNAPSHOT'
 
 apply plugin: 'groovy'
-apply plugin:  'java-gradle-plugin'
+apply plugin: 'java-gradle-plugin'
 apply from: 'plugin.gradle'
 
 sourceCompatibility = 1.8
@@ -11,6 +11,9 @@ repositories {
     mavenCentral()
 }
 
+/**
+ * Configuration necessary for Gradle 4.0 to be compatible with Spock groovy?
+ */
 configurations.all {
     resolutionStrategy {
         force 'org.codehaus.groovy:groovy-all:2.4.11'
@@ -18,7 +21,7 @@ configurations.all {
 }
 
 jar {
-    baseName = project.properties.pluginName
+    baseName = pluginProps.name
 }
 
 dependencies {
@@ -27,7 +30,7 @@ dependencies {
 
 task testLivePluginProject(type: GradleBuild, group: 'verification', description: 'Build the LiveTestProject') {
     dir = 'LiveTestProject'
-    tasks = ['build']
+    tasks = ['testLivePluginProject']
 }
 
 test.finalizedBy(testLivePluginProject)
