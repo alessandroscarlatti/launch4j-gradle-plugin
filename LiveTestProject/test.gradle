@@ -4,4 +4,4 @@ task pluginTest() {
     }
 }
 
-testLivePluginProject.dependsOn(pluginTest)
+testPluginProject.dependsOn(pluginTest)

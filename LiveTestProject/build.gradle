@@ -1,14 +1,14 @@
 buildscript {
 
     repositories {
-        flatDir dirs: '../build/libs'
+        flatDir dirs: project.hasProperty("pluginRepo") ? project.properties.pluginRepo : '../build/libs'
     }
 
-    apply from: '../plugin.gradle'
+//    apply from: '../plugin.gradle'
 
     dependencies {
-        println "looking for plugin: ${pluginProps.group}:${pluginProps.name}:+"
-        classpath "${pluginProps.group}:${pluginProps.name}:+"
+        println "looking for plugin: ${project.properties.group}:${project.properties.pluginName}:+"
+        classpath "${project.properties.group}:${project.properties.pluginName}:+"
     }
 }
 
@@ -19,7 +19,7 @@ apply plugin: 'greeting'
  * It may be used as a hook for tasks which will form part of
  * build-time tests for the plugin.
  */
-task testLivePluginProject(group: 'verification', description: 'Tests the plugin in this project') {
+task testPluginProject(group: 'verification', description: 'Tests the plugin in this project') {
     doLast {
         println "Gradle plugin successfully tested in live test project."
     }

@@ -1,9 +1,12 @@
-group project.properties.pluginGroup
-version '0.1.0-SNAPSHOT'
+import java.nio.file.Paths
+import com.scarlatti.test.util.TestGradleBuildPlugin
+
+group 'com.scarlatti'
 
 apply plugin: 'groovy'
 apply plugin: 'java-gradle-plugin'
 apply from: 'plugin.gradle'
+apply plugin: TestGradleBuildPlugin
 
 sourceCompatibility = 1.8
 
@@ -21,17 +24,25 @@ configurations.all {
 }
 
 jar {
-    baseName = pluginProps.name
+    baseName = project.properties.pluginName
 }
 
 dependencies {
     testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
 }
 
-task testLivePluginProject(type: GradleBuild, group: 'verification', description: 'Build the LiveTestProject') {
-    dir = 'LiveTestProject'
-    tasks = ['testLivePluginProject']
-}
+//task testLivePluginProject(type: GradleBuild, group: 'verification', description: 'Build the LiveTestProject') {
+//    dir = 'LiveTestProject'
+//    tasks = ['testPluginProject']
+//    startParameter.projectProperties.putAll([
+//            group:  project.group,
+//            version: project.version,
+//            repoDir: Paths.get(project.projectDir.absolutePath, project.properties.pluginRepoDir),
+//            pluginName: project.properties.pluginName
+//    ])
+//}
+//
+//test.finalizedBy(testLivePluginProject)
+//testLivePluginProject.mustRunAfter(build)
 
-test.finalizedBy(testLivePluginProject)
-testLivePluginProject.mustRunAfter(build)
+println gradle.testProjectDirs
