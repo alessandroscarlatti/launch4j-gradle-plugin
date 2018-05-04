@@ -30,7 +30,7 @@ dependencies {
 }
 
 testProjects {
-    test "LiveTestProject"
-    test name: 'template test', template: 'LiveTestProject', gradle: 'src/test/resources/sampleTest.gradle'
-    test name: 'ork test', template: 'LiveTestProject', gradle: 'src/test/resources/greetingTest.gradle'
+    test "src/test/resources/LiveTestProject"
+    test name: 'template test', template: 'src/test/resources/LiveTestProject', gradle: 'src/test/resources/sampleTest.gradle'
+    test name: 'ork test', template: 'src/test/resources/LiveTestProject', gradle: 'src/test/resources/greetingTest.gradle'
 }
