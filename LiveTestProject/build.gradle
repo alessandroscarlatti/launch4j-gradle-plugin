@@ -30,4 +30,4 @@ task testPluginProject(group: 'verification', description: 'Tests the plugin in 
 // =======================================================================================
 
 apply plugin: project.properties.pluginName
-apply from: 'test.gradle'
+apply from: project.properties.gradleTestFileName

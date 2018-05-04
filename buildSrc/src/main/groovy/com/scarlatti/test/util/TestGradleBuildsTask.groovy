@@ -24,6 +24,8 @@ class TestGradleBuildsTask extends DefaultTask {
 
     private String pluginRepoDir = Paths.get(project.projectDir.absolutePath, 'build/libs').toString()
 
+    private String gradleTestFileName = 'test.gradle'
+
     String getSandboxDir() {
         return sandboxDir
     }
@@ -46,6 +48,14 @@ class TestGradleBuildsTask extends DefaultTask {
      */
     void setPluginRepoDir(String pluginRepoDir) {
         this.pluginRepoDir = Paths.get(project.projectDir.absolutePath, pluginRepoDir).toString()
+    }
+
+    String getGradleTestFileName() {
+        return gradleTestFileName
+    }
+
+    void setGradleTestFileName(String gradleTestFileName) {
+        this.gradleTestFileName = gradleTestFileName
     }
 
     void test(String dir) {
@@ -157,7 +167,8 @@ class TestGradleBuildsTask extends DefaultTask {
                     version: project.version,
                     pluginName: pluginName,
                     pluginRepoDir: repoDir,
-                    pluginArtifactName: project.properties.pluginArtifactName
+                    pluginArtifactName: project.properties.pluginArtifactName,
+                    gradleTestFileName: gradleTestFileName
             ])
         }
 
