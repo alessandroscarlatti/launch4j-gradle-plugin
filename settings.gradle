@@ -1,6 +1,6 @@
 rootProject.name = 'gradle-plugin-starter'
 
-gradle.ext.testProjectDirs = [
-        'LiveTestProject',
-]
+//gradle.ext.testProjectDirs = [
+//        'LiveTestProject',
+//]
 

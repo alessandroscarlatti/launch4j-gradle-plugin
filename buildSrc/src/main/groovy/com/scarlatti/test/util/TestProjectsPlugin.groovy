@@ -13,7 +13,7 @@ import java.nio.file.Paths
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Thursday, 5/3/2018
  */
-class TestGradleBuildPlugin implements Plugin<Project> {
+class TestProjectsPlugin implements Plugin<Project> {
 
     private Project project
 
@@ -24,8 +24,12 @@ class TestGradleBuildPlugin implements Plugin<Project> {
         this.project = project
 
         createTestPluginProjectTask()
-        createTestPluginProjectTasks()
+//        createTestPluginProjectTasks()
     }
+
+//    private void createConvention() {
+//        project.convention.plugins.put("testProjects", new TestGradleBuildsTask(project))
+//    }
 
     private void createTestPluginProjectTasks() {
         List<String> testProjectDirs = getTestProjectDirs()
@@ -46,14 +50,14 @@ class TestGradleBuildPlugin implements Plugin<Project> {
     }
 
     private void createTestPluginProjectTask() {
-        project.tasks.create("testPluginProjects") { task ->
+        project.tasks.create("testProjects", TestGradleBuildsTask.class) { task ->
             task.group = 'verification'
             task.description = 'Tests this plugin in test projects.'
             task.mustRunAfter(project.tasks.getByName("build"))
             task.outputs.upToDateWhen {false}
         }
 
-        project.tasks.getByName("test").finalizedBy(project.tasks.getByName("testPluginProjects"))
+        project.tasks.getByName("test").finalizedBy(project.tasks.getByName("testProjects"))
     }
 
     private void createTestGradleBuildTask(String rawDir) {
