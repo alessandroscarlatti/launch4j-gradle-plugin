@@ -12,6 +12,11 @@ import java.nio.file.Paths
  * __/ __ |/ / -_|_-<(_-</ _ `/ _ \/ _  / __/ _ \  _\ \/ __/ _ `/ __/ / _ `/ __/ __/ /
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Thursday, 5/3/2018
+ *
+ * Right now, tests built are executed backwards
+ * since they are added to the dependency chain
+ * as soon as they are created.  This could be amended
+ * with a bit more effort.
  */
 class TestGradleBuildsTask extends DefaultTask {
 
@@ -63,12 +68,6 @@ class TestGradleBuildsTask extends DefaultTask {
         println "creating task for dir ${absoluteDir}"
         return createTestGradleBuildTask(name, absoluteDir)
     }
-
-//    void test(List<String> dirs) {
-//        for (String dir : dirs) {
-//            test(dir)
-//        }
-//    }
 
     /**
      * For right now, support "template" and "gradle"
@@ -131,19 +130,6 @@ class TestGradleBuildsTask extends DefaultTask {
             task.gradleFile = gradleFile
         }
     }
-
-//    /**
-//     * Dir is absolute
-//     * @param rawDir absolute rawDir
-//     * @return
-//     */
-//    private Task createTestGradleBuildTask(String rawDir) {
-//
-//        String dirTaskName = dirToTaskName(rawDir)
-//        String taskName = "test_" + dirTaskName
-//
-//        return createTestGradleBuildTask(taskName, rawDir)
-//    }
 
     private Task createTestGradleBuildTask(String name, String rawDir) {
         String pluginName = project.properties.pluginName

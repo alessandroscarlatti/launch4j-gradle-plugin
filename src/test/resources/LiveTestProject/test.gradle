@@ -4,4 +4,10 @@ task pluginTest() {
     }
 }
 
+task sillyTest() {
+    doLast {
+        println "sillyTest"
+    }
+}
+
 testPluginProject.dependsOn(pluginTest)
