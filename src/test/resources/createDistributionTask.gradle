@@ -1,0 +1,13 @@
+
+import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
+
+apply plugin: 'launch4j'
+
+task buildExe(type: Launch4jLibraryTask) {
+    outputDir = 'asdf'
+}
+
+
+launch4JHelper.configure(buildExe) {
+    outputDir = 'asdf'
+}

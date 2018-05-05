@@ -27,14 +27,22 @@ class CreateTestProjectTask extends DefaultTask {
         println "Copying template project ${templateDir} to ${eventualProjectDir}"
 
         Files.createDirectories(Paths.get(eventualProjectDir))
-//        Files.copy(Paths.get(templateDir), Paths.get(eventualProjectDir), StandardCopyOption.REPLACE_EXISTING)
         GFileUtils.copyDirectory(new File(templateDir), new File(eventualProjectDir))
 
         if (gradleFile != null) {
-            // copy (and overwrite) gradle file
-            String destination = Paths.get(eventualProjectDir, "test.gradle").toString()
-            println "Writing test gradle file ${gradleFile} to ${destination}"
-            Files.copy(Paths.get(gradleFile), Paths.get(destination), StandardCopyOption.REPLACE_EXISTING)
+            appendTestGradleFile()
         }
+    }
+
+    private void appendTestGradleFile() {
+        // copy (and overwrite) gradle file
+
+        String buildFilePath = Paths.get(eventualProjectDir, "build.gradle").toString()
+        String buildFileContents = new String(Files.readAllBytes(Paths.get(buildFilePath)))
+        String testBuildFileContents = new String(Files.readAllBytes(Paths.get(gradleFile)))
+        String newBuildFileContents = buildFileContents + new String(Character.LINE_SEPARATOR) + testBuildFileContents
+
+        println "Appending test gradle file ${gradleFile} to ${buildFilePath}"
+        Files.write(Paths.get(buildFilePath), newBuildFileContents.bytes)
     }
 }

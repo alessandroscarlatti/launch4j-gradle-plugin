@@ -9,6 +9,7 @@ apply plugin: TestProjectsPlugin
 sourceCompatibility = 1.8
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
@@ -26,14 +27,11 @@ jar {
 }
 
 dependencies {
+    compile 'edu.sc.seis.gradle:launch4j:2.4.2'
     testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
 }
 
 testProjects {
-    test(name: "simple test", projectDir: "src/test/resources/LiveTestProject") {
-        tasks = ['sillyTest']
-    }
-    test(name: "silly test", projectDir: "src/test/resources/LiveTestProject")
-    test name: 'template test', template: 'src/test/resources/LiveTestProject', gradle: 'src/test/resources/sampleTest.gradle'
-    test name: 'ork test', template: 'src/test/resources/LiveTestProject', gradle: 'src/test/resources/greetingTest.gradle'
+    test(name: "plugin test", projectDir: "testProjects/SimpleTemplateProject")
+    test name: 'template test', template: 'testProjects/SimpleTemplateProject', gradle: 'src/test/resources/createDistributionTask.gradle'
 }

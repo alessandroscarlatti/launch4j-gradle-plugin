@@ -1,0 +1,51 @@
+import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
+
+// ============================================================================
+// Everything in this build.gradle is part of the 'basic test project'
+// Specific test scenarios can go in 'test.gradle'.
+// ============================================================================
+
+buildscript {
+    repositories {
+        jcenter()
+        flatDir dirs: '../../build/libs'
+    }
+    dependencies {
+        classpath 'edu.sc.seis.gradle:launch4j:2.4.2'
+        classpath "com.scarlatti:utility-distribution:+"
+    }
+}
+
+/**
+ * This task will be called by the plugin project's test task.
+ * It may be used as a hook for tasks which will form part of
+ * build-time tests for the plugin.
+ */
+task testPluginProject(group: 'verification', description: 'Tests the plugin in this project') {
+    doLast {
+        println "Gradle plugin successfully tested in live test project."
+    }
+}
+
+// =======================================================================================
+// Now the plugin can be applied.
+// All test scenarios can be applied to the project below (via 'test.gradle')
+// =======================================================================================
+
+apply plugin: 'java'
+apply plugin: 'launch4j'
+apply plugin: 'launch4j-distribution'
+
+task guiDistribution(type: Launch4jLibraryTask) {
+}
+
+launch4JHelper.configure(guiDistribution) {
+    outputDir = 'asdf'
+}
+
+launch4JHelper.configure(guiDistribution) {
+    outputDir = 'asdf'
+    resourcesDir = 'asdf'
+    icon = 'asdf'
+    exeName = 'asdf.exe'
+}
