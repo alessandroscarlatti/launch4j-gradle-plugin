@@ -58,38 +58,35 @@ class TestGradleBuildsTask extends DefaultTask {
         this.gradleTestFileName = gradleTestFileName
     }
 
-    void test(String dir) {
+    private Task createTestTask(String name, String dir) {
         String absoluteDir = getAbsolutePath(dir)
         println "creating task for dir ${absoluteDir}"
-        createTestGradleBuildTask(absoluteDir)
+        return createTestGradleBuildTask(name, absoluteDir)
     }
 
-    void test(List<String> dirs) {
-        for (String dir : dirs) {
-            test(dir)
-        }
-    }
+//    void test(List<String> dirs) {
+//        for (String dir : dirs) {
+//            test(dir)
+//        }
+//    }
 
     /**
      * For right now, support "template" and "gradle"
      */
-    void test(Map<String, String> props) {
+    Task test(Map<String, String> props) {
         if (props.get("name") == null) {
             throw new IllegalStateException("Must provide 'name' property for test.")
         }
 
         if (props.get("template") == null) {
-            test(props.get("dir"))
-            return
+            return createTestTask(props.get("name"), props.get("projectDir"))
         }
 
-        createTemplateTestGradleBuildTask(props.get("name"), props.get("template"), props.get("gradle"))
+        return createTemplateTestGradleBuildTask(props.get("name"), props.get("template"), props.get("gradle"))
     }
 
-    void test(String dir, @DelegatesTo(GradleBuild) Closure closure) {
-        String absoluteDir = getAbsolutePath(dir)
-        println "creating task for dir ${absoluteDir}"
-        Task task = createTestGradleBuildTask(absoluteDir)
+    void test(Map<String, String> props, @DelegatesTo(GradleBuild) Closure closure) {
+        Task task = test(props)
         closure.setDelegate(task)
         closure()
     }
@@ -135,18 +132,18 @@ class TestGradleBuildsTask extends DefaultTask {
         }
     }
 
-    /**
-     * Dir is absolute
-     * @param rawDir absolute rawDir
-     * @return
-     */
-    private Task createTestGradleBuildTask(String rawDir) {
-
-        String dirTaskName = dirToTaskName(rawDir)
-        String taskName = "test_" + dirTaskName
-
-        return createTestGradleBuildTask(taskName, rawDir)
-    }
+//    /**
+//     * Dir is absolute
+//     * @param rawDir absolute rawDir
+//     * @return
+//     */
+//    private Task createTestGradleBuildTask(String rawDir) {
+//
+//        String dirTaskName = dirToTaskName(rawDir)
+//        String taskName = "test_" + dirTaskName
+//
+//        return createTestGradleBuildTask(taskName, rawDir)
+//    }
 
     private Task createTestGradleBuildTask(String name, String rawDir) {
         String pluginName = project.properties.pluginName
