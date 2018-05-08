@@ -1,4 +1,4 @@
-package com.scarlatti.launch4j.extension.launch4jLibraryTaskHelper;
+package com.scarlatti.distribution.extension.launch4jLibraryTaskHelper;
 
 /**
  * ______    __                         __           ____             __     __  __  _

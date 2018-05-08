@@ -1,4 +1,4 @@
-package com.scarlatti.launch4j.extension.launch4jLibraryTaskHelper;
+package com.scarlatti.distribution.extension.launch4jLibraryTaskHelper;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 

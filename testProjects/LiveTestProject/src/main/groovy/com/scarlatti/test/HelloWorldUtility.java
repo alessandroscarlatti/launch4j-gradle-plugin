@@ -10,6 +10,6 @@ package com.scarlatti.test;
 public class HelloWorldUtility {
     public static void main(String[] args) throws Exception {
         javax.swing.JOptionPane.showMessageDialog(null, "Hello World");
-        System.out.println("Hello World");
+        System.out.println("Hello World3");
     }
 }

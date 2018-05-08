@@ -1,4 +1,4 @@
-package com.scarlatti.launch4j.extension.launch4jLibraryTaskHelper;
+package com.scarlatti.distribution.extension.launch4jLibraryTaskHelper;
 
 public class Launch4jLibraryTaskConfigurationDelegate {
 

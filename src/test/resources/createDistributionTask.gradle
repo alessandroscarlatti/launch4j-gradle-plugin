@@ -8,6 +8,6 @@ task buildExe(type: Launch4jLibraryTask) {
 }
 
 
-launch4JHelper.configure(buildExe) {
+launch4jHelper.configure(buildExe) {
     outputDir = 'asdf'
 }

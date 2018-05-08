@@ -1,8 +1,7 @@
-package com.scarlatti.launch4j.extension
+package com.scarlatti.distribution.extension
 
-import com.scarlatti.launch4j.extension.launch4jLibraryTaskHelper.Launch4jLibraryTaskConfigurationDelegate
-import com.scarlatti.launch4j.extension.launch4jLibraryTaskHelper.Launch4jLibraryTaskConfigurer
-import com.scarlatti.launch4j.extension.launch4jLibraryTaskHelper.Launch4jLibraryTaskHelper
+import com.scarlatti.distribution.extension.distributionHelper.DistributionHelper
+import com.scarlatti.distribution.extension.launch4jLibraryTaskHelper.Launch4jLibraryTaskHelper
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 import org.gradle.api.Project
 import org.gradle.api.distribution.Distribution
@@ -14,10 +13,10 @@ import org.gradle.api.distribution.Distribution
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 5/5/2018
  */
-class Launch4JHelperExtension {
+class DistributionHelperExtension {
     final Project project
 
-    Launch4JHelperExtension(Project project) {
+    DistributionHelperExtension(Project project) {
         this.project = project
     }
 
@@ -25,7 +24,7 @@ class Launch4JHelperExtension {
         return new Launch4jLibraryTaskHelper(task)
     }
 
-    void configure(Launch4jLibraryTask task, @DelegatesTo(Launch4jLibraryTaskConfigurationDelegate) Closure closure) {
-        new Launch4jLibraryTaskHelper(task).configure(closure)
+    DistributionHelper configure(Distribution distribution) {
+        new DistributionHelper(distribution)
     }
 }

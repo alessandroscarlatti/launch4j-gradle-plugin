@@ -34,7 +34,7 @@ task testPluginProject(group: 'verification', description: 'Tests the plugin in 
 apply plugin: 'groovy'
 apply plugin: 'distribution'
 apply plugin: 'launch4j'
-apply plugin: 'launch4j-distribution'
+apply plugin: 'distribution-utils'
 
 repositories {
     mavenCentral()
@@ -44,13 +44,35 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all:2.4.11"
 }
 
-task guiDistribution(type: Launch4jLibraryTask) {
-    mainClassName = 'com.scarlatti.test.HelloWorldUtility'
+distributions {
+    main {
+        baseName = "standard"
+    }
+    restricted {
+        baseName = "restricted"
+    }
 }
 
-launch4JHelper.with(guiDistribution).configure {
+task guiDistribution(type: Launch4jLibraryTask) {
+    mainClassName = 'com.scarlatti.test.HelloWorldUtility'
+    productName = 'Hello World Utility'
+}
+
+launch4jHelper.with(guiDistribution).configure {
     resourcesDir = 'distributionResources'
     outputDir = 'launch4j/standardDistribution'
 }
 
-println "project.distributions: ${project.distributions.main}"
+distributionHelper.configure(distributions.main).from(guiDistribution)
+
+task restrictedDistribution(type: Launch4jLibraryTask) {
+    mainClassName = 'com.scarlatti.test.HelloWorldUtility'
+    productName = 'Hello World Utility'
+}
+
+launch4jHelper.with(restrictedDistribution).configure {
+    resourcesDir = 'distributionResources'
+    outputDir = 'launch4j/restrictedDistribution'
+}
+
+distributionHelper.configure(distributions.restricted).from(restrictedDistribution)
