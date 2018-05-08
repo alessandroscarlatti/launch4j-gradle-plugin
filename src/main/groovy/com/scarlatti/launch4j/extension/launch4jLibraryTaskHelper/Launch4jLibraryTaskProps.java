@@ -15,7 +15,7 @@ public class Launch4jLibraryTaskProps {
     private Property<String> outputDir = new Property<>();
     private Property<String> iconPath = new Property<>();
     private Property<String> manifestPath = new Property<>();
-    private Property<String> exeName = new Property<>();
+    private Property<String> splashPath = new Property<>();
 
     public Property<String> getOutputDir() {
         return outputDir;
@@ -29,7 +29,17 @@ public class Launch4jLibraryTaskProps {
         return manifestPath;
     }
 
-    public Property<String> getExeName() {
-        return exeName;
+    public Property<String> getSplashPath() {
+        return splashPath;
+    }
+
+    @Override
+    public String toString() {
+        return "Launch4jLibraryTaskProps{" +
+            "outputDir=" + outputDir +
+            ", iconPath=" + iconPath +
+            ", manifestPath=" + manifestPath +
+            ", splashPath=" + splashPath +
+            '}';
     }
 }

@@ -8,7 +8,8 @@ package com.scarlatti.test;
  * Saturday, 5/5/2018
  */
 public class HelloWorldUtility {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        javax.swing.JOptionPane.showMessageDialog(null, "Hello World");
         System.out.println("Hello World");
     }
 }

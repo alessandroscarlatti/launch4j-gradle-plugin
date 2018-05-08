@@ -1,4 +1,4 @@
-package com.scarlatti.launch4j.task;
+package com.scarlatti.launch4j.task.launch4j;
 
 import org.gradle.api.DefaultTask;
 

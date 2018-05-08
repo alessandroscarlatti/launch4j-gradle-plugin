@@ -2,8 +2,10 @@ package com.scarlatti.launch4j.extension
 
 import com.scarlatti.launch4j.extension.launch4jLibraryTaskHelper.Launch4jLibraryTaskConfigurationDelegate
 import com.scarlatti.launch4j.extension.launch4jLibraryTaskHelper.Launch4jLibraryTaskConfigurer
+import com.scarlatti.launch4j.extension.launch4jLibraryTaskHelper.Launch4jLibraryTaskHelper
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 import org.gradle.api.Project
+import org.gradle.api.distribution.Distribution
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -19,20 +21,11 @@ class Launch4JHelperExtension {
         this.project = project
     }
 
-    void configure(Launch4jLibraryTask task, @DelegatesTo(Launch4jLibraryTaskConfigurationDelegate) Closure closure) {
-        Launch4jLibraryTaskConfigurationDelegate config = new Launch4jLibraryTaskConfigurationDelegate()
-        closure.delegate = config
-        closure()
-        doConfigure(task, config)
+    Launch4jLibraryTaskHelper with(Launch4jLibraryTask task) {
+        return new Launch4jLibraryTaskHelper(task)
     }
 
-    /**
-     * Apply the settings stored in the configurer.
-     *
-     * @param task the task under configuration
-     * @param configurer the configurer that has been used.
-     */
-    private void doConfigure(Launch4jLibraryTask task, Launch4jLibraryTaskConfigurationDelegate config) {
-        new Launch4jLibraryTaskConfigurer(task, config).run()
+    void configure(Launch4jLibraryTask task, @DelegatesTo(Launch4jLibraryTaskConfigurationDelegate) Closure closure) {
+        new Launch4jLibraryTaskHelper(task).configure(closure)
     }
 }

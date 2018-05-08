@@ -38,4 +38,11 @@ public class Property<T> implements Supplier<T> {
     public T get() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return isSet ?
+            "Property{value=" + value +  '}' :
+            "Property{notSet}";
+    }
 }

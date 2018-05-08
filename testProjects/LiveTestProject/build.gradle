@@ -15,7 +15,6 @@ buildscript {
         classpath "com.scarlatti:utility-distribution:+"
     }
 }
-
 /**
  * This task will be called by the plugin project's test task.
  * It may be used as a hook for tasks which will form part of
@@ -32,20 +31,26 @@ task testPluginProject(group: 'verification', description: 'Tests the plugin in 
 // All test scenarios can be applied to the project below (via 'test.gradle')
 // =======================================================================================
 
-apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'distribution'
 apply plugin: 'launch4j'
 apply plugin: 'launch4j-distribution'
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.codehaus.groovy:groovy-all:2.4.11"
+}
+
 task guiDistribution(type: Launch4jLibraryTask) {
+    mainClassName = 'com.scarlatti.test.HelloWorldUtility'
 }
 
-launch4JHelper.configure(guiDistribution) {
-    outputDir = 'asdf'
+launch4JHelper.with(guiDistribution).configure {
+    resourcesDir = 'distributionResources'
+    outputDir = 'launch4j/standardDistribution'
 }
 
-launch4JHelper.configure(guiDistribution) {
-    outputDir = 'asdf'
-    resourcesDir = 'asdf'
-    icon = 'asdf'
-    exeName = 'asdf.exe'
-}
+println "project.distributions: ${project.distributions.main}"
