@@ -3,17 +3,6 @@
 // Specific test scenarios can go in 'test.gradle'.
 // ============================================================================
 
-buildscript {
-    println "buildscript1"
-    repositories {
-        jcenter()
-        flatDir dirs: '../../build/libs'
-    }
-    dependencies {
-        classpath 'edu.sc.seis.gradle:launch4j:2.4.2'
-        classpath "com.scarlatti:utility-distribution:+"
-    }
-}
 /**
  * This task will be called by the plugin project's test task.
  * It may be used as a hook for tasks which will form part of

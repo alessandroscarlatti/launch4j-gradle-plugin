@@ -1,0 +1,11 @@
+import java.nio.file.Paths
+
+repositories {
+    jcenter()
+    flatDir dirs: Paths.get(project.projectDir.absolutePath, '../../../build/libs').toString()
+}
+
+dependencies {
+    compile 'edu.sc.seis.gradle:launch4j:2.4.2'
+    compile "com.scarlatti:utility-distribution:+"
+}

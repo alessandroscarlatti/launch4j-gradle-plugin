@@ -2,20 +2,8 @@ import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 
 import java.nio.file.Paths
 
-buildscript {
-    println "buildscript2"
-    repositories {
-        jcenter()
-        flatDir dirs: Paths.get(project.projectDir.absolutePath, '../../build/libs').toString()
-    }
-    dependencies {
-        classpath 'edu.sc.seis.gradle:launch4j:2.4.2'
-        classpath "com.scarlatti:utility-distribution:+"
-    }
-}
-
 apply plugin: 'distribution'
-apply plugin: 'launch4j'
+apply plugin: 'edu.sc.seis.launch4j'
 apply plugin: 'distribution-utils'
 
 distributions {
@@ -25,11 +13,6 @@ distributions {
     restricted {
         baseName = "restricted"
     }
-}
-
-launch4jHelper.distribution {
-    resourcesDir = 'distributionResources'
-    outputDir = 'launch4j/standardDistribution'
 }
 
 task guiDistribution(type: Launch4jLibraryTask) {
