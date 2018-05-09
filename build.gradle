@@ -35,3 +35,12 @@ testProjects {
     test(name: "plugin test", projectDir: "testProjects/SimpleTemplateProject")
     test name: 'template test', template: 'testProjects/SimpleTemplateProject', gradle: 'src/test/resources/createDistributionTask.gradle'
 }
+
+task pluginDistribution(type: Zip) {
+    group = 'distribution'
+    description = 'Build the distribution zip for this plugin.'
+    dependsOn build
+    from jar.outputs.files
+    baseName = jar.baseName
+    destinationDir = file("/build/distributions")
+}
