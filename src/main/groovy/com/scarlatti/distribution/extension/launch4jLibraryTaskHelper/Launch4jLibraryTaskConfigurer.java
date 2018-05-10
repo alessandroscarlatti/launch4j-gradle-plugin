@@ -127,7 +127,12 @@ public class Launch4jLibraryTaskConfigurer implements Runnable {
         System.out.println(props);
         if (props.getOutputDir().isSet()) task.setOutputDir(props.getOutputDir().getValue());
         if (props.getIconPath().isSet()) task.setIcon(props.getIconPath().getValue());
-        if (props.getSplashPath().isSet()) task.setSplashFileName(props.getSplashPath().getValue());
+
+        // only configure splash value if header is "gui"
+        if (task.getHeaderType().equalsIgnoreCase("gui")) {
+            if (props.getSplashPath().isSet()) task.setSplashFileName(props.getSplashPath().getValue());
+        }
+
         if (props.getManifestPath().isSet()) task.setManifest(props.getManifestPath().getValue());
     }
 }

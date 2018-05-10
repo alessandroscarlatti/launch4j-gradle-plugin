@@ -36,11 +36,25 @@ testProjects {
     test name: 'template test', template: 'testProjects/SimpleTemplateProject', gradle: 'src/test/resources/createDistributionTask.gradle'
 }
 
-task pluginDistribution(type: Zip) {
+task pluginDistributionZip(type: Zip) {
     group = 'distribution'
     description = 'Build the distribution zip for this plugin.'
     dependsOn build
     from jar.outputs.files
     baseName = jar.baseName
     destinationDir = file("/build/distributions")
+}
+
+task pluginDistributionJar(type: Copy) {
+    group = 'distribution'
+    description = 'Copy the plugin jar to the distribution dir.'
+    dependsOn build
+    from jar.outputs.files
+    destinationDir = file("/build/distributions")
+}
+
+task pluginDistributionAssemble {
+    dependsOn = [pluginDistributionZip, pluginDistributionJar]
+   group = 'distribution'
+    description = 'Put both the plugin .jar and .zip archives in the distribution dir.'
 }
