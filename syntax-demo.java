@@ -27,6 +27,26 @@ ReleaseTemplate.release("community") {
 	}
 }
 
+// or better yet?
+ReleaseTemplate.release("community") {
+	dist(Launch4jDistributionTemplate){
+		resourcesDir = "/release/community/gui"
+	}
+}
+
+// or better yet?
+ReleaseTemplate.release("community") {
+	dist(Launch4jDistributionTemplate){
+		resourcesDir = "/release/community/gui"
+	}
+}
+
+// accessors
+releases.community.distributions.community.resourcesDir
+releases.community.distributions.community.exeTask
+releases.community.distributions.community.distributionBuildTask
+releases.community.distributions.community.distributionAssembleTask
+
 // 1 dist, 2 exe builds in the package
 // N.B. would require that the names of the outputs from the exe tasks MUST be different!
 ReleaseTemplate.release("community") {
@@ -88,7 +108,7 @@ ReleaseTemplate.release("allEditions") {
 ReleaseTemplate.release("community") {
 	dist("community", Launch4jDistributionTemplate){
 		exe("gui") {
-			resourcesDir = "/release/community/gui"
+			resourcesDir = "/release/community/gui"  // copies exe build info and companions
 			custom {
 				headerType = "gui"
 			}
