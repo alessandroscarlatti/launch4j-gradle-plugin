@@ -35,7 +35,10 @@ ReleaseTemplate.release("community") {
 }
 
 // or better yet?
-ReleaseTemplate.release("community") {
+// we can translate the release name from either camel case or snake case.
+// The distribution will assume we are using the default distribution (for this release name) if none
+// is provided we can either create or retrieve it as necessary.
+task communityRelease {
 	dist(Launch4jDistributionTemplate){
 		resourcesDir = "/release/community/gui"
 	}
@@ -75,18 +78,36 @@ ReleaseTemplate.release("community") {
 	dist(Launch4jDistributionTemplate){
 		exe("gui") {
 			resourcesDir = "/release/community/gui"
-			custom {
+			config {
 				headerType = "gui"
 			}
 		}
 		exe("console") {
 			resourcesDir = "/release/community/console"
-			custom {
+			config {
 				headerType = "console"
 			}
 		}
 	}
 }
+
+// or, considering launch4j.properties...
+task communityRelease(type: ReleaseTemplateTask) {
+	dist(Launch4jDistributionTemplate){
+		exe("gui") {
+			resourcesDir = "/release/community/shared"
+			config("/release/shared/launch4j.properties") {
+				myCustomProperty = "someCustomValue"
+				dependsOn someCustomJarTask
+				copyConfigurable = someCustomJarTask.outputs.files
+			}
+		}
+		exe("console") {
+			resourcesDir = "/release/community/shared"
+		}
+	}
+}
+
 
 
 // 2 dist, 1 exe in each package
@@ -135,4 +156,21 @@ ReleaseTemplate.release("community") {
 		}
 	}
 }
+
+// and considering breaking the whole thing down into more manageable pieces
+
+task communityDistribution(type: Launch4jDistributionTemplateTask) {
+	exe("gui") {
+		resourcesDir = "/release/community/shared"
+		config("/release/shared/launch4j.properties") {
+			myCustomProperty = "someCustomValue"
+			dependsOn someCustomJarTask
+			copyConfigurable = someCustomJarTask.outputs.files
+		}
+	}
+	exe("console") {
+		resourcesDir = "/release/community/shared"
+	}
+}
+	
 
