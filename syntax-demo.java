@@ -160,7 +160,7 @@ ReleaseTemplate.release("community") {
 // and considering breaking the whole thing down into more manageable pieces
 
 task communityDistribution(type: Launch4jDistributionTemplateTask) {
-	exe("gui") {
+	exe("gui", Launch4jExeTemplate) {
 		resourcesDir = "/release/community/shared"
 		config("/release/shared/launch4j.properties") {
 			myCustomProperty = "someCustomValue"
@@ -168,8 +168,18 @@ task communityDistribution(type: Launch4jDistributionTemplateTask) {
 			copyConfigurable = someCustomJarTask.outputs.files
 		}
 	}
-	exe("console") {
+	exe("console", Launch4jExeTemplate) {
 		resourcesDir = "/release/community/shared"
+	}
+}
+
+// and breaking the exe build out of the distribution...
+task communityDisributionGuiExe(type: Launch4jExeTemplateTask) {
+	resourcesDir = "/release/community/shared"
+	config {
+		myCustomProperty = "someCustomValue"
+		dependsOn someCustomJarTask
+		copyConfigurable = someCustomJarTask.outputs.files
 	}
 }
 	
