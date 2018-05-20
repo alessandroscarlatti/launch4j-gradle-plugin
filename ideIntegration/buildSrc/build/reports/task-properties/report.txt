@@ -1,0 +1,9 @@
+Warning: Task type 'com.scarlatti.gradle.launch4j.Launch4jExeTemplateTask' declares property that is not annotated: 'config'.
+Warning: Task type 'com.scarlatti.gradle.launch4j.Launch4jExeTemplateTask' declares property that is not annotated: 'icon'.
+Warning: Task type 'com.scarlatti.gradle.launch4j.Launch4jExeTemplateTask' declares property that is not annotated: 'manifest'.
+Warning: Task type 'com.scarlatti.gradle.launch4j.Launch4jExeTemplateTask' declares property that is not annotated: 'resourcesDir'.
+Warning: Task type 'com.scarlatti.gradle.launch4j.Launch4jExeTemplateTask' declares property that is not annotated: 'splash'.
+Warning: Task type 'com.scarlatti.plugin.GreetingTask' declares property that is not annotated: 'message'.
+Warning: Task type 'com.scarlatti.plugin.GreetingTask' declares property that is not annotated: 'penguinName'.
+Warning: Task type 'com.scarlatti.plugin.GreetingTask' declares property that is not annotated: 'recipient'.
+Warning: Task type 'com.scarlatti.plugin.GreetingTask' declares property that is not annotated: 'sillinessCode'.

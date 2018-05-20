@@ -18,11 +18,11 @@ class Launch4jHelperPlugin implements Plugin<Project> {
     void apply(Project project) {
         this.project = project
 
-        System.out.println("Applying Launch4jHelperPlugin...")
-        applyLaunch4jHelperExtension()
-        applyDistributionHelperExtension()
-
-        applyDistributionPluginConfigurations()
+//        System.out.println("Applying Launch4jHelperPlugin...")
+//        applyLaunch4jHelperExtension()
+//        applyDistributionHelperExtension()
+//
+//        applyDistributionPluginConfigurations()
     }
 
     private void applyLaunch4jHelperExtension() {
