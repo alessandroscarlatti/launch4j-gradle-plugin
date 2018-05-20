@@ -1,5 +1,13 @@
 import com.scarlatti.gradle.launch4j.Launch4jExeTemplateTask
 
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies.classpath 'edu.sc.seis.gradle:launch4j:2.4.2'
+}
+
 apply plugin: 'java'
 apply plugin: 'launch4j'
 
