@@ -1,5 +1,0 @@
-Warning: Task type 'com.scarlatti.gradle.tasks.Launch4jTemplateTask' declares property that is not annotated: 'exeTask'.
-Warning: Task type 'com.scarlatti.plugin.GreetingTask' declares property that is not annotated: 'message'.
-Warning: Task type 'com.scarlatti.plugin.GreetingTask' declares property that is not annotated: 'penguinName'.
-Warning: Task type 'com.scarlatti.plugin.GreetingTask' declares property that is not annotated: 'recipient'.
-Warning: Task type 'com.scarlatti.plugin.GreetingTask' declares property that is not annotated: 'sillinessCode'.
