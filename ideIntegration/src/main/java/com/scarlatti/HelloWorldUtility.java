@@ -1,5 +1,7 @@
 package com.scarlatti;
 
+import javax.swing.*;
+
 /**
  * ______    __                         __           ____             __     __  __  _
  * ___/ _ | / /__ ___ ___ ___ ____  ___/ /______    / __/______ _____/ /__ _/ /_/ /_(_)
@@ -10,7 +12,6 @@ package com.scarlatti;
 public class HelloWorldUtility {
     public static void main(String[] args) throws Exception {
         System.out.println("hello world");
-
-        Thread.sleep(5000);
+        JOptionPane.showMessageDialog(null, "what do you know");
     }
 }

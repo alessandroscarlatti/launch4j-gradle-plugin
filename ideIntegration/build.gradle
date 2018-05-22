@@ -12,8 +12,5 @@ apply plugin: 'java'
 apply plugin: 'launch4j'
 
 task standardExe(type: Launch4jTemplateTask) {
-    outputs.upToDateWhen {
-        println "what do you know"
-        false
-    }
+    exeName = "coolo"
 }

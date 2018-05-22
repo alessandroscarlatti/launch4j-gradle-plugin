@@ -50,19 +50,22 @@ class Launch4jTemplateTask extends DefaultTask {
     private List<Closure> configs = []
 
     Launch4jTemplateTask() {
+        exeTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask) {
+            group = 'launch4j'
+            description = "Build the exe for the '${name} Launch4j template task."
+        }
+        exeTaskConfigurer = new Launch4jLibraryTaskConfigurer(exeName, exeTask)
         project.afterEvaluate(this.&setupConfigurations)
     }
 
     void setupConfigurations() {
-        exeTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask)
-        exeTaskConfigurer = new Launch4jLibraryTaskConfigurer(exeName, exeTask)
         applyConfigurations()
         applyLaunch4jConfigurations()
         configureDependencies()
     }
 
     void applyConfigurations() {
-        exeTaskConfigurer.configureFromExeName(exeName)
+        exeTaskConfigurer.configureExeName(exeName)
         exeTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
     }
 
@@ -79,7 +82,7 @@ class Launch4jTemplateTask extends DefaultTask {
     }
 
     private static String generateLaunch4jTaskName(String templateTaskName) {
-        return "exeTask${templateTaskName}"
+        return "${templateTaskName}_launch4jTask"
     }
 
     void config(@DelegatesTo(Launch4jLibraryTask) Closure closure) {

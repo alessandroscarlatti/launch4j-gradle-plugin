@@ -33,7 +33,12 @@ public class Launch4jLibraryTaskConfigurer {
     }
 
     private void configureDefaults() {
-        configureFromExeName(name);
+        setDefaultOutputDir();
+        configureExeName(name);
+    }
+
+    private void setDefaultOutputDir() {
+        task.setOutputDir("launch4j/" + task.getName());
     }
 
     public void configureFromResourcesDir(String dir) {
@@ -46,18 +51,8 @@ public class Launch4jLibraryTaskConfigurer {
         configurePropertiesPath(Paths.get(dir, DEFAULT_PROPERTIES_FILE_NAME).toString());
     }
 
-    public void configureFromExeName(String name) {
-        configureExeName(name);
-        configureOutputDir(name);
-    }
-
-    private void configureExeName(String name) {
+    public void configureExeName(String name) {
         task.setOutfile(name + ".exe");
-    }
-
-    public void configureOutputDir(String buildName) {
-        // outputDir is relative to buildDir
-        task.setOutputDir(buildName);
     }
 
     private void configureIconPath(String iconPath) {
