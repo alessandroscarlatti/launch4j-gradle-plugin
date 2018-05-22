@@ -38,19 +38,40 @@ class Launch4jTemplateTask extends DefaultTask {
 
     @Optional
     @InputDirectory
-    private File resourcesDir
+    private File resourcesDir = project.file('exe')
 
     @Optional
     @Input
-    private String exeName
+    private String exeName = name
 
     private Launch4jLibraryTask exeTask
     private Launch4jLibraryTaskConfigurer exeTaskConfigurer
 
+    private List<Closure> configs = []
+
     Launch4jTemplateTask() {
+        project.afterEvaluate(this.&setupConfigurations)
+    }
+
+    void setupConfigurations() {
         exeTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask)
-        exeTaskConfigurer = new Launch4jLibraryTaskConfigurer(name, exeTask)
+        exeTaskConfigurer = new Launch4jLibraryTaskConfigurer(exeName, exeTask)
+        applyConfigurations()
+        applyLaunch4jConfigurations()
         configureDependencies()
+    }
+
+    void applyConfigurations() {
+        exeTaskConfigurer.configureFromExeName(exeName)
+        exeTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
+    }
+
+    void applyLaunch4jConfigurations() {
+        for (Closure closure : configs) {
+            closure.delegate = exeTask
+            closure.resolveStrategy = Closure.DELEGATE_FIRST
+            closure()
+        }
     }
 
     void configureDependencies() {
@@ -61,12 +82,9 @@ class Launch4jTemplateTask extends DefaultTask {
         return "exeTask${templateTaskName}"
     }
 
-// do I have to have a taskAction method?
-//    @TaskAction
-//    void run() {
-//        // Do nothing because this is a lifecycle task.
-//        // This task triggers the exeTask by dependency.
-//    }
+    void config(@DelegatesTo(Launch4jLibraryTask) Closure closure) {
+        configs.add(closure)
+    }
 
     void setResourcesDir(String dir) {
         setResourcesDir(project.file(dir))
@@ -77,7 +95,6 @@ class Launch4jTemplateTask extends DefaultTask {
     }
 
     void setResourcesDir(File resourcesDir) {
-        exeTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
         this.resourcesDir = resourcesDir
     }
 
@@ -86,7 +103,10 @@ class Launch4jTemplateTask extends DefaultTask {
     }
 
     void setExeName(String exeName) {
-        exeTaskConfigurer.configureFromExeName(exeName)
         this.exeName = exeName
+    }
+
+    private Launch4jLibraryTask getExeTask() {
+        return exeTask
     }
 }
