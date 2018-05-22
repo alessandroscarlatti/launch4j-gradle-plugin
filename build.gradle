@@ -39,3 +39,5 @@ task pluginDistributionAssemble {
     group = 'distribution'
     description = 'Put both the plugin .jar and .zip archives in the distribution dir.'
 }
+
+pluginDistributionJar.destinationDir

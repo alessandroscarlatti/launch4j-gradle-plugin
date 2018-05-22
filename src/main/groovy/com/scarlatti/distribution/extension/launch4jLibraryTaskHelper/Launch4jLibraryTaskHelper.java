@@ -1,5 +1,6 @@
 package com.scarlatti.distribution.extension.launch4jLibraryTaskHelper;
 
+import com.scarlatti.gradle.launch4j.Launch4jLibraryTaskConfigurer;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
@@ -33,6 +34,6 @@ public class Launch4jLibraryTaskHelper {
      */
     private void doConfigure(Launch4jLibraryTaskConfigurationDelegate config) {
         System.out.println("configuring launch4j task...");
-        new Launch4jLibraryTaskConfigurer(task, config).run();
+//        new Launch4jLibraryTaskConfigurer(task, config).run();
     }
 }
