@@ -34,7 +34,7 @@ import org.gradle.api.tasks.Optional
  *
  * All relative paths are evaluated relative to the project dir.
  */
-class Launch4jExeTemplateTask extends DefaultTask {
+class Launch4jTemplateTask extends DefaultTask {
 
     @Optional
     @InputDirectory
@@ -47,7 +47,7 @@ class Launch4jExeTemplateTask extends DefaultTask {
     private Launch4jLibraryTask exeTask
     private Launch4jLibraryTaskConfigurer exeTaskConfigurer
 
-    Launch4jExeTemplateTask() {
+    Launch4jTemplateTask() {
         exeTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask)
         exeTaskConfigurer = new Launch4jLibraryTaskConfigurer(name, exeTask)
         configureDependencies()

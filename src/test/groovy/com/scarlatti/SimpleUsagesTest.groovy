@@ -24,21 +24,19 @@ class SimpleUsagesTest extends Specification {
     def "exeTask runs successfully"() {
         given:
             buildFile << """
-            import com.scarlatti.gradle.tasks.Launch4jExeTemplateTask
+            import com.scarlatti.gradle.tasks.Launch4jTemplateTask
 
             buildscript {
                 repositories {jcenter()}
-                dependencies.classpath 'edu.sc.seis.gradle:exeTask:2.4.2'
+                dependencies.classpath 'edu.sc.seis.gradle:launch4j:2.4.2'
             }
             
             plugins {
-                id 'exeTask'
+                id 'launch4j'
                 id 'com.scarlatti.release'
             }
-            
-            apply plugin: 'exeTask'
 
-            task exeTask(type: Launch4jExeTemplateTask) {
+            task exeTask(type: Launch4jTemplateTask) {
                 resourcesDir = 'asdf'
             }
         """

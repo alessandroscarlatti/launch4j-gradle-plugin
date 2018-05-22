@@ -1,4 +1,4 @@
-import com.scarlatti.gradle.launch4j.Launch4jExeTemplateTask
+import com.scarlatti.gradle.tasks.Launch4jTemplateTask
 
 buildscript {
     repositories {
@@ -11,6 +11,5 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'launch4j'
 
-task someTask(type: Launch4jExeTemplateTask) {
-    resourcesDir = 'asdf'
+task standardExe(type: Launch4jTemplateTask) {
 }
