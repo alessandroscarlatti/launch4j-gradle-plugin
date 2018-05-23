@@ -1,6 +1,7 @@
 package com.scarlatti.gradle.tasks
 
 import com.scarlatti.gradle.launch4j.Launch4jLibraryTaskConfigurer
+import com.scarlatti.gradle.launch4j.ManifestConfigurationDelegate
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -90,8 +91,15 @@ class Launch4jTemplateTask extends DefaultTask {
         configs.add(closure)
     }
 
-    void manifest(@DelegatesTo() Closure closure) {
+    void manifest(@DelegatesTo(ManifestConfigurationDelegate) Closure closure) {
+        ManifestConfigurationDelegate manifestConfigurationDelegate = new ManifestConfigurationDelegate()
+        closure.delegate = manifestConfigurationDelegate
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure()
 
+        // TODO the information gleaned here needs to be applied
+        // before the resourceDir is applied so that anything in the resourceDir
+        // will override this.
     }
 
     void setResourcesDir(String dir) {

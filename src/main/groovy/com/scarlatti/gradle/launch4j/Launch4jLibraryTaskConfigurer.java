@@ -1,6 +1,8 @@
 package com.scarlatti.gradle.launch4j;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
+import org.gradle.api.Action;
+import org.gradle.api.Task;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -24,6 +26,10 @@ public class Launch4jLibraryTaskConfigurer {
     private final String DEFAULT_SPLASH_FILE_NAME = "splash.bmp";
     private final String DEFAULT_MANIFEST_FILE_NAME = "application.manifest";
     private final String DEFAULT_PROPERTIES_FILE_NAME = "launch4j.properties";
+    private final String DEFAULT_GENERATED_MANIFEST_FILE_NAME = "generated-manifest.manifest";
+
+    private Action<Task> generateManifest;
+    private Action<Task> cleanupManifest;
 
     public Launch4jLibraryTaskConfigurer(String name, Launch4jLibraryTask task) {
         this.name = name;
@@ -35,10 +41,24 @@ public class Launch4jLibraryTaskConfigurer {
     private void configureDefaults() {
         setDefaultOutputDir();
         configureExeName(name);
+        configureNoOpGeneratedManifest();
+        configureTaskGenerateManifestAspect();
     }
 
     private void setDefaultOutputDir() {
-        task.setOutputDir("launch4j/" + task.getName());
+        task.setOutputDir(getDefaultOutputDir());
+    }
+
+    private String getDefaultOutputDir() {
+        return "launch4j/" + task.getName();
+    }
+
+    private String getDefaultGeneratedManifestPath() {
+        return Paths.get(
+            task.getProject().getBuildDir().getAbsolutePath(),
+            getDefaultOutputDir(),
+            DEFAULT_GENERATED_MANIFEST_FILE_NAME
+        ).toString();
     }
 
     public void configureFromResourcesDir(String dir) {
@@ -80,6 +100,37 @@ public class Launch4jLibraryTaskConfigurer {
         }
 
         // if file not found, leave manifest unchanged...
+    }
+
+    private void configureTaskGenerateManifestAspect() {
+        task.doFirst(generateManifest);
+        task.doLast(cleanupManifest);
+    }
+
+    private void configureNoOpGeneratedManifest() {
+        generateManifest = (task) -> {};
+        cleanupManifest = (task) -> {};
+    }
+
+    private void configureGeneratedManifest(String manifest) {
+
+        // add the generated file to the designated location
+        generateManifest = task -> {
+            try {
+                Files.write(Paths.get(getDefaultGeneratedManifestPath()), manifest.getBytes());
+            } catch (Exception e) {
+                throw new RuntimeException("Error generating manifest file at " + getDefaultGeneratedManifestPath(), e);
+            }
+        };
+
+        // delete the generated file from the designated location
+        cleanupManifest = task -> {
+            try {
+                Files.delete(Paths.get(getDefaultGeneratedManifestPath()));
+            } catch (Exception e) {
+                new RuntimeException("Error deleting generated manifest file at " + getDefaultGeneratedManifestPath(), e).printStackTrace();
+            }
+        };
     }
 
     private void configurePropertiesPath(String propertiesPath) {
