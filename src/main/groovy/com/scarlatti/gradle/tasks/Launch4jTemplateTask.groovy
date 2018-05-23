@@ -58,6 +58,7 @@ class Launch4jTemplateTask extends DefaultTask {
         project.afterEvaluate(this.&setupConfigurations)
     }
 
+    // this is called AFTER the project has evaluated.
     void setupConfigurations() {
         applyConfigurations()
         applyLaunch4jConfigurations()
@@ -87,6 +88,10 @@ class Launch4jTemplateTask extends DefaultTask {
 
     void config(@DelegatesTo(Launch4jLibraryTask) Closure closure) {
         configs.add(closure)
+    }
+
+    void manifest(@DelegatesTo() Closure closure) {
+
     }
 
     void setResourcesDir(String dir) {
