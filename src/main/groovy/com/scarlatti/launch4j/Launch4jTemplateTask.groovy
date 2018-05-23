@@ -1,7 +1,7 @@
-package com.scarlatti.gradle.tasks
+package com.scarlatti.launch4j
 
-import com.scarlatti.gradle.launch4j.Launch4jLibraryTaskConfigurer
-import com.scarlatti.gradle.launch4j.ManifestConfigurationDelegate
+import com.scarlatti.launch4j.Launch4jLibraryTaskConfigurer
+import com.scarlatti.launch4j.ManifestConfigurationDelegate
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -15,7 +15,7 @@ import org.gradle.api.tasks.Optional
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 5/19/2018
  *
- * Create a exeTask exe task by convention.
+ * Create a launch4jTask exe task by convention.
  *
  * properties include:
  *
@@ -24,7 +24,7 @@ import org.gradle.api.tasks.Optional
  * - icon.ico
  * - splash.bmp
  * - manifest.mf / manifest.manifest / manifest / {exeName}.manifest
- * - exeTask.properties
+ * - launch4jTask.properties
  *
  * DAY 2...
  * and the following, which all override whatever is in the resourcesDir:
@@ -45,18 +45,42 @@ class Launch4jTemplateTask extends DefaultTask {
     @Input
     private String exeName = name
 
-    private Launch4jLibraryTask exeTask
+    private Launch4jLibraryTask launch4jTask
     private Launch4jLibraryTaskConfigurer exeTaskConfigurer
 
     private List<Closure> configs = []
 
     Launch4jTemplateTask() {
-        exeTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask) {
+        applyLaunch4jPluginIfNecessary()
+        group = 'exe'
+        launch4jTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask) {
             group = 'launch4j'
             description = "Build the exe for the '${name} Launch4j template task."
         }
-        exeTaskConfigurer = new Launch4jLibraryTaskConfigurer(exeName, exeTask)
+        exeTaskConfigurer = new Launch4jLibraryTaskConfigurer(exeName, launch4jTask)
         project.afterEvaluate(this.&setupConfigurations)
+    }
+
+    void config(@DelegatesTo(Launch4jLibraryTask) Closure closure) {
+        configs.add(closure)
+    }
+
+    void manifest(@DelegatesTo(ManifestConfigurationDelegate) Closure closure) {
+        ManifestConfigurationDelegate config = new ManifestConfigurationDelegate()
+        closure.delegate = config
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure()
+
+        // the information configured here needs to be applied
+        // before the resourceDir is applied so that anything in the resourceDir
+        // will override this.
+        exeTaskConfigurer.configureGeneratedManifest(config.base.buildRawManifest())
+    }
+
+    private void applyLaunch4jPluginIfNecessary() {
+        if (project.plugins.findPlugin("launch4j") == null) {
+            project.apply(plugin: 'launch4j')
+        }
     }
 
     // this is called AFTER the project has evaluated.
@@ -66,40 +90,25 @@ class Launch4jTemplateTask extends DefaultTask {
         configureDependencies()
     }
 
-    void applyConfigurations() {
+    private void applyConfigurations() {
         exeTaskConfigurer.configureExeName(exeName)
         exeTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
     }
 
-    void applyLaunch4jConfigurations() {
+    private void applyLaunch4jConfigurations() {
         for (Closure closure : configs) {
-            closure.delegate = exeTask
+            closure.delegate = launch4jTask
             closure.resolveStrategy = Closure.DELEGATE_FIRST
             closure()
         }
     }
 
-    void configureDependencies() {
-        dependsOn exeTask
+    private void configureDependencies() {
+        dependsOn launch4jTask
     }
 
     private static String generateLaunch4jTaskName(String templateTaskName) {
         return "${templateTaskName}_launch4jTask"
-    }
-
-    void config(@DelegatesTo(Launch4jLibraryTask) Closure closure) {
-        configs.add(closure)
-    }
-
-    void manifest(@DelegatesTo(ManifestConfigurationDelegate) Closure closure) {
-        ManifestConfigurationDelegate manifestConfigurationDelegate = new ManifestConfigurationDelegate()
-        closure.delegate = manifestConfigurationDelegate
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure()
-
-        // TODO the information gleaned here needs to be applied
-        // before the resourceDir is applied so that anything in the resourceDir
-        // will override this.
     }
 
     void setResourcesDir(String dir) {
@@ -123,6 +132,6 @@ class Launch4jTemplateTask extends DefaultTask {
     }
 
     private Launch4jLibraryTask getExeTask() {
-        return exeTask
+        return launch4jTask
     }
 }

@@ -36,7 +36,7 @@ class SimpleUsagesTest extends Specification {
                 id 'com.scarlatti.release'
             }
 
-            task exeTask(type: Launch4jTemplateTask) {
+            task launch4jTask(type: Launch4jTemplateTask) {
                 resourcesDir = 'asdf'
             }
         """
@@ -44,13 +44,13 @@ class SimpleUsagesTest extends Specification {
         when:
             def result = GradleRunner.create()
                     .withProjectDir(tempDir.root)
-                    .withArguments('exeTask', '--stacktrace')
+                    .withArguments('launch4jTask', '--stacktrace')
                     .withPluginClasspath()
                     .withDebug(true)
                     .build()
 
         then:
             println result.output
-            result.task(":exeTask").outcome == TaskOutcome.SUCCESS
+            result.task(":launch4jTask").outcome == TaskOutcome.SUCCESS
     }
 }
