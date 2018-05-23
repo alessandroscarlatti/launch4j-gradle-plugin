@@ -19,7 +19,6 @@ import java.util.Properties;
  * A configurer for a Launch4JLibraryTask.
  */
 public class Launch4jLibraryTaskConfigurer {
-    private String name;
     private Launch4jLibraryTask task;
 
     private final String DEFAULT_ICON_FILE_NAME = "icon.ico";
@@ -31,8 +30,7 @@ public class Launch4jLibraryTaskConfigurer {
     private Action<Task> generateManifest;
     private Action<Task> cleanupManifest;
 
-    public Launch4jLibraryTaskConfigurer(String name, Launch4jLibraryTask task) {
-        this.name = name;
+    public Launch4jLibraryTaskConfigurer(Launch4jLibraryTask task) {
         this.task = task;
 
         configureDefaults();
@@ -40,9 +38,10 @@ public class Launch4jLibraryTaskConfigurer {
 
     private void configureDefaults() {
         setDefaultOutputDir();
-        configureExeName(name);
+        configureExeName(task.getProject().getName());
         configureNoOpGeneratedManifest();
         configureTaskGenerateManifestAspect();
+        task.setStayAlive(true);
     }
 
     private void setDefaultOutputDir() {
@@ -66,6 +65,9 @@ public class Launch4jLibraryTaskConfigurer {
     }
 
     public void configureFromResourcesDir(String dir) {
+
+        if (dir == null) return;
+
         // evaluate any other properties, with respect to the custom properties
         configureIconPath(Paths.get(dir, DEFAULT_ICON_FILE_NAME).toString());
         configureSplashPath(Paths.get(dir, DEFAULT_SPLASH_FILE_NAME).toString());

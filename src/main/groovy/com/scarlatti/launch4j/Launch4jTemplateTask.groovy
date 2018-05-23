@@ -1,12 +1,12 @@
 package com.scarlatti.launch4j
 
-import com.scarlatti.launch4j.Launch4jLibraryTaskConfigurer
-import com.scarlatti.launch4j.ManifestConfigurationDelegate
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional
+
+import java.nio.file.Paths
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -37,18 +37,18 @@ import org.gradle.api.tasks.Optional
  */
 class Launch4jTemplateTask extends DefaultTask {
 
+    static Closure<File> baseResourcesDir = getDefaultBaseResourcesDir()
+
     @Optional
     @InputDirectory
-    private File resourcesDir = project.file('exe')
+    private File resourcesDir = evaluateDefaultBaseResourcesDir()
 
     @Optional
     @Input
     private String exeName = name
 
     private Launch4jLibraryTask launch4jTask
-    private Launch4jLibraryTaskConfigurer exeTaskConfigurer
-
-    private List<Closure> configs = []
+    private Launch4jLibraryTaskConfigurer launch4jTaskConfigurer
 
     Launch4jTemplateTask() {
         applyLaunch4jPluginIfNecessary()
@@ -57,12 +57,19 @@ class Launch4jTemplateTask extends DefaultTask {
             group = 'launch4j'
             description = "Build the exe for the '${name} Launch4j template task."
         }
-        exeTaskConfigurer = new Launch4jLibraryTaskConfigurer(exeName, launch4jTask)
-        project.afterEvaluate(this.&setupConfigurations)
+        dependsOn launch4jTask
+        launch4jTaskConfigurer = new Launch4jLibraryTaskConfigurer(launch4jTask)
+        launch4jTaskConfigurer.configureExeName(exeName)
+
+        // configure from the base resources dir
+        launch4jTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
+        setupPrintExeLocation()
     }
 
     void config(@DelegatesTo(Launch4jLibraryTask) Closure closure) {
-        configs.add(closure)
+        closure.delegate = launch4jTask
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure()
     }
 
     void manifest(@DelegatesTo(ManifestConfigurationDelegate) Closure closure) {
@@ -74,7 +81,7 @@ class Launch4jTemplateTask extends DefaultTask {
         // the information configured here needs to be applied
         // before the resourceDir is applied so that anything in the resourceDir
         // will override this.
-        exeTaskConfigurer.configureGeneratedManifest(config.base.buildRawManifest())
+        launch4jTaskConfigurer.configureGeneratedManifest(config.base.buildRawManifest())
     }
 
     private void applyLaunch4jPluginIfNecessary() {
@@ -83,32 +90,39 @@ class Launch4jTemplateTask extends DefaultTask {
         }
     }
 
-    // this is called AFTER the project has evaluated.
-    void setupConfigurations() {
-        applyConfigurations()
-        applyLaunch4jConfigurations()
-        configureDependencies()
+    private static String generateLaunch4jTaskName(String templateTaskName) {
+        return "${templateTaskName}_launch4jTask"
     }
 
-    private void applyConfigurations() {
-        exeTaskConfigurer.configureExeName(exeName)
-        exeTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
-    }
+    void setupPrintExeLocation() {
+        String exeFileName = launch4jTask.outfile
+        String relativeExeDir = launch4jTask.outputDir
+        String buildDir = project.buildDir.absolutePath
+        String absoluteExeDir = Paths.get(buildDir, relativeExeDir).toString()
 
-    private void applyLaunch4jConfigurations() {
-        for (Closure closure : configs) {
-            closure.delegate = launch4jTask
-            closure.resolveStrategy = Closure.DELEGATE_FIRST
-            closure()
+        doLast {
+            println "${exeFileName} available at ${absoluteExeDir}"
         }
     }
 
-    private void configureDependencies() {
-        dependsOn launch4jTask
+    static void defaults(@DelegatesTo(Launch4jTemplateTask) Closure config) {
+        config.delegate = Launch4jTemplateTask
+        config.resolveStrategy = Closure.DELEGATE_FIRST
+        config()
     }
 
-    private static String generateLaunch4jTaskName(String templateTaskName) {
-        return "${templateTaskName}_launch4jTask"
+    private static void baseResourcesDir(Closure<File> closure) {
+        baseResourcesDir = closure
+    }
+
+    private static Closure<File> getDefaultBaseResourcesDir() {
+        return { project.file('exe') }
+    }
+
+    private File evaluateDefaultBaseResourcesDir() {
+        baseResourcesDir.delegate = this
+        baseResourcesDir.resolveStrategy = Closure.OWNER_FIRST
+        return baseResourcesDir()
     }
 
     void setResourcesDir(String dir) {
@@ -120,6 +134,7 @@ class Launch4jTemplateTask extends DefaultTask {
     }
 
     void setResourcesDir(File resourcesDir) {
+        launch4jTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
         this.resourcesDir = resourcesDir
     }
 

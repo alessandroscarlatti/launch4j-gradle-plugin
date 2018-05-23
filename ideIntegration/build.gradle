@@ -11,8 +11,20 @@ buildscript {
 apply plugin: 'java'
 
 task standardExe(type: Launch4jTemplateTask) {
-    exeName = "coolo"
     manifest {
         base = asInvoker()
     }
+}
+
+//Launch4jTemplateTask.defaults {
+//    baseResourcesDir {
+//        file('exe2')
+//    }
+//}
+
+task standardConsoleExe(type: Launch4jTemplateTask) {
+    resourcesDir = 'exeConsole'
+//    manifest {
+//        base = asInvoker()
+//    }
 }
