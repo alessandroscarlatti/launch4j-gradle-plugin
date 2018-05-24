@@ -12,7 +12,7 @@ apply plugin: 'java'
 apply plugin: 'com.scarlatti.launch4j.integration'
 
 launch4jTemplate {
-    baseResourceDir = 'exeConsole'
+    baseResourcesDir = 'exeConsole'
 }
 
 task standardExe(type: Launch4jTemplateTask) {

@@ -6,27 +6,40 @@ import java.io.File;
 
 public class Launch4jTemplateExtension {
     private Project project;
-    private File baseResourceDir;
+    private File baseResourcesDir;
+    private String taskGroup;
 
     public Launch4jTemplateExtension(Project project) {
         this.project = project;
-        baseResourceDir = getDefaultBaseResourceDir();
+        baseResourcesDir = getDefaultBaseResourceDir();
     }
 
-    public File getBaseResourceDir() {
-        return baseResourceDir;
+    public File getBaseResourcesDir() {
+        return baseResourcesDir;
     }
 
-    public void setBaseResourceDir(File baseResourceDir) {
-        this.baseResourceDir = baseResourceDir;
+    public void setBaseResourcesDir(File baseResourcesDir) {
+        this.baseResourcesDir = baseResourcesDir;
     }
 
     public void setBaseResourceDir(String baseResourceDir) {
-        this.baseResourceDir = project.file(baseResourceDir);
+        this.baseResourcesDir = project.file(baseResourceDir);
+    }
+
+    public String getTaskGroup() {
+        return taskGroup;
+    }
+
+    public void setTaskGroup(String taskGroup) {
+        this.taskGroup = taskGroup;
     }
 
     private File getDefaultBaseResourceDir() {
         return project.file("exe");
+    }
+
+    private String getDefaultGroup() {
+        return "exe";
     }
 
 }

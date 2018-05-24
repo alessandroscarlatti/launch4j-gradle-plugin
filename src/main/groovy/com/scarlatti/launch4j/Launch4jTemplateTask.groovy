@@ -39,7 +39,7 @@ class Launch4jTemplateTask extends DefaultTask {
 
     @Optional
     @InputDirectory
-    private File resourcesDir = evaluateDefaultBaseResourcesDir()
+    private File resourcesDir
 
     @Optional
     @Input
@@ -49,14 +49,17 @@ class Launch4jTemplateTask extends DefaultTask {
     private Launch4jLibraryTaskConfigurer launch4jTaskConfigurer
 
     Launch4jTemplateTask() {
-        group = 'exe'
+        resourcesDir = evaluateDefaultBaseResourcesDir()
+        group = evaluateDefaultTaskGroup()
         launch4jTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask) {
             group = 'launch4j'
             description = "Build the exe for the '${name} Launch4j template task."
         }
-        dependsOn launch4jTask
-        launch4jTaskConfigurer = new Launch4jLibraryTaskConfigurer(launch4jTask)
+        dependsOn(launch4jTask)
+
+        launch4jTaskConfigurer = new Launch4jLibraryTaskConfigurer(launch4jTask, name)
         launch4jTaskConfigurer.configureExeName(exeName)
+        launch4jTaskConfigurer.configureDependencies()
 
         // configure from the base resources dir
         launch4jTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
@@ -96,14 +99,12 @@ class Launch4jTemplateTask extends DefaultTask {
         }
     }
 
-    static void defaults(@DelegatesTo(Launch4jTemplateTask) Closure config) {
-        config.delegate = Launch4jTemplateTask
-        config.resolveStrategy = Closure.DELEGATE_FIRST
-        config()
+    private File evaluateDefaultBaseResourcesDir() {
+        return project.extensions.getByType(Launch4jTemplateExtension).baseResourcesDir
     }
 
-    private File evaluateDefaultBaseResourcesDir() {
-        return project.extensions.getByType(Launch4jTemplateExtension).baseResourceDir
+    private String evaluateDefaultTaskGroup() {
+        return project.extensions.getByType(Launch4jTemplateExtension).taskGroup
     }
 
     void setResourcesDir(String dir) {

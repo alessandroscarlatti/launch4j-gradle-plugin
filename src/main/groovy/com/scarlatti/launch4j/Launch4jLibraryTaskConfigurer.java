@@ -7,6 +7,9 @@ import org.gradle.api.Task;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -20,6 +23,7 @@ import java.util.Properties;
  */
 public class Launch4jLibraryTaskConfigurer {
     private Launch4jLibraryTask task;
+    private String parentTaskName;
 
     private final String DEFAULT_ICON_FILE_NAME = "icon.ico";
     private final String DEFAULT_SPLASH_FILE_NAME = "splash.bmp";
@@ -30,7 +34,8 @@ public class Launch4jLibraryTaskConfigurer {
     private Action<Task> generateManifest;
     private Action<Task> cleanupManifest;
 
-    public Launch4jLibraryTaskConfigurer(Launch4jLibraryTask task) {
+    public Launch4jLibraryTaskConfigurer(Launch4jLibraryTask task, String parentTaskName) {
+        this.parentTaskName = parentTaskName;
         this.task = task;
         configureDefaults();
     }
@@ -43,12 +48,31 @@ public class Launch4jLibraryTaskConfigurer {
         task.setStayAlive(true);
     }
 
+    void configureDependencies() {
+        if (task.getProject().getTasks().findByName("bootRepackage") != null) {
+            fromBootRepackage();
+        }
+        else if (task.getProject().getTasks().findByName("bootJar") != null) {
+            fromBootJar();
+        }
+    }
+
+    private void fromBootRepackage() {
+        task.dependsOn("bootRepackage");
+        task.setCopyConfigurable(task.getProject().getTasks().findByName("jar").getOutputs().getFiles());
+    }
+
+    private void fromBootJar() {
+        task.dependsOn("bootJar");
+        task.setCopyConfigurable(task.getProject().getTasks().findByName("jar").getOutputs().getFiles());
+    }
+
     private void setDefaultOutputDir() {
         task.setOutputDir(getDefaultOutputDir());
     }
 
     private String getDefaultOutputDir() {
-        return "launch4j/" + task.getName();
+        return "launch4j/" + parentTaskName;
     }
 
     private String getDefaultGeneratedManifestPath(String content) {
