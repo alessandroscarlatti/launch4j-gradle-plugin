@@ -32,7 +32,6 @@ public class Launch4jLibraryTaskConfigurer {
 
     public Launch4jLibraryTaskConfigurer(Launch4jLibraryTask task) {
         this.task = task;
-
         configureDefaults();
     }
 

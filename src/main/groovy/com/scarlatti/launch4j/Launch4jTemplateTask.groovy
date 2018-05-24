@@ -37,8 +37,6 @@ import java.nio.file.Paths
  */
 class Launch4jTemplateTask extends DefaultTask {
 
-    static Closure<File> baseResourcesDir = getDefaultBaseResourcesDir()
-
     @Optional
     @InputDirectory
     private File resourcesDir = evaluateDefaultBaseResourcesDir()
@@ -51,7 +49,6 @@ class Launch4jTemplateTask extends DefaultTask {
     private Launch4jLibraryTaskConfigurer launch4jTaskConfigurer
 
     Launch4jTemplateTask() {
-        applyLaunch4jPluginIfNecessary()
         group = 'exe'
         launch4jTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask) {
             group = 'launch4j'
@@ -84,12 +81,6 @@ class Launch4jTemplateTask extends DefaultTask {
         launch4jTaskConfigurer.configureGeneratedManifest(config.base.buildRawManifest())
     }
 
-    private void applyLaunch4jPluginIfNecessary() {
-        if (project.plugins.findPlugin("launch4j") == null) {
-            project.apply(plugin: 'launch4j')
-        }
-    }
-
     private static String generateLaunch4jTaskName(String templateTaskName) {
         return "${templateTaskName}_launch4jTask"
     }
@@ -111,18 +102,8 @@ class Launch4jTemplateTask extends DefaultTask {
         config()
     }
 
-    private static void baseResourcesDir(Closure<File> closure) {
-        baseResourcesDir = closure
-    }
-
-    private static Closure<File> getDefaultBaseResourcesDir() {
-        return { project.file('exe') }
-    }
-
     private File evaluateDefaultBaseResourcesDir() {
-        baseResourcesDir.delegate = this
-        baseResourcesDir.resolveStrategy = Closure.OWNER_FIRST
-        return baseResourcesDir()
+        return project.extensions.getByType(Launch4jTemplateExtension).baseResourceDir
     }
 
     void setResourcesDir(String dir) {
