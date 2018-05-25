@@ -28,7 +28,7 @@ apply plugin: 'java'  // and other plugins...
 apply plugin: 'com.scarlatti.launch4j.integration'
 ```
 
-## Configure an Exe.
+## Configure your Exe.
 If your build produces an executable jar this can be extremely simple.
 ```
 import com.scarlatti.launch4j.Launch4jTemplateTask
