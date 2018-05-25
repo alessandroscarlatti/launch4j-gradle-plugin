@@ -47,7 +47,7 @@ That's it.
 The `Launch4jTemplateTask` takes an opinionated view on providing resources, such as an icon.  Just provide an icon (.ico) file at `/exe/icon.ico` and the template will automatically use it for the exe.
 
 ## Add a Splash Screen
-Provide an splash (.bmp only) file at `/exe/splash.bmp` and the template will automatically use it for the exe.
+Provide a splash (.bmp only) file at `/exe/splash.bmp` and the template will automatically use it for the exe.
 
 ## Expert Options
 Of course, properties of the actual Launch4j task can be configured.
