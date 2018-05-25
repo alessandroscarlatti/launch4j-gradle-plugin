@@ -5,7 +5,7 @@
 
 Integration with Launch4j and the [Launch4j Gradle plugin](https://github.com/TheBoegl/gradle-launch4j).
 
-You want to quickly package your jar as a great-looking exe.  This is easier than ever with the `Launch4jTemplateTask` Gradle task.
+*You want to quickly package your jar as a great-looking exe.*  This is easier than ever with the `Launch4jTemplateTask` Gradle task.
 Building an executable is now only a few lines of code, thanks to a few sensible conventions and defaults.
 
 # How to Use
