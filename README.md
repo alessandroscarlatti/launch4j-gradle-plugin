@@ -34,9 +34,10 @@ If your build produces an executable jar this can be extremely simple.
 import com.scarlatti.launch4j.Launch4jTemplateTask
 
 task simpleExe(type: Launch4jTemplateTask) {
+    exeName = 'simple'
 }
 ```
-Go ahead and run the `simpleExe` task. You should now have an exe waiting for you at `/build/launch4j/basicExe/basicExe.exe`.
+Go ahead and run the `simpleExe` task. You should now have an exe waiting for you at `/build/launch4j/simpleExe/simple.exe`.
 
 That's it.
 
