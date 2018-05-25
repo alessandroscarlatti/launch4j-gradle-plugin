@@ -41,7 +41,7 @@ Go ahead and run the `simpleExe` task. You should now have an exe waiting for yo
 
 That's it.
 
-## Congratulations!
+## Congratulations! Enjoy your exe.
 
 ## Add an Icon
 The `Launch4jTemplateTask` takes an opinionated view on providing resources, such as an icon.  You may provide an icon (.ico) file at `/exe/icon.ico` and the task will automatically use it for the exe.
