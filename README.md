@@ -39,9 +39,9 @@ task simpleExe(type: Launch4jTemplateTask) {
 ```
 Go ahead and run the `simpleExe` task. You should now have an exe waiting for you at `/build/launch4j/simpleExe/simple.exe`.
 
-That's it.  Congratulations!
+That's it.
 
-## Enjoy your Exe.
+## Congratulations! Enjoy your Exe.
 
 ## Add an Icon
 The `Launch4jTemplateTask` takes an opinionated view on providing resources, such as an icon.  You may provide an icon (.ico) file at `/exe/icon.ico` and the task will automatically use it for the exe.
