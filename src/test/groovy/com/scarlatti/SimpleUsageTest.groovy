@@ -13,7 +13,7 @@ import spock.lang.Specification
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 5/19/2018
  */
-class SimpleUsagesTest extends Specification {
+class SimpleUsageTest extends Specification {
     @Rule TemporaryFolder tempDir = new TemporaryFolder()
     File buildFile
 
@@ -23,34 +23,18 @@ class SimpleUsagesTest extends Specification {
 
     def "exeTask runs successfully"() {
         given:
-            buildFile << """
-            import com.scarlatti.gradle.tasks.Launch4jTemplateTask
-
-            buildscript {
-                repositories {jcenter()}
-                dependencies.classpath 'edu.sc.seis.gradle:launch4j:2.4.2'
-            }
-            
-            plugins {
-                id 'launch4j'
-                id 'com.scarlatti.release'
-            }
-
-            task launch4jTask(type: Launch4jTemplateTask) {
-                resourcesDir = 'asdf'
-            }
-        """
+            buildFile << new Scanner(getClass().getResourceAsStream("/simpleUsage.gradle")).useDelimiter('\\Z').next()
 
         when:
             def result = GradleRunner.create()
                     .withProjectDir(tempDir.root)
-                    .withArguments('launch4jTask', '--stacktrace')
+                    .withArguments('build', '--stacktrace')
                     .withPluginClasspath()
                     .withDebug(true)
                     .build()
 
         then:
             println result.output
-            result.task(":launch4jTask").outcome == TaskOutcome.SUCCESS
+            result.task(":build").outcome == TaskOutcome.SUCCESS
     }
 }
