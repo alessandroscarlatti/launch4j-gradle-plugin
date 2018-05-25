@@ -61,4 +61,4 @@ task simpleExe(type: Launch4jExeTemplateTask) {
 }
 ```
 
-> The Launch4j plugin [documentation](https://github.com/TheBoegl/gradle-launch4j) provides details on all the configuration options available.
+> The [Launch4j plugin documentation](https://github.com/TheBoegl/gradle-launch4j) provides details on all the configuration options available.
