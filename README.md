@@ -52,7 +52,7 @@ You may provide an splash (.bmp only) file at `/exe/splash.bmp` and the task wil
 # Expert Options
 Of course, properties of the actual Launch4j task can be configured.
 ```
-task simpleExe(type: Launch4jExeTemplateTask) {
+task simpleExe(type: Launch4jTemplateTask) {
 
     // configure the actual launch4j task
     // more details at https://github.com/TheBoegl/gradle-launch4j
