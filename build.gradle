@@ -1,10 +1,15 @@
-import com.scarlatti.test.util.TestProjectsPlugin
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+}
 
-group 'com.scarlatti'
-
+apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'java-gradle-plugin'
-apply plugin: TestProjectsPlugin
+apply plugin: 'maven-publish'
+
+if (file('bintray.gradle').exists()) apply from: 'bintray.gradle'
+
+group 'com.scarlatti'
 
 sourceCompatibility = 1.8
 
@@ -13,27 +18,11 @@ repositories {
     mavenCentral()
 }
 
-/**
- * Configuration necessary for Gradle 4.0 to be compatible with Spock groovy?
- */
-configurations.all {
-    resolutionStrategy {
-        force 'org.codehaus.groovy:groovy-all:2.4.11'
-    }
-}
-
-jar {
-    baseName = project.properties.pluginArtifactName
-}
-
 dependencies {
     compile 'edu.sc.seis.gradle:launch4j:2.4.2'
-    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
-}
-
-testProjects {
-    test(name: "plugin test", projectDir: "testProjects/SimpleTemplateProject")
-    test name: 'template test', template: 'testProjects/SimpleTemplateProject', gradle: 'src/test/resources/createDistributionTask.gradle'
+    testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
+        exclude module: 'groovy-all'
+    }
 }
 
 task pluginDistributionZip(type: Zip) {
@@ -55,6 +44,38 @@ task pluginDistributionJar(type: Copy) {
 
 task pluginDistributionAssemble {
     dependsOn = [pluginDistributionZip, pluginDistributionJar]
-   group = 'distribution'
+    group = 'distribution'
     description = 'Put both the plugin .jar and .zip archives in the distribution dir.'
+}
+
+pluginDistributionJar.destinationDir
+
+bintray {
+    user = findProperty("bintrayUser")
+    key = findProperty("bintrayKey")
+
+    pkg {
+        repo = 'maven'
+        name = project.name
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/alessandroscarlatti/launch4j-gradle-plugin.git'
+
+        version {
+            name = project.version
+            desc = 'Test uploading to bintray repo'
+        }
+    }
+
+    publications = ['PluginPublication']
+}
+
+publishing {
+    publications {
+        PluginPublication(MavenPublication) {
+            from components.java
+            groupId 'com.scarlatti'
+            artifactId 'launch4j-gradle-plugin'
+            version project.version
+        }
+    }
 }
