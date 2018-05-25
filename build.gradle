@@ -1,11 +1,18 @@
-plugins {
-    id "com.jfrog.bintray" version "1.7.3"
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies{
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+    }
 }
 
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'maven-publish'
+apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 
 if (file('bintray.gradle').exists()) apply from: 'bintray.gradle'
 
@@ -16,10 +23,13 @@ sourceCompatibility = 1.8
 repositories {
     jcenter()
     mavenCentral()
+    flatDir dirs: ['lib']
 }
 
 dependencies {
     compile 'edu.sc.seis.gradle:launch4j:2.4.2'
+    testCompile 'imcdonagh:image4j:0.7.2'
+    compile 'com.talanlabs:avatar-generator:1.1.0'
     testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
         exclude module: 'groovy-all'
     }

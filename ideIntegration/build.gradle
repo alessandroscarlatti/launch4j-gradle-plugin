@@ -11,13 +11,12 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'com.scarlatti.launch4j.integration'
 
-launch4jTemplate {
-    baseResourcesDir = 'exeConsole'
-}
-
 task standardExe(type: Launch4jTemplateTask) {
     manifest {
         base = asInvoker()
+    }
+
+    config {
     }
 }
 
