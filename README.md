@@ -1,4 +1,4 @@
-# Launch4J Gradle Plugin 
+# Launch4j Gradle Plugin 
 
 ![Travis CI](https://travis-ci.com/alessandroscarlatti/launch4j-gradle-plugin.svg?branch=master "Travis CI")
 [ ![Bintray Download](https://api.bintray.com/packages/alessandroscarlatti/maven/launch4j-gradle-plugin/images/download.svg) ](https://bintray.com/alessandroscarlatti/maven/launch4j-gradle-plugin/_latestVersion "Bintray Download")
