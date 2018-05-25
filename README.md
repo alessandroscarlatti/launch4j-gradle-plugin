@@ -1,17 +1,16 @@
 # Launch4J Gradle Plugin
 
-![travis ci](https://travis-ci.com/alessandroscarlatti/launch4j-gradle-plugin.svg?branch=master "travis ci")
-[ ![Download](https://api.bintray.com/packages/alessandroscarlatti/maven/launch4j-gradle-plugin/images/download.svg) ](https://bintray.com/alessandroscarlatti/maven/launch4j-gradle-plugin/_latestVersion)
+![Travis CI](https://travis-ci.com/alessandroscarlatti/launch4j-gradle-plugin.svg?branch=master "Travis CI")
+[ ![Bintray Download](https://api.bintray.com/packages/alessandroscarlatti/maven/launch4j-gradle-plugin/images/download.svg) ](https://bintray.com/alessandroscarlatti/maven/launch4j-gradle-plugin/_latestVersion "Bintray Download")
 
 This project facilitates releases with Launch4J.
 
-It simplifies building an executable by using sensible default properties so that a release can be built by placing resource files in a distribution directory.
+It simplifies building an executable by using sensible default properties so that an executable can be built with only a few lines of code.
 
-The plugin makes available a `Launch4JDistributionTask`.
-This task can take a variety of configurable inputs, and outputs the
-two artifacts side-by-side in a single specified directory
-- yourApp.exe
-- lib (dir)
+The plugin makes available a `Launch4jTemplateTask`.
+
+
+
 
 ### Opinionated Launch4j Settings
 
