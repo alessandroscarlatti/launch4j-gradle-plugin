@@ -1,0 +1,14 @@
+import com.scarlatti.launch4j.Launch4jTemplateTask
+
+buildscript {
+    repositories {jcenter()}
+}
+
+plugins {
+    id 'com.scarlatti.launch4j.integration'
+}
+
+apply plugin: 'java'
+
+task launch4jTask(type: Launch4jTemplateTask) {
+}

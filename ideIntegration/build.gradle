@@ -1,0 +1,26 @@
+import com.scarlatti.launch4j.Launch4jTemplateTask
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies.classpath 'edu.sc.seis.gradle:launch4j:2.4.2'
+}
+
+apply plugin: 'java'
+apply plugin: 'com.scarlatti.launch4j.integration'
+
+launch4jTemplate {
+    baseResourcesDir = 'exeConsole'
+}
+
+task standardExe(type: Launch4jTemplateTask) {
+    manifest {
+        base = asInvoker()
+    }
+}
+
+task standardConsoleExe(type: Launch4jTemplateTask) {
+    resourcesDir = 'exeConsole'
+}
