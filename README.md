@@ -28,7 +28,7 @@ apply plugin: 'java'  // and other plugins...
 apply plugin: 'com.scarlatti.launch4j.integration'
 ```
 
-## Configure an exe
+## Configure an Exe
 If your build produces an executable jar this can be extremely simple.
 ```
 import com.scarlatti.launch4j.Launch4jTemplateTask
@@ -41,7 +41,7 @@ Go ahead and run the `simpleExe` task. You should now have an exe waiting for yo
 
 That's it.
 
-## Congratulations! Enjoy your exe.
+## Congratulations! Enjoy your Exe.
 
 ## Add an Icon
 The `Launch4jTemplateTask` takes an opinionated view on providing resources, such as an icon.  You may provide an icon (.ico) file at `/exe/icon.ico` and the task will automatically use it for the exe.
