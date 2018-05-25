@@ -49,7 +49,7 @@ The `Launch4jTemplateTask` takes an opinionated view on providing resources, suc
 ## Add a Splash Screen
 You may provide an splash (.bmp only) file at `/exe/splash.bmp` and the task will automatically use it for the exe.
 
-# Expert Options
+## Expert Options
 Of course, properties of the actual Launch4j task can be configured.
 ```
 task simpleExe(type: Launch4jTemplateTask) {
