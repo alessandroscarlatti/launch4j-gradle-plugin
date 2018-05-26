@@ -1,6 +1,7 @@
 package com.scarlatti.gradle.launch4j
 
 import coms.scarlatti.util.GradleBuildSpecification
+import org.gradle.testkit.runner.TaskOutcome
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -18,5 +19,28 @@ class PluginDirectoryResourceTest extends GradleBuildSpecification {
                     .appendBuildFileFromResource("/simpleUsage.gradle")
                     .withTask("launch4jTask")
                     .build()
+    }
+
+    def "launch4jTemplateTask is out-of-date when resourcesDir updated"() {
+        setup:
+            final String LAUNCH4J_TASK_NAME = ":launch4jTask_launch4jTask"
+        when:
+            def build1 = customGradleRunner()
+                    .fromProjectDir("/src/test-projects/SimpleProjectTest")
+                    .appendBuildFileFromResource("/simpleUsage.gradle")
+                    .appendBuildFileFromResource("/replaceIconFile.gradle")
+                    .build("launch4jTask")
+        then:
+            build1.task(LAUNCH4J_TASK_NAME) != null
+            build1.task(LAUNCH4J_TASK_NAME).outcome == TaskOutcome.SUCCESS
+
+        when:
+            customGradleRunner().build("replaceIconFile")
+        and:
+            def build2 = customGradleRunner().build("launch4jTask")
+        then:
+            build2.task(LAUNCH4J_TASK_NAME) != null
+            build2.task(LAUNCH4J_TASK_NAME).outcome == TaskOutcome.SUCCESS
+
     }
 }

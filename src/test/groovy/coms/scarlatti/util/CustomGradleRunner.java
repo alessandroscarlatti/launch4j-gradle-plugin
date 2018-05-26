@@ -1,16 +1,17 @@
 package coms.scarlatti.util;
 
-import org.gradle.api.invocation.Gradle;
-import org.gradle.api.tasks.Copy;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.internal.DefaultGradleRunner;
 import org.gradle.util.GFileUtils;
 
-import java.io.File;
 import java.io.InputStream;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -49,11 +50,7 @@ public class CustomGradleRunner extends DefaultGradleRunner {
         Path targetBuildFile = Paths.get(targetDir.toString(), "build.gradle");
         this.targetDir = targetDir.toString();
         this.targetBuildFile = targetBuildFile.toString();
-
         try {
-            if (Files.exists(targetDir)) {
-                GFileUtils.deleteDirectory(targetDir.toFile());
-            }
             Files.createDirectories(targetDir);
             withProjectDir(targetDir.toFile());
         } catch (Exception e) {
@@ -70,9 +67,21 @@ public class CustomGradleRunner extends DefaultGradleRunner {
     public CustomGradleRunner fromProjectDir(String sourceDir) {
         Objects.requireNonNull(sourceDir, "Must provide source dir");
         // if there is a source dir copy the sourceDir into the target dir
-        GFileUtils.copyDirectory(Paths.get(projectDir, sourceDir).toFile(), Paths.get(targetDir).toFile());
-        this.sourceDir = sourceDir;
-        return this;
+        Path targetDir = Paths.get(this.targetDir);
+
+        try {
+            if (Files.exists(targetDir)) {
+                GFileUtils.deleteDirectory(targetDir.toFile());
+            }
+
+            Files.createDirectories(targetDir);
+            GFileUtils.copyDirectory(Paths.get(projectDir, sourceDir).toFile(), targetDir.toFile());
+            this.sourceDir = sourceDir;
+            return this;
+        } catch (Exception e) {
+            throw new RuntimeException("Error building test project from souroce dir " + sourceDir, e);
+        }
+
     }
 
     public CustomGradleRunner withBuildFileContents(String buildFileContents) {
@@ -120,6 +129,7 @@ public class CustomGradleRunner extends DefaultGradleRunner {
 
     @Override
     public BuildResult build() {
+        logTargetDir();
         BuildResult buildResult = super.build();
         System.out.printf(">>> Gradle Build result (expect success): %n%n%s%n%n", buildResult.getOutput());
         return buildResult;
@@ -127,8 +137,23 @@ public class CustomGradleRunner extends DefaultGradleRunner {
 
     @Override
     public BuildResult buildAndFail() {
+        logTargetDir();
         BuildResult buildResult = super.buildAndFail();
         System.out.printf(">>> Gradle Build result (expect failure): %n%n%s%n%n", buildResult.getOutput());
         return buildResult;
+    }
+
+    public BuildResult build(String... args) {
+        withArguments(args);
+        return build();
+    }
+
+    public BuildResult buildAndFail(String... args) {
+        withArguments(args);
+        return buildAndFail();
+    }
+
+    private void logTargetDir() {
+        System.out.println(">>> Test Project deployed at \"" + targetDir + "\"");
     }
 }

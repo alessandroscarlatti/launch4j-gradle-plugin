@@ -55,6 +55,7 @@ task pluginDistributionAssemble {
     dependsOn = [pluginDistributionZip, pluginDistributionJar]
     group = 'distribution'
     description = 'Put both the plugin .jar and .zip archives in the distribution dir.'
+    inputs.file("asdf")
 }
 
 pluginDistributionJar.destinationDir

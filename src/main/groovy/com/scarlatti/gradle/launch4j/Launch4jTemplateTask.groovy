@@ -5,6 +5,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 
 import java.nio.file.Paths
 
@@ -37,12 +38,13 @@ import java.nio.file.Paths
  */
 class Launch4jTemplateTask extends DefaultTask {
 
-    @Optional
-    @InputDirectory
-    private File resourcesDir
+    // TODO
+    // so we would need to make the resource dirs PLURAL
+    // and make them outputs (since they are used as inputs for the launch4j task)
+    // (wrong: that way they don't have to exist)
 
-    @Optional
-    @Input
+
+    private File resourcesDir
     private String exeName = name
 
     private Launch4jLibraryTask launch4jTask
