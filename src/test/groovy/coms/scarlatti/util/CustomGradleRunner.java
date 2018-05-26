@@ -2,6 +2,7 @@ package coms.scarlatti.util;
 
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.tasks.Copy;
+import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.internal.DefaultGradleRunner;
 import org.gradle.util.GFileUtils;
 
@@ -115,5 +116,19 @@ public class CustomGradleRunner extends DefaultGradleRunner {
 
     public CustomGradleRunner withTask(String task) {
         return (CustomGradleRunner) withArguments(task, "--stacktrace");
+    }
+
+    @Override
+    public BuildResult build() {
+        BuildResult buildResult = super.build();
+        System.out.printf(">>> Gradle Build result (expect success): %n%n%s%n%n", buildResult.getOutput());
+        return buildResult;
+    }
+
+    @Override
+    public BuildResult buildAndFail() {
+        BuildResult buildResult = super.buildAndFail();
+        System.out.printf(">>> Gradle Build result (expect failure): %n%n%s%n%n", buildResult.getOutput());
+        return buildResult;
     }
 }

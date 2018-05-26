@@ -20,7 +20,7 @@ class GradleBuildSpecification extends Specification {
         return testNameRule.methodName
     }
 
-    protected CustomGradleRunner newDefaultGradleRunner() {
+    protected CustomGradleRunner customGradleRunner() {
         return CustomGradleRunner.create(testName)
             .withPluginClasspath()
             .withDebug(true)

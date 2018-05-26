@@ -20,7 +20,7 @@ class SpockExtensionTest extends GradleBuildSpecification {
             """
 
         when:
-            def result = newDefaultGradleRunner()
+            def result = customGradleRunner()
                     .withBuildFileContents(buildFileContents)
                     .withTask("silly")
                     .build()
@@ -30,7 +30,7 @@ class SpockExtensionTest extends GradleBuildSpecification {
 
     def "CustomGradleRunner builds test project properly from resource"() {
         when:
-            def result = newDefaultGradleRunner()
+            def result = customGradleRunner()
                     .withBuildFileFromResource("/util/silly.gradle")
                     .withTask("silly")
                     .build()
@@ -40,7 +40,7 @@ class SpockExtensionTest extends GradleBuildSpecification {
 
     def "CustomGradleRunner builds test project properly from source dir"() {
         when:
-            def result = newDefaultGradleRunner()
+            def result = customGradleRunner()
                     .fromProjectDir("/src/test-projects/SimpleProjectTest")
                     .appendBuildFileFromResource("/util/silly.gradle")
                     .withTask("silly")
@@ -49,4 +49,12 @@ class SpockExtensionTest extends GradleBuildSpecification {
             result.output.contains("what do you know")
     }
 
+    def "CustomGradleRunner can expect a failure"() {
+        expect:
+            customGradleRunner()
+                    .fromProjectDir("/src/test-projects/SimpleProjectTest")
+                    .appendBuildFileFromResource("/util/silly.gradle")
+                    .withTask("doesNotExist")
+                    .buildAndFail()
+    }
 }
