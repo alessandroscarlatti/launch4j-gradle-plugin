@@ -1,6 +1,15 @@
-plugins {
-    id "com.jfrog.bintray" version "1.7.3"
+import com.jfrog.bintray.gradle.BintrayPlugin
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+    }
 }
+
+apply plugin: BintrayPlugin
 
 apply plugin: 'java'
 apply plugin: 'groovy'

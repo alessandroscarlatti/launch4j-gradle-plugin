@@ -1,4 +1,4 @@
-package com.scarlatti.gradle.launch4j.gradle.launch4j;
+package com.scarlatti.gradle.launch4j;
 
 /**
  * ______    __                         __           ____             __     __  __  _

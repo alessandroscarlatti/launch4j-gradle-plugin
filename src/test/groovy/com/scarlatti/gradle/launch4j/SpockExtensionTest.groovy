@@ -41,8 +41,8 @@ class SpockExtensionTest extends GradleBuildSpecification {
     def "CustomGradleRunner builds test project properly from source dir"() {
         when:
             def result = newDefaultGradleRunner()
-                    .fromProjectDir("/ideIntegration")
-                    .withBuildFileFromResource("/util/silly.gradle")
+                    .fromProjectDir("/src/test-projects/SimpleProjectTest")
+                    .appendBuildFileFromResource("/util/silly.gradle")
                     .withTask("silly")
                     .build()
         then:

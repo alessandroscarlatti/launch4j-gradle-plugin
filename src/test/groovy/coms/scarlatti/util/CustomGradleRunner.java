@@ -7,9 +7,7 @@ import org.gradle.util.GFileUtils;
 
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -64,6 +62,7 @@ public class CustomGradleRunner extends DefaultGradleRunner {
 
     /**
      * Use a directory as source for a test project.  Use a relative path to the project dir.
+     *
      * @param sourceDir the path to the test project dir, relative to the root project dir.
      * @return this runner, for chaining.
      */
@@ -87,25 +86,31 @@ public class CustomGradleRunner extends DefaultGradleRunner {
         }
     }
 
+    public CustomGradleRunner appendBuildFileContents(String buildFileContents) {
+        try {
+            String newContents = System.lineSeparator() + System.lineSeparator() + buildFileContents;
+            Files.write(Paths.get(targetBuildFile), newContents.getBytes(), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+            return this;
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to create append file content for test project at " + targetDir +
+                "New content was: " + buildFileContents, e);
+        }
+    }
+
     public CustomGradleRunner withBuildFile(InputStream inputStream) {
         return withBuildFileContents(new Scanner(inputStream).useDelimiter("\\Z").next());
+    }
+
+    public CustomGradleRunner appendBuildFile(InputStream inputStream) {
+        return appendBuildFileContents(new Scanner(inputStream).useDelimiter("\\Z").next());
     }
 
     public CustomGradleRunner withBuildFileFromResource(String resourceName) {
         return withBuildFile(getClass().getResourceAsStream(resourceName));
     }
 
-    public CustomGradleRunner withBuildFileFromPath(String path) {
-        try {
-            this.buildFileContents = new String(Files.readAllBytes(Paths.get(path)));
-            return this;
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to read build file at " + path, e);
-        }
-    }
-
-    public CustomGradleRunner withBuildFileFromPath(File file) {
-        return withBuildFileFromPath(file.getAbsolutePath());
+    public CustomGradleRunner appendBuildFileFromResource(String resourceName) {
+        return appendBuildFile(getClass().getResourceAsStream(resourceName));
     }
 
     public CustomGradleRunner withTask(String task) {

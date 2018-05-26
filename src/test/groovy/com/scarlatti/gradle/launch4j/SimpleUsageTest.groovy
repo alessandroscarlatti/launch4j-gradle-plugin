@@ -46,47 +46,4 @@ class SimpleUsageTest extends Specification {
             println result.output
             result.task(":build").outcome == TaskOutcome.SUCCESS
     }
-
-    def "TestProjectBuilder builds test project properly"() {
-        setup:
-            String buildFileContents = """
-                task silly() {
-                    println "what do you know"
-                }
-            """
-
-            TestProject testProject = TestProjectBuilder
-                    .newTestProject(testName.methodName)
-                    .withBuildFileContents(buildFileContents)
-                    .build()
-
-        when:
-            def result = GradleRunner.create()
-                    .withProjectDir(testProject.projectDir)
-                    .withArguments('silly', '--stacktrace')
-                    .withPluginClasspath()
-                    .withDebug(true)
-                    .build()
-        then:
-            result.output.contains("what do you know")
-    }
-
-    def "CustomGradleRunner builds test project properly"() {
-        setup:
-            String buildFileContents = """
-                task silly() {
-                    println "what do you know"
-                }
-            """
-
-        when:
-            def result = CustomGradleRunner.create(testName.methodName)
-                    .withBuildFileContents(buildFileContents)
-                    .withArguments('silly', '--stacktrace')
-                    .withPluginClasspath()
-                    .withDebug(true)
-                    .build()
-        then:
-            result.output.contains("what do you know")
-    }
 }

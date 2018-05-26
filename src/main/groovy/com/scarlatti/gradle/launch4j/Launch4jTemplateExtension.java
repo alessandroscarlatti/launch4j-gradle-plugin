@@ -1,4 +1,4 @@
-package com.scarlatti.gradle.launch4j.gradle.launch4j;
+package com.scarlatti.gradle.launch4j;
 
 import org.gradle.api.Project;
 
