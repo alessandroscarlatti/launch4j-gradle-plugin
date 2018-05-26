@@ -1,4 +1,4 @@
-package com.scarlatti.launch4j;
+package com.scarlatti.gradle.launch4j.gradle.launch4j;
 
 import java.io.InputStream;
 import java.util.Objects;

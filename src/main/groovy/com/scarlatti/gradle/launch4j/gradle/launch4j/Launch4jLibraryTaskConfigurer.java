@@ -1,4 +1,4 @@
-package com.scarlatti.launch4j;
+package com.scarlatti.gradle.launch4j.gradle.launch4j;
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import org.gradle.api.Action;
