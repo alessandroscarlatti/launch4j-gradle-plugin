@@ -2,10 +2,6 @@ package com.scarlatti.gradle.launch4j
 
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
 
 import java.nio.file.Paths
 
@@ -44,6 +40,7 @@ class Launch4jTemplateTask extends DefaultTask {
     // (wrong: that way they don't have to exist)
 
 
+
     private File resourcesDir
     private String exeName = name
 
@@ -63,8 +60,11 @@ class Launch4jTemplateTask extends DefaultTask {
         launch4jTaskConfigurer.configureExeName(exeName)
         launch4jTaskConfigurer.configureDependencies()
 
-        // configure from the base resources dir
-        launch4jTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
+        // configure from the base resources dir (if it exists at this time)
+        if (resourcesDir.exists()) {
+            launch4jTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
+        }
+
         setupPrintExeLocation()
     }
 
@@ -96,7 +96,7 @@ class Launch4jTemplateTask extends DefaultTask {
         String buildDir = project.buildDir.absolutePath
         String absoluteExeDir = Paths.get(buildDir, relativeExeDir).toString()
 
-        doLast {
+        launch4jTask.doLast {
             println "${exeFileName} available at ${absoluteExeDir}"
         }
     }

@@ -1,5 +1,6 @@
 package com.scarlatti.gradle.launch4j
 
+import com.scarlatti.gradle.launch4j.util.GradleTaskGenerator
 import coms.scarlatti.util.GradleBuildSpecification
 import org.gradle.testkit.runner.TaskOutcome
 
@@ -17,8 +18,11 @@ class PluginDirectoryResourceTest extends GradleBuildSpecification {
             customGradleRunner()
                     .fromProjectDir("/src/test-projects/ProjectWithoutExeDirectoryShouldBeOK")
                     .appendBuildFileFromResource("/simpleUsage.gradle")
+                    .appendBuildFileContents(GradleTaskGenerator.assertExeCreatedTask("launch4jTask.exe"))
                     .withTask("launch4jTask")
                     .build()
+        and:
+            customGradleRunner().build("assertExeCreated")
     }
 
     def "launch4jTemplateTask is out-of-date when resourcesDir updated"() {
