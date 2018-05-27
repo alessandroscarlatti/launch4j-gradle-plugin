@@ -12,6 +12,7 @@ public class Launch4jTemplateExtension {
     public Launch4jTemplateExtension(Project project) {
         this.project = project;
         baseResourcesDir = getDefaultBaseResourceDir();
+        taskGroup = getDefaultTaskGroup();
     }
 
     public File getBaseResourcesDir() {
@@ -38,7 +39,7 @@ public class Launch4jTemplateExtension {
         return project.file("exe");
     }
 
-    private String getDefaultGroup() {
+    private String getDefaultTaskGroup() {
         return "exe";
     }
 

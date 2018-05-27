@@ -46,6 +46,10 @@ public class Launch4jLibraryTaskConfigurer {
         configureNoOpGeneratedManifest();
         configureTaskGenerateManifestAspect();
         task.setStayAlive(true);
+        task.setHeaderType("console");  // set as "console" so that there will be visible output by default
+        task.setFileDescription(parentTaskName);
+        task.setProductName(parentTaskName);
+        task.setInternalName(parentTaskName);
     }
 
     void configureDependencies() {
@@ -119,6 +123,9 @@ public class Launch4jLibraryTaskConfigurer {
         // look for a file in the resources dir
         if (Files.exists(Paths.get(splashPath))) {
             task.setSplashFileName(splashPath);
+            task.setHeaderType("gui");
+            // if we are providing a splash via a file,
+            // go ahead and change the header to "gui" so that it will run.
         }
 
         // if file not found, leave splash unchanged...
@@ -204,5 +211,11 @@ public class Launch4jLibraryTaskConfigurer {
             System.out.println("Configuring launch4j task with " + key + "=" + value);
             task.setProperty(key, value);
         }
+    }
+
+    private void configureDefaultMainClassIfAny() {
+        // TODO it depends on how we are doing this...
+        // if we check for the main class at configuration time,
+        // or if we check for the main class at execution time.
     }
 }
