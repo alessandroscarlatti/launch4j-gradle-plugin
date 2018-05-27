@@ -1,0 +1,3 @@
+launch4jTask.configure {
+    resourcesDir = 'exe2'
+}

@@ -1,4 +1,4 @@
-import com.scarlatti.launch4j.Launch4jTemplateTask
+import com.scarlatti.gradle.launch4j.Launch4jTemplateTask
 
 buildscript {
     repositories {
@@ -12,7 +12,7 @@ apply plugin: 'java'
 apply plugin: 'com.scarlatti.launch4j.integration'
 
 launch4jTemplate {
-    baseResourcesDir = 'exeConsole'
+    baseResourcesDir = file('exeConsole')
 }
 
 task standardExe(type: Launch4jTemplateTask) {
@@ -22,5 +22,5 @@ task standardExe(type: Launch4jTemplateTask) {
 }
 
 task standardConsoleExe(type: Launch4jTemplateTask) {
-    resourcesDir = 'exeConsole'
+    resourcesDir = file('exeConsole')
 }
