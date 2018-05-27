@@ -1,7 +1,7 @@
 # Launch4j Gradle Plugin 
 
-![Travis CI](https://travis-ci.com/alessandroscarlatti/launch4j-gradle-plugin.svg?branch=master "Travis CI")
-[ ![Bintray Download](https://api.bintray.com/packages/alessandroscarlatti/maven/launch4j-gradle-plugin/images/download.svg) ](https://bintray.com/alessandroscarlatti/maven/launch4j-gradle-plugin/_latestVersion "Bintray Download")
+[![Travis CI](https://travis-ci.com/alessandroscarlatti/launch4j-gradle-plugin.svg?branch=master)](https://travis-ci.com/alessandroscarlatti/launch4j-gradle-plugin "Travis CI")
+[![Bintray Download](https://api.bintray.com/packages/alessandroscarlatti/maven/launch4j-gradle-plugin/images/download.svg)](https://bintray.com/alessandroscarlatti/maven/launch4j-gradle-plugin/_latestVersion "Bintray Download")
 
 The [Launch4j Gradle plugin](https://github.com/TheBoegl/gradle-launch4j) made even simpler.
 
