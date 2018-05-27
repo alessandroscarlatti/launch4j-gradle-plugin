@@ -61,7 +61,7 @@ class Launch4jTemplateTask extends DefaultTask {
         launch4jTaskConfigurer.configureDependencies()
 
         // configure from the base resources dir (if it exists at this time)
-        launch4jTask.inputs.dir(resourcesDir).optional()
+//        launch4jTask.inputs.dir(resourcesDir).optional()
         if (resourcesDir.exists()) {
             launch4jTaskConfigurer.configureFromResourcesDir(resourcesDir.absolutePath)
         }

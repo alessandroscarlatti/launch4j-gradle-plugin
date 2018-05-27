@@ -6,3 +6,12 @@ task replaceIconFile() {
         }
     }
 }
+
+task replaceIconFileForExe2() {
+    doLast {
+        copy {
+            from file('exe/icon.ico')
+            into file('exe2')
+        }
+    }
+}

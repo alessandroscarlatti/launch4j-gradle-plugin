@@ -91,6 +91,8 @@ public class Launch4jLibraryTaskConfigurer {
 
         if (dir == null) return;
 
+        task.getInputs().dir(Paths.get(dir).toFile()).optional();
+
         // evaluate any other properties, with respect to the custom properties
         configureIconPath(Paths.get(dir, DEFAULT_ICON_FILE_NAME).toString());
         configureSplashPath(Paths.get(dir, DEFAULT_SPLASH_FILE_NAME).toString());

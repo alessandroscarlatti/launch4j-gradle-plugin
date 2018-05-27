@@ -51,4 +51,31 @@ class PluginDirectoryResourceTest extends GradleBuildSpecification {
         where:
             testProject << ["SimpleProjectTest"]
     }
+
+    @Unroll
+    def "launch4jTemplateTask is out-of-date when second resourcesDir updated for project: #testProject"(String testProject) {
+        setup:
+            final String LAUNCH4J_TASK_NAME = ":launch4jTask_launch4jTask"
+        when:
+            def build1 = customGradleRunner()
+                    .fromProjectDir("/src/test-projects/${testProject}")
+                    .appendBuildFileFromResource("/simpleUsage.gradle")
+                    .appendBuildFileFromResource("/multipleResourceDirs.gradle")
+                    .appendBuildFileFromResource("/replaceIconFile.gradle")
+                    .build("launch4jTask")
+        then:
+            build1.task(LAUNCH4J_TASK_NAME) != null
+            build1.task(LAUNCH4J_TASK_NAME).outcome == TaskOutcome.SUCCESS
+
+        when:
+            customGradleRunner().build("replaceIconFileForExe2")
+        and:
+            def build2 = customGradleRunner().build("launch4jTask")
+        then:
+            build2.task(LAUNCH4J_TASK_NAME) != null
+            build2.task(LAUNCH4J_TASK_NAME).outcome == TaskOutcome.SUCCESS
+
+        where:
+            testProject << ["ResourcesDirUpToDateTestWithTwoResourceDirs"]
+    }
 }
