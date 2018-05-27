@@ -11,4 +11,7 @@ plugins {
 apply plugin: 'java'
 
 task launch4jTask(type: Launch4jTemplateTask) {
+    config {
+        internalName = "launch4jTask"
+    }
 }

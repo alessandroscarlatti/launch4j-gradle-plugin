@@ -3,6 +3,7 @@ package com.scarlatti.gradle.launch4j
 import com.scarlatti.gradle.launch4j.util.GradleTaskGenerator
 import coms.scarlatti.util.GradleBuildSpecification
 import org.gradle.testkit.runner.TaskOutcome
+import spock.lang.Unroll
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -25,12 +26,13 @@ class PluginDirectoryResourceTest extends GradleBuildSpecification {
             customGradleRunner().build("assertExeCreated")
     }
 
-    def "launch4jTemplateTask is out-of-date when resourcesDir updated"() {
+    @Unroll
+    def "launch4jTemplateTask is out-of-date when resourcesDir updated for project: #testProject"(String testProject) {
         setup:
             final String LAUNCH4J_TASK_NAME = ":launch4jTask_launch4jTask"
         when:
             def build1 = customGradleRunner()
-                    .fromProjectDir("/src/test-projects/SimpleProjectTest")
+                    .fromProjectDir("/src/test-projects/${testProject}")
                     .appendBuildFileFromResource("/simpleUsage.gradle")
                     .appendBuildFileFromResource("/replaceIconFile.gradle")
                     .build("launch4jTask")
@@ -46,5 +48,7 @@ class PluginDirectoryResourceTest extends GradleBuildSpecification {
             build2.task(LAUNCH4J_TASK_NAME) != null
             build2.task(LAUNCH4J_TASK_NAME).outcome == TaskOutcome.SUCCESS
 
+        where:
+            testProject << ["SimpleProjectTest"]
     }
 }

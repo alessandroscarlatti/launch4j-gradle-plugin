@@ -18,6 +18,8 @@ class GradleBuildSpecification extends Specification {
 
     protected String getTestName() {
         return testNameRule.methodName
+            .replace(":", "_")
+            .replace("#", "_")
     }
 
     protected CustomGradleRunner customGradleRunner() {

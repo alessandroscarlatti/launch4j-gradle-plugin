@@ -1,8 +1,5 @@
 package com.scarlatti.gradle.launch4j
 
-import coms.scarlatti.util.CustomGradleRunner
-import coms.scarlatti.util.TestProject
-import coms.scarlatti.util.TestProjectBuilder
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Rule
