@@ -18,4 +18,22 @@ class GradleTaskGenerator {
         }
         '''.replace('#{exeName}', exeName)
     }
+
+    static String runExe(String taskName, String exeName) {
+        Objects.requireNonNull(taskName, "Must provide task name")
+        Objects.requireNonNull(exeName, "Must provide exe name")
+        return '''
+            task runExe() {
+                doLast {
+                    def p = new ProcessBuilder("${buildDir}/launch4j/#{taskName}/#{exeName}.exe").start()
+                    p.waitFor()
+                    println ">>> process output:"
+                    println p.inputStream.text
+                    println ">>> process error:"
+                    System.err.println p.errorStream.text
+                }
+            }
+        '''.replace('#{taskName}', taskName)
+        .replace('#{exeName}', exeName)
+    }
 }

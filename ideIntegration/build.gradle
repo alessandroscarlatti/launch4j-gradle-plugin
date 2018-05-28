@@ -24,3 +24,12 @@ task standardExe(type: Launch4jTemplateTask) {
 task standardConsoleExe(type: Launch4jTemplateTask) {
     resourcesDir = file('exeConsole')
 }
+
+task runExe() {
+    doLast {
+        def p = "${buildDir}/launch4j/standardExe/standardExe.exe".execute()
+        p.waitFor()
+        println ">>> process output:"
+        println p.inputStream.text
+    }
+}

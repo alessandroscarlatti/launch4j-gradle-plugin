@@ -49,7 +49,7 @@ public class Launch4jLibraryTaskConfigurer {
         task.setHeaderType("console");  // set as "console" so that there will be visible output by default
         task.setFileDescription(parentTaskName);
         task.setProductName(parentTaskName);
-        task.setInternalName(parentTaskName);
+        task.setInternalName(parentTaskName);  // otherwise, it will be the project name, which could be too long (> 50 chars)
     }
 
     void configureDependencies() {

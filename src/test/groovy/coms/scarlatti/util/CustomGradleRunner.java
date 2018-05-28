@@ -9,8 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -144,13 +143,21 @@ public class CustomGradleRunner extends DefaultGradleRunner {
     }
 
     public BuildResult build(String... args) {
-        withArguments(args);
+        withArguments(addStacktraceArgIfNecessary(args));
         return build();
     }
 
     public BuildResult buildAndFail(String... args) {
-        withArguments(args);
+        withArguments(addStacktraceArgIfNecessary(args));
         return buildAndFail();
+    }
+
+    private String[] addStacktraceArgIfNecessary(String[] args) {
+        List<String> newArgs = new ArrayList<>(Arrays.asList(args));
+        if (!newArgs.contains("--stacktrace")) {
+            newArgs.add("--stacktrace");
+        }
+        return newArgs.toArray(new String[]{});
     }
 
     private void logTargetDir() {
