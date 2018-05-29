@@ -1,4 +1,4 @@
-package coms.scarlatti.util
+package com.scarlatti.util
 
 import org.junit.Rule
 import org.junit.rules.TestName

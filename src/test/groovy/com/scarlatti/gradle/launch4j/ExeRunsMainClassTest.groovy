@@ -1,7 +1,7 @@
 package com.scarlatti.gradle.launch4j
 
 import com.scarlatti.gradle.launch4j.util.GradleTaskGenerator
-import coms.scarlatti.util.GradleBuildSpecification
+import com.scarlatti.util.GradleBuildSpecification
 import spock.lang.IgnoreIf
 import spock.util.environment.OperatingSystem
 
@@ -44,5 +44,22 @@ class ExeRunsMainClassTest extends GradleBuildSpecification {
                     .build("runExe")
         then:
             result.output.contains("hello world")
+    }
+
+    @IgnoreIf({!OperatingSystem.current.windows})
+    def "exe runs main class for Spring Boot java application without specifying main class"() {
+        setup:
+            customGradleRunner()
+                    .fromProjectDir("src/test-projects/SimpleSpringBootProject")
+                    .appendBuildFileFromResource("/springBootBuild.gradle")
+                    .appendBuildFileFromResource("/springBootUsage.gradle")
+                    .build("launch4jTask")
+
+        when:
+            def result = customGradleRunner()
+                    .appendBuildFileContents(GradleTaskGenerator.runExe("launch4jTask", "launch4jTask"))
+                    .build("runExe")
+        then:
+            result.output.contains("hello Spring Boot3!")
     }
 }

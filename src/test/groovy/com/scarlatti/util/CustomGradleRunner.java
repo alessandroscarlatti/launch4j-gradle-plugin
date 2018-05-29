@@ -1,4 +1,4 @@
-package coms.scarlatti.util;
+package com.scarlatti.util;
 
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.internal.DefaultGradleRunner;
@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * ______    __                         __           ____             __     __  __  _

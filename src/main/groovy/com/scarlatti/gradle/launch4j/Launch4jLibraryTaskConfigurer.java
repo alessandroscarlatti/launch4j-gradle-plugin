@@ -219,20 +219,23 @@ public class Launch4jLibraryTaskConfigurer {
         }
     }
 
-    private void configureMainClass(Task task) {
+    private void configureMainClass(Task ignored) {
         // TODO it depends on how we are doing this...
         // if we check for the main class at configuration time,
         // or if we check for the main class at execution time.
         // organize as doFirst() on the launch4j task
 
-        if (this.task.getProject().getPlugins().findPlugin("java") != null) {
-            File jarFile = this.task.getProject().getTasks().getByName(JavaPlugin.JAR_TASK_NAME).getOutputs().getFiles().getSingleFile();
+        // so... we only need to check for the main class if it is not specified in the task property
+        if (task.getMainClassName() != null && !task.getMainClassName().trim().equals("")) return;
+
+        if (task.getProject().getPlugins().findPlugin("java") != null) {
+            File jarFile = task.getProject().getTasks().getByName(JavaPlugin.JAR_TASK_NAME).getOutputs().getFiles().getSingleFile();
             MainClassFinder.Result result = new MainClassFinder(jarFile).evaluateMainClass();
 
             if (result.isExecutable()) {
                 System.out.println("Jar will automatically execute main class " + result.getMainClassName());
             } else {
-                this.task.setMainClassName(result.getMainClassName());
+                task.setMainClassName(result.getMainClassName());
             }
         }
     }

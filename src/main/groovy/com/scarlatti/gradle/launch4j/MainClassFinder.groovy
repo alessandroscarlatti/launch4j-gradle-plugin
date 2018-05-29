@@ -116,7 +116,7 @@ class MainClassFinder {
         String mainClassName
 
         boolean isExecutable() {
-            return (mainClassName != null)
+            return (mainClassInManifest)
         }
     }
 }
