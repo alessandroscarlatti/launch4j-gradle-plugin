@@ -52,7 +52,8 @@ class Launch4jTemplateTask extends DefaultTask {
         group = evaluateDefaultTaskGroup()
         launch4jTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask)
         this.dependsOn(launch4jTask)
-        launch4jTaskConfigurer = new Launch4jLibraryTaskConfigurer(launch4jTask, name)
+        Launch4jTemplateExtension extension = project.extensions.getByType(Launch4jTemplateExtension)
+        launch4jTaskConfigurer = new Launch4jLibraryTaskConfigurer(launch4jTask, name, extension)
         launch4jTaskConfigurer.configureExeName(exeName)
         launch4jTaskConfigurer.configureDependencies()
 

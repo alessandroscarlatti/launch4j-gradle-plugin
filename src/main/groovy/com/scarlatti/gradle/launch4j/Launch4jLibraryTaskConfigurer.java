@@ -1,20 +1,16 @@
 package com.scarlatti.gradle.launch4j;
 
-import com.scarlatti.testing.util.IconGenerator;
+import com.scarlatti.util.IconGenerator;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -45,9 +41,12 @@ public class Launch4jLibraryTaskConfigurer {
     private Action<Task> generateSplash;
     private Action<Task> cleanupSplash;
 
-    public Launch4jLibraryTaskConfigurer(Launch4jLibraryTask task, String parentTaskName) {
+    private Launch4jTemplateExtension extension;
+
+    public Launch4jLibraryTaskConfigurer(Launch4jLibraryTask task, String parentTaskName, Launch4jTemplateExtension extension) {
         this.parentTaskName = parentTaskName;
         this.task = task;
+        this.extension = extension;
         configureDefaults();
     }
 
@@ -135,6 +134,7 @@ public class Launch4jLibraryTaskConfigurer {
         // look for a file in the resources dir
         if (Files.exists(Paths.get(iconPath))) {
             task.setIcon(iconPath);
+            configureNoOpGeneratedIcon();
         }
 
         // if file not found, leave icon unchanged...
@@ -230,54 +230,45 @@ public class Launch4jLibraryTaskConfigurer {
      */
     public void configureGeneratedManifest(String manifest) {
 
+        if (!extension.getManifest().isGenerateManifest()) return;
+
         if (manifest == null) manifest = "";
         byte[] bytes = manifest.getBytes();
         String manifestPath = getDefaultGeneratedManifestPath(manifest);
+        task.setManifest(manifestPath);
 
         // add the generated file to the designated location
         generateManifest = ignore -> {
             try {
                 Files.createDirectories(Paths.get(manifestPath).getParent());
                 Files.write(Paths.get(manifestPath), bytes);
-                task.setManifest(manifestPath);
             } catch (Exception e) {
                 throw new RuntimeException("Error generating manifest file at " + manifestPath, e);
             }
         };
-
-        // delete the generated file from the designated location
-//        cleanupManifest = task -> {
-//            try {
-//                Files.delete(Paths.get(manifestPath));
-//            } catch (Exception e) {
-//                new RuntimeException("Error deleting generated manifest file at " + manifestPath, e).printStackTrace();
-//            }
-//        };
     }
 
     private void configureGeneratedIcon() {
         Path iconPath = Paths.get(task.getProject().getBuildDir().getAbsolutePath(), "launch4j", parentTaskName, "resources", "icon.ico");
+        task.getInputs().property("generateIcon", true);
+
+        if (!extension.getIcon().isGenerateIcon()) {
+            task.getInputs().property("generateIcon", false);
+            return;
+        }
 
         generateIcon = (ignored1 -> {
-            // we only need to generate an icon if there's not one already.
-            if (task.getIcon() != null && !task.getIcon().trim().equals("")) return;
             IconGenerator.generateIconFileForStringHash(iconPath, task.getProject().getName());
             task.setIcon(iconPath.toString());
-
-            // remember to clean up the icon
-//            cleanupIcon = (ignored2 -> {
-//                try {
-//                    Files.delete(iconPath);
-//                } catch (Exception e) {
-//                    new RuntimeException("Unable to delete icon file " + iconPath, e).printStackTrace();
-//                }
-//            });
         });
     }
 
     private void configureGeneratedSplash() {
-        Path splashPath = Paths.get(task.getProject().getBuildDir().getAbsolutePath(), "launch4j", parentTaskName, "resources", "splash.bmp");
 
+        if (!extension.getSplash().isGenerateSplash()) return;
+
+        Path splashPath = Paths.get(task.getProject().getBuildDir().getAbsolutePath(), "launch4j", parentTaskName, "resources", "splash.bmp");
+        task.setSplashFileName(splashPath.toString());
         generateSplash = (ignored1 -> {
 
             // launch4j won't allow a splash for "console" headers.
@@ -288,16 +279,6 @@ public class Launch4jLibraryTaskConfigurer {
                 !task.getSplashFileName().trim().equals(""))
                 return;
             IconGenerator.generateSplashFileForStringHash(splashPath, task.getProject().getName());
-            task.setSplashFileName(splashPath.toString());
-
-            // remember to clean up the icon
-//            cleanupSplash = (ignored2 -> {
-//                try {
-//                    Files.delete(splashPath);
-//                } catch (Exception e) {
-//                    new RuntimeException("Unable to delete splash file " + splashPath, e).printStackTrace();
-//                }
-//            });
         });
     }
 
