@@ -26,6 +26,19 @@ class PluginDirectoryResourceTest extends GradleBuildSpecification {
             customGradleRunner().build("assertExeCreated")
     }
 
+    def "exe directory not required for build with splash"() {
+        expect:
+            customGradleRunner()
+                    .fromProjectDir("/src/test-projects/ProjectWithoutExeDirectoryGui")
+                    .appendBuildFileFromResource("/simpleUsage.gradle")
+                    .appendBuildFileFromResource("/guiConfig.gradle")
+                    .appendBuildFileContents(GradleTaskGenerator.assertExeCreatedTask("launch4jTask.exe"))
+                    .withTask("launch4jTask")
+                    .build()
+        and:
+            customGradleRunner().build("assertExeCreated")
+    }
+
     @Unroll
     def "launch4jTemplateTask is out-of-date when resourcesDir updated for project: #testProject"(String testProject) {
         setup:

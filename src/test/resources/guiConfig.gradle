@@ -1,0 +1,3 @@
+launch4jTask.config {
+    headerType = "gui"
+}

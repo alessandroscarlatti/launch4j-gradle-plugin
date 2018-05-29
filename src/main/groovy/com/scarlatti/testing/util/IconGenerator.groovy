@@ -1,6 +1,7 @@
 package com.scarlatti.testing.util
 
 import com.talanlabs.avatargenerator.IdenticonAvatar
+import net.sf.image4j.codec.bmp.BMPEncoder
 import net.sf.image4j.codec.ico.ICOEncoder
 
 import java.awt.image.BufferedImage
@@ -25,5 +26,11 @@ class IconGenerator {
 
         Files.createDirectories(path.getParent())
         ICOEncoder.write(pngs, path.toFile())
+    }
+
+    static void generateSplashFileForStringHash(Path path, String str) {
+        BufferedImage img = IdenticonAvatar.newAvatarBuilder().size(256, 256).build().create(str.hashCode())
+        Files.createDirectories(path.getParent())
+        BMPEncoder.write(img, path.toFile())
     }
 }
