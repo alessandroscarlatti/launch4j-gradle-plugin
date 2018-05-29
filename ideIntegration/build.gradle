@@ -1,4 +1,4 @@
-import com.scarlatti.launch4j.Launch4jTemplateTask
+import com.scarlatti.gradle.launch4j.Launch4jTemplateTask
 
 buildscript {
     repositories {
@@ -15,11 +15,17 @@ task standardExe(type: Launch4jTemplateTask) {
     manifest {
         base = asInvoker()
     }
-
-    config {
-    }
 }
 
 task standardConsoleExe(type: Launch4jTemplateTask) {
-    resourcesDir = 'exeConsole'
+    resourcesDir = file('exeConsole')
+}
+
+task runExe() {
+    doLast {
+        def p = "${buildDir}/launch4j/standardExe/standardExe.exe".execute()
+        p.waitFor()
+        println ">>> process output:"
+        println p.inputStream.text
+    }
 }

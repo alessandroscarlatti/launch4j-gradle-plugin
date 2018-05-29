@@ -1,4 +1,4 @@
-import com.scarlatti.launch4j.Launch4jTemplateTask
+import com.scarlatti.gradle.launch4j.Launch4jTemplateTask
 
 buildscript {
     ext.springBootVersion = '1.5.6.RELEASE'
@@ -32,9 +32,6 @@ dependencies {
 }
 
 task springExe(type: Launch4jTemplateTask) {
-    config {
-        dontWrapJar = true
-    }
 }
 
 bootRun{

@@ -1,0 +1,35 @@
+buildscript {
+    ext.springBootVersion = '1.5.6.RELEASE'
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id 'com.scarlatti.launch4j.integration'
+}
+
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+sourceCompatibility = 1.8
+
+repositories.mavenCentral()
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-aop'
+    compile 'org.codehaus.groovy:groovy-all:2.4.7'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+    testCompile 'org.spockframework:spock-spring:1.1-groovy-2.4'
+    testCompile 'cglib:cglib-nodep:2.2'
+}
+
+bootRun{
+    standardInput = System.in
+}

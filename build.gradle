@@ -4,8 +4,7 @@ buildscript {
     repositories {
         jcenter()
     }
-
-    dependencies{
+    dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
@@ -30,8 +29,8 @@ repositories {
 
 dependencies {
     compile 'edu.sc.seis.gradle:launch4j:2.4.2'
-    testCompile 'imcdonagh:image4j:0.7.2'
-    compile 'com.talanlabs:avatar-generator:1.1.0'
+    compile 'io.github.lukehutch:fast-classpath-scanner:+'
+    compile 'org.reflections:reflections:0.9.10'
     testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
         exclude module: 'groovy-all'
     }
@@ -89,5 +88,12 @@ publishing {
             artifactId 'launch4j-gradle-plugin'
             version project.version
         }
+    }
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
     }
 }
