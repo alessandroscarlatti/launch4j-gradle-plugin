@@ -1,3 +1,5 @@
+import com.jfrog.bintray.gradle.BintrayPlugin
+
 buildscript {
     repositories {
         jcenter()
@@ -12,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'maven-publish'
-apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+apply plugin: BintrayPlugin
 
 if (file('bintray.gradle').exists()) apply from: 'bintray.gradle'
 

@@ -46,6 +46,19 @@ class IconTest extends Specification {
             noExceptionThrown()
     }
 
+    def "produce icon from just 256px png"() {
+        when:
+            List<BufferedImage> pngs = []
+            List<Integer> dims = [256]
+            for (int dim : dims) {
+                pngs.add IdenticonAvatar.newAvatarBuilder().size(dim, dim).build().create("Lewis Franklin Bells".hashCode())
+            }
+
+            ICOEncoder.write(pngs, iconPath.toFile())
+        then:
+            noExceptionThrown()
+    }
+
     def "produce png from hash"() {
         when:
             byte[] png = IdenticonAvatar.newAvatarBuilder().build().createAsPngBytes("Lewis Franklin Bells".hashCode())
