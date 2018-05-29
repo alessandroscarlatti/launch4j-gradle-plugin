@@ -1,4 +1,4 @@
-package com.scarlatti.util;
+package com.scarlatti.testing.util;
 
 import org.gradle.plugins.ide.internal.tooling.GradleBuildBuilder;
 import org.gradle.util.GFileUtils;

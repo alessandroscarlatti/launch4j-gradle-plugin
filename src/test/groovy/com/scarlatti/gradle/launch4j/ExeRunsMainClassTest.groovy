@@ -1,7 +1,7 @@
 package com.scarlatti.gradle.launch4j
 
 import com.scarlatti.gradle.launch4j.util.GradleTaskGenerator
-import com.scarlatti.util.GradleBuildSpecification
+import com.scarlatti.testing.util.GradleBuildSpecification
 import spock.lang.IgnoreIf
 import spock.util.environment.OperatingSystem
 

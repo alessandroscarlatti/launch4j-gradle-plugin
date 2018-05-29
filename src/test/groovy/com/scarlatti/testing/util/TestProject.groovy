@@ -1,4 +1,4 @@
-package com.scarlatti.util;
+package com.scarlatti.testing.util;
 
 /**
  * ______    __                         __           ____             __     __  __  _

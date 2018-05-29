@@ -1,6 +1,6 @@
 package com.scarlatti.gradle.launch4j
 
-import com.scarlatti.util.GradleBuildSpecification
+import com.scarlatti.testing.util.GradleBuildSpecification
 
 /**
  * ______    __                         __           ____             __     __  __  _

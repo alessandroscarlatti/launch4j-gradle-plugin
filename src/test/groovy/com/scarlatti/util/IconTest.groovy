@@ -1,4 +1,4 @@
-package com.scarlatti
+package com.scarlatti.util
 
 import com.talanlabs.avatargenerator.IdenticonAvatar
 import net.sf.image4j.codec.ico.ICOEncoder

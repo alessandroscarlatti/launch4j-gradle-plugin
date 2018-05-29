@@ -1,13 +1,16 @@
 package com.scarlatti.gradle.launch4j;
 
+import com.scarlatti.testing.util.IconGenerator;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +39,9 @@ public class Launch4jLibraryTaskConfigurer {
     private Action<Task> generateManifest;
     private Action<Task> cleanupManifest;
 
+    private Action<Task> generateIcon;
+    private Action<Task> cleanupIcon;
+
     public Launch4jLibraryTaskConfigurer(Launch4jLibraryTask task, String parentTaskName) {
         this.parentTaskName = parentTaskName;
         this.task = task;
@@ -46,7 +52,9 @@ public class Launch4jLibraryTaskConfigurer {
         setDefaultOutputDir();
         configureExeName(task.getProject().getName());
         configureNoOpGeneratedManifest();
+        configureNoOpGeneratedIcon();
         configureTaskGenerateManifestAspect();
+        configureTaskGenerateIconAspect();
         task.setGroup("launch4j");
         task.setDescription("Build the exe for the '${name} Launch4j template task.");
         task.setStayAlive(true);
@@ -55,6 +63,7 @@ public class Launch4jLibraryTaskConfigurer {
         task.setProductName(parentTaskName);
         task.setInternalName(parentTaskName);  // otherwise, it will be the project name, which could be too long (> 50 chars)
 
+        configureGeneratedIcon();
         task.doFirst(this::configureMainClass);
     }
 
@@ -151,6 +160,11 @@ public class Launch4jLibraryTaskConfigurer {
         task.doLast(this::cleanupManifest);
     }
 
+    private void configureTaskGenerateIconAspect() {
+        task.doFirst(this::generateIcon);
+        task.doLast(this::cleanupIcon);
+    }
+
     private void generateManifest(Object task) {
         generateManifest.execute((Task) task);
     }
@@ -159,9 +173,22 @@ public class Launch4jLibraryTaskConfigurer {
         cleanupManifest.execute((Task) task);
     }
 
+    private void generateIcon(Object task) {
+        generateIcon.execute((Task) task);
+    }
+
+    private void cleanupIcon(Object task) {
+        cleanupIcon.execute((Task) task);
+    }
+
     private void configureNoOpGeneratedManifest() {
         generateManifest = (task) -> {};
         cleanupManifest = (task) -> {};
+    }
+
+    private void configureNoOpGeneratedIcon() {
+        generateIcon = (task) -> {};
+        cleanupIcon = (task) -> {};
     }
 
     public void configureGeneratedManifest(String manifest) {
@@ -190,6 +217,26 @@ public class Launch4jLibraryTaskConfigurer {
         };
 
         task.setManifest(manifestPath);
+    }
+
+    private void configureGeneratedIcon() {
+        Path iconPath = Paths.get(task.getProject().getBuildDir().getAbsolutePath(), "launch4j", parentTaskName, "icon.ico");
+
+        generateIcon = (ignored1 -> {
+            // we only need to generate an icon if there's not one already.
+            if (task.getIcon() != null && !task.getIcon().trim().equals("")) return;
+            IconGenerator.generateIconFileForStringHash(iconPath, task.getProject().getName());
+            task.setIcon(iconPath.toString());
+        });
+
+        // remember to clean up the icon
+        cleanupIcon = (ignored2 -> {
+            try {
+                Files.delete(iconPath);
+            } catch (Exception e) {
+                new RuntimeException("Unable to delete icon file " + iconPath, e).printStackTrace();
+            }
+        });
     }
 
     private void configurePropertiesPath(String propertiesPath) {

@@ -1,4 +1,4 @@
-package com.scarlatti.util;
+package com.scarlatti.testing.util;
 
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.internal.DefaultGradleRunner;
