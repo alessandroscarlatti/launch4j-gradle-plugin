@@ -1,0 +1,11 @@
+import static java.util.jar.Attributes.Name.*
+
+apply plugin: 'java'
+
+task jarWithMainClassManifest(type: Jar) {
+    from sourceSets.main.output
+    manifest {
+        attributes("Main-Class": "com.scarlatti.HelloWorldUtility")
+    }
+    archivesBaseName = "ProduceJarWithMainClassManifest"
+}

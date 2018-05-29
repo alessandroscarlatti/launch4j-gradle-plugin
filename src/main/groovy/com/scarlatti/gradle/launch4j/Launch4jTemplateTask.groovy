@@ -50,12 +50,8 @@ class Launch4jTemplateTask extends DefaultTask {
     Launch4jTemplateTask() {
         resourcesDir = evaluateDefaultBaseResourcesDir()
         group = evaluateDefaultTaskGroup()
-        launch4jTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask) {
-            group = 'launch4j'
-            description = "Build the exe for the '${name} Launch4j template task."
-        }
-        dependsOn(launch4jTask)
-
+        launch4jTask = project.tasks.create(generateLaunch4jTaskName(name), Launch4jLibraryTask)
+        this.dependsOn(launch4jTask)
         launch4jTaskConfigurer = new Launch4jLibraryTaskConfigurer(launch4jTask, name)
         launch4jTaskConfigurer.configureExeName(exeName)
         launch4jTaskConfigurer.configureDependencies()

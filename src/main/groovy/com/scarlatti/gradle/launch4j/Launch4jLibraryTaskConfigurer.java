@@ -3,7 +3,9 @@ package com.scarlatti.gradle.launch4j;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.plugins.JavaPlugin;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -45,11 +47,15 @@ public class Launch4jLibraryTaskConfigurer {
         configureExeName(task.getProject().getName());
         configureNoOpGeneratedManifest();
         configureTaskGenerateManifestAspect();
+        task.setGroup("launch4j");
+        task.setDescription("Build the exe for the '${name} Launch4j template task.");
         task.setStayAlive(true);
         task.setHeaderType("console");  // set as "console" so that there will be visible output by default
         task.setFileDescription(parentTaskName);
         task.setProductName(parentTaskName);
         task.setInternalName(parentTaskName);  // otherwise, it will be the project name, which could be too long (> 50 chars)
+
+        task.doFirst(this::configureMainClass);
     }
 
     void configureDependencies() {
@@ -213,9 +219,21 @@ public class Launch4jLibraryTaskConfigurer {
         }
     }
 
-    private void configureDefaultMainClassIfAny() {
+    private void configureMainClass(Task task) {
         // TODO it depends on how we are doing this...
         // if we check for the main class at configuration time,
         // or if we check for the main class at execution time.
+        // organize as doFirst() on the launch4j task
+
+        if (this.task.getProject().getPlugins().findPlugin("java") != null) {
+            File jarFile = this.task.getProject().getTasks().getByName(JavaPlugin.JAR_TASK_NAME).getOutputs().getFiles().getSingleFile();
+            MainClassFinder.Result result = new MainClassFinder(jarFile).evaluateMainClass();
+
+            if (result.isExecutable()) {
+                System.out.println("Jar will automatically execute main class " + result.getMainClassName());
+            } else {
+                this.task.setMainClassName(result.getMainClassName());
+            }
+        }
     }
 }
