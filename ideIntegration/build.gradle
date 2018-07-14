@@ -1,4 +1,5 @@
 import com.scarlatti.gradle.launch4j.Launch4jTemplateTask
+import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 
 buildscript {
     repositories {
@@ -11,17 +12,69 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'com.scarlatti.launch4j.integration'
 
-launch4jTemplate {
-    icon {
-        generateIcon = true
-    }
-}
-
 task standardExe(type: Launch4jTemplateTask) {
     manifest {
         base = asInvoker()
     }
 }
+
+task testTask(type:  Launch4jLibraryTask)
+
+launch4jTemplate {
+    baseResourcesDir = file("asdf")
+}
+
+//launch4jTemplate.configure(testTask)
+//
+//launch4jTemplate.configure(testTask) {
+//
+//    // the extension would maintain a map of
+//    // Configurers, keyed by instance of Launch4j task.
+//    // Whenever #configure() is called, the correct
+//    // configurer will be passed as the delegate.
+//
+//    // When the delegate is first instantiated,
+//    // it will be provided the values from the extension.
+//    // This would be ok IF we assume that the user will configure
+//    // the extension BEFORE configuring launch4j tasks.
+//    // At least right now, this seems reasonable.
+//    // The other way would only make sense to run
+//    // the configurer just before the actual task.
+//    // But if it is to be changing the inputs to the task
+//    // That might now work.
+//    // Let's assume that it will work with the extension
+//    // being defined FIRST, if we want to take advantage
+//    // of default settings.  That is NATURAL ordering.
+//    // REMEMBER: segregate things based on non-configurable
+//    // assumptions and conventions in favor of natural
+//    // ordering and hierarchy.
+//
+//    // delegates to a Launch4jLibraryTaskConfigurer
+//    // either a new one, or the one previously used.
+//
+//    // SO: this closure will be immediately run, and the
+//    // associated delegate will be used immediately afterward
+//    // to configure the launch4j task.
+//
+//    // so what would the simplest configuration be?
+//
+//    // a Launch4jTemplateTask which would essentially
+//    // call the extension's configurer
+//    // How will we handle the "duplicate" code involved?
+//    // Could I use an interface, or a trait?
+//
+//}
+//
+//// that could be like:
+//task sillyExe(type: Launch4jTemplateTask) {
+//    // it's just duplication...
+//    // and it could be worth it.
+//    // the Gradle API is "weird", so it might be OK...
+//    // I'm making the task an adapter.
+//    // So if I use an interface, at least I make it
+//    // more likely that the configurer and the task
+//    // will implement the same methods!
+//}
 
 task standardConsoleExe(type: Launch4jTemplateTask) {
     resourcesDir = file('exeConsole')
