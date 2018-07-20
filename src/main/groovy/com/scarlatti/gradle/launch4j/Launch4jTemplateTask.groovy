@@ -39,6 +39,9 @@ class Launch4jTemplateTask extends DefaultTask {
     // and make them outputs (since they are used as inputs for the launch4j task)
     // (wrong: that way they don't have to exist)
 
+    // TODO we need to see how to make the splash not required
+    // TODO we need to see how to make the splash automatically generate for "gui" header type
+    // TODO we need to see how to make the config.internalName not required...
 
 
     private File resourcesDir

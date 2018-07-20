@@ -1,6 +1,6 @@
 package com.scarlatti.gradle.launch4j;
 
-import com.scarlatti.util.IconGenerator;
+import com.scarlatti.util.ImageGenerator;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
@@ -257,28 +257,32 @@ public class Launch4jLibraryTaskConfigurer {
             return;
         }
 
+        // this will be called as doFirst from the launch4jLibraryTask
         generateIcon = (ignored1 -> {
-            IconGenerator.generateIconFileForStringHash(iconPath, task.getProject().getName());
+            ImageGenerator.generateIconFileForStringHash(iconPath, task.getProject().getName());
             task.setIcon(iconPath.toString());
         });
     }
 
     private void configureGeneratedSplash() {
 
+        // if we've been instructed not to generate splash screen, don't generate it.
         if (!extension.getSplash().isGenerateSplash()) return;
 
         Path splashPath = Paths.get(task.getProject().getBuildDir().getAbsolutePath(), "launch4j", parentTaskName, "resources", "splash.bmp");
         task.setSplashFileName(splashPath.toString());
+
+        // this will be called as doFirst from the launch4jLibraryTask
         generateSplash = (ignored1 -> {
 
             // launch4j won't allow a splash for "console" headers.
             if (!task.getHeaderType().equals("gui")) return;
 
-            // we only need to generate an icon if there's not one already.
+            // we only need to generate a splash if there's not one already.
             if (task.getSplashFileName() != null &&
                 !task.getSplashFileName().trim().equals(""))
                 return;
-            IconGenerator.generateSplashFileForStringHash(splashPath, task.getProject().getName());
+            ImageGenerator.generateSplashFileForStringHash(splashPath, task.getProject().getName());
         });
     }
 

@@ -15,7 +15,7 @@ import java.nio.file.Path
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Monday, 5/28/2018
  */
-class IconGenerator {
+class ImageGenerator {
 
     static void generateIconFileForStringHash(Path path, String str) {
         List<BufferedImage> pngs = []

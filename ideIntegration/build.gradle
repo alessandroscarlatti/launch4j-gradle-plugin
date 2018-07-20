@@ -1,4 +1,5 @@
 import com.scarlatti.gradle.launch4j.Launch4jTemplateTask
+import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 
 buildscript {
@@ -88,3 +89,39 @@ task runExe() {
         println p.inputStream.text
     }
 }
+
+task launch4jTask(type: Launch4jTemplateTask) {
+    config {
+        internalName = "launch4jTask"
+    }
+}
+
+//task launch4jTask2(type: Launch4jLibraryTask) {
+//    println "this: $it"
+//    launch4jTemplate.configure(it) {
+//
+//    }
+//}
+
+apply plugin: Launch4jHelperPlugin
+
+launch4jHelper {
+    manifest {
+        autoGenerate = true
+    }
+
+    icon {
+        location = file("Asdf")
+    }
+
+    splash {
+        location = file("Qwer")
+    }
+
+    mainClass {
+        findMainClass = false
+        mainClassName = "asdf"
+    }
+}
+
+launch4jHelper.help(createExe)
