@@ -153,9 +153,14 @@ launch4jHelper.helper(createExe).icon.autoGenerate = false
 
 task silly(type: Launch4jHelperTask) {
     meta {
-        descriptionTemplate = "asdf"
-        generateDescription = false
+        descriptionTemplate = "asdf #task"
     }
 
-    meta.descriptionTemplate
+    launch4jTask(project.tasks.createExe)
+}
+
+task silly2(type:  Launch4jHelperTask, group: "qwer", description: "qwerpiou") {
+    meta {
+//        generateDescription = false
+    }
 }

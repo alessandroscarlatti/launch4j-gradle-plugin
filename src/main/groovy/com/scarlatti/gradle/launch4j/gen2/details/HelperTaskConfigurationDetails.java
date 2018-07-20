@@ -30,6 +30,11 @@ public class HelperTaskConfigurationDetails {
      */
     private String launch4jTaskVariable;
 
+    /**
+     * The literal description to use.
+     */
+    private String description;
+
     public HelperTaskConfigurationDetails() {
     }
 
@@ -37,6 +42,7 @@ public class HelperTaskConfigurationDetails {
         this.generateDescription = other.generateDescription;
         this.descriptionTemplate = other.descriptionTemplate;
         this.launch4jTaskVariable = other.launch4jTaskVariable;
+        this.description = other.description;
     }
 
     public boolean getGenerateDescription() {
@@ -61,5 +67,13 @@ public class HelperTaskConfigurationDetails {
 
     public void setLaunch4jTaskVariable(String launch4jTaskVariable) {
         this.launch4jTaskVariable = launch4jTaskVariable;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

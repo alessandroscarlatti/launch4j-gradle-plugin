@@ -5,6 +5,7 @@ import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Task;
 
 import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin.LAUNCH4J_HELPER_EXTENSION_NAME;
 import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin.LAUNCH4J_HELPER_TASK_GROUP;
@@ -49,7 +50,10 @@ public class Launch4jHelperTask extends DefaultTask {
         helperTaskConfigurationDetails = new HelperTaskConfigurationDetails(extension.getMeta());
 
         // set the group
+        // the gradle group from the map parameter overload gets set after the config closure is called.
         setGroup(LAUNCH4J_HELPER_TASK_GROUP);
+
+        // the gradle description from the map parameter overload gets set before the config closure is called.
         setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
 
         // todo create the dependencies...
@@ -157,40 +161,58 @@ public class Launch4jHelperTask extends DefaultTask {
         config.setDelegate(helperTaskConfigurationDetails);
         config.setResolveStrategy(DELEGATE_FIRST);
         config.call();
-    }
 
-    @Override
-    public void setDescription(String description) {
-
-        // is this description a template?
-    }
-
-    private boolean isDescriptionATemplate(String string) {
-        return string.contains("#task");
+        // apply changes
+        setDescription(helperTaskConfigurationDetails.getDescription());
     }
 
     /**
-     * Set the description for this task.
-     * Does not affect the state of the description template.
+     * Set the description for this task using a literal description or a template.
+     * If there is no launch4jTask associated to this task, the fallback description will be used.
      *
-     * @param description the new description for this task.
+     * @param description either the literal description, or a template,
+     *                    which can accept variables.  See {@link HelperTaskConfigurationDetails}
+     *                    and {@link Launch4jHelperExtension#defaultHelperTaskConfigDtls()}.
      */
-    private void setDescriptionInternal(String description) {
+    @Override
+    public void setDescription(String description) {
+
+        // only attempt to generate a description from a template
+        // if we have been instructed to attempt it.
+        if (helperTaskConfigurationDetails.getGenerateDescription()) {
+
+            // if there is no task name, use the fallback description
+            if (launch4jTask != null) {
+                String taskName = launch4jTask.getName();
+                description = description.replace(helperTaskConfigurationDetails.getLaunch4jTaskVariable(), taskName);
+            }
+        }
+
         super.setDescription(description);
     }
 
     /**
      * @return the associated launch4jTask.
      */
-    public Launch4jLibraryTask getLaunch4jTask() {
+    public Task getLaunch4jTask() {
         return launch4jTask;
     }
 
     /**
-     * @param launch4jTask set the associated launch4jTask.
-     *                     Also updates the task description.
+     * Set the associated launch4jTask and update the task description,
+     * if that behavior is allowed, per {@link HelperTaskConfigurationDetails}
+     *
+     * todo this logic is messed up!  It's tough to handle state!
+     *
+     * @param task set the associated launch4jTask.
+     *                     Right now, accepts only launch4jLibraryTask.
      */
-    public void setLaunch4jTask(Launch4jLibraryTask launch4jTask) {
-        this.launch4jTask = launch4jTask;
+    public void setLaunch4jTask(Task task) {
+        Launch4jHelperExtension.validateTaskIsLaunch4jLibraryTask(task);
+        this.launch4jTask = (Launch4jLibraryTask) task;
+
+        if (helperTaskConfigurationDetails.getGenerateDescription()) {
+            setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
+        }
     }
 }
