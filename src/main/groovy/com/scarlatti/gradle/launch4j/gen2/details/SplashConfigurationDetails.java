@@ -20,6 +20,18 @@ public class SplashConfigurationDetails implements AutoGeneratable {
      */
     private File location;
 
+    public SplashConfigurationDetails() {
+    }
+
+    /**
+     * Copy constructor.
+     * @param other the details to copy.
+     */
+    public SplashConfigurationDetails(SplashConfigurationDetails other) {
+        this.autoGenerate = other.autoGenerate;
+        this.location = other.location;
+    }
+
     @Override
     public boolean getAutoGenerate() {
         return autoGenerate;

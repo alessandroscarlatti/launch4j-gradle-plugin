@@ -8,7 +8,7 @@ import java.io.File;
  * __/ __ |/ / -_|_-<(_-</ _ `/ _ \/ _  / __/ _ \  _\ \/ __/ _ `/ __/ / _ `/ __/ __/ /
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Thursday, 7/19/2018
- *
+ * <p>
  * Details regarding locating or generating an icon.
  */
 public class IconConfigurationDetails implements AutoGeneratable {
@@ -19,6 +19,19 @@ public class IconConfigurationDetails implements AutoGeneratable {
      * A specific location for the icon.  Takes precedence over auto-generation.
      */
     private File location;
+
+    public IconConfigurationDetails() {
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other the details to copy.
+     */
+    public IconConfigurationDetails(IconConfigurationDetails other) {
+        this.autoGenerate = other.autoGenerate;
+        this.location = other.location;
+    }
 
     public File getLocation() {
         return location;

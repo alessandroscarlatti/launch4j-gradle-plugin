@@ -1,5 +1,6 @@
 import com.scarlatti.gradle.launch4j.Launch4jTemplateTask
 import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin
+import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperTask
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 
 buildscript {
@@ -124,4 +125,37 @@ launch4jHelper {
     }
 }
 
+//launch4jHelper.helper(createExe).configure {
+//
+//}
+
 launch4jHelper.help(createExe)
+
+launch4jHelper.help(createExe) {
+    icon {
+        autoGenerate = false
+    }
+
+    mainClass {
+        mainClassName = "asdf"
+    }
+
+    mainClass.mainClassName = "qwer"
+
+    meta {
+        descriptionTemplate = "#task"
+    }
+
+    meta.descriptionTemplate = "qwer"
+}
+
+launch4jHelper.helper(createExe).icon.autoGenerate = false
+
+task silly(type: Launch4jHelperTask) {
+    meta {
+        descriptionTemplate = "asdf"
+        generateDescription = false
+    }
+
+    meta.descriptionTemplate
+}

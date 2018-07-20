@@ -20,6 +20,18 @@ public class ManifestConfigurationDetails implements AutoGeneratable {
      */
     private File location;
 
+    public ManifestConfigurationDetails() {
+    }
+
+    /**
+     * Copy constructor.
+     * @param other the details to copy.
+     */
+    public ManifestConfigurationDetails(ManifestConfigurationDetails other) {
+        this.autoGenerate = other.autoGenerate;
+        this.location = other.location;
+    }
+
     @Override
     public boolean getAutoGenerate() {
         return autoGenerate;

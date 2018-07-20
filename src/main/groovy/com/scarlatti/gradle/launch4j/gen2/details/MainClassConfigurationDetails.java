@@ -6,7 +6,7 @@ package com.scarlatti.gradle.launch4j.gen2.details;
  * __/ __ |/ / -_|_-<(_-</ _ `/ _ \/ _  / __/ _ \  _\ \/ __/ _ `/ __/ / _ `/ __/ __/ /
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Thursday, 7/19/2018
- *
+ * <p>
  * Details regarding locating the main class.
  */
 public class MainClassConfigurationDetails {
@@ -21,6 +21,19 @@ public class MainClassConfigurationDetails {
      * Has precedence over automatically locating main class.
      */
     private String mainClassName;
+
+    public MainClassConfigurationDetails() {
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other the details to copy.
+     */
+    public MainClassConfigurationDetails(MainClassConfigurationDetails other) {
+        this.findMainClass = other.findMainClass;
+        this.mainClassName = other.mainClassName;
+    }
 
     public String getMainClassName() {
         return mainClassName;
