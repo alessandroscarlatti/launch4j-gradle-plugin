@@ -12,7 +12,6 @@ import org.gradle.api.Project
  */
 class Launch4jHelperPlugin implements Plugin<Project> {
     public static final String LAUNCH4J_HELPER_EXTENSION_NAME = "launch4jHelper"
-    public static final String LAUNCH4J_HELPER_TASK_GROUP = "launch4jHelper"
 
     /**
      * Setup the Launch4jHelperExtension.

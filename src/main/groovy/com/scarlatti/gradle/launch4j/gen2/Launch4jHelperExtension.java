@@ -37,6 +37,7 @@ public class Launch4jHelperExtension {
     private MainClassConfigurationDetails mainClassConfigurationDetails = defaultMainClassConfigDtls();
     private HelperTaskConfigurationDetails helperTaskConfigurationDetails = defaultHelperTaskConfigDtls();
 
+    static final String DEFAULT_HELPER_TASK_GROUP = "launch4jHelper";
     static final String DEFAULT_LAUNCH4J_TASK_VARIABLE = "#task";
     static final String DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE = "Configures and generates resources for the " + DEFAULT_LAUNCH4J_TASK_VARIABLE + " task.";
     static final String DEFAULT_HELPER_TASK_DESCRIPTION = "Configures and generates resources for a Launch4j task.";
@@ -226,6 +227,7 @@ public class Launch4jHelperExtension {
         details.setDescriptionTemplate(DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE);
         details.setDescription(DEFAULT_HELPER_TASK_DESCRIPTION);
         details.setLaunch4jTaskVariable(DEFAULT_LAUNCH4J_TASK_VARIABLE);
+        details.setGroup(DEFAULT_HELPER_TASK_GROUP);
         return details;
     }
 

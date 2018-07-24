@@ -8,7 +8,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 
 import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin.LAUNCH4J_HELPER_EXTENSION_NAME;
-import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin.LAUNCH4J_HELPER_TASK_GROUP;
 import static groovy.lang.Closure.DELEGATE_FIRST;
 
 /**
@@ -49,18 +48,8 @@ public class Launch4jHelperTask extends DefaultTask {
         mainClassConfigurationDetails = new MainClassConfigurationDetails(extension.getMainClass());
         helperTaskConfigurationDetails = new HelperTaskConfigurationDetails(extension.getMeta());
 
-        // set the group
-        // the gradle group from the map parameter overload gets set after the config closure is called.
-        setGroup(LAUNCH4J_HELPER_TASK_GROUP);
-
-        // the gradle description from the map parameter overload gets set before the config closure is called.
         applyMeta();
-
-        // todo create the dependencies...
     }
-
-    // todo declare task inputs if any...
-    // todo declare task outputs
 
     /**
      * Public api to access the icon details.
@@ -162,12 +151,7 @@ public class Launch4jHelperTask extends DefaultTask {
         config.setResolveStrategy(DELEGATE_FIRST);
         config.call();
 
-        // apply changes
-        if (helperTaskConfigurationDetails.getGenerateDescription()) {
-            setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
-        } else {
-            setDescription(helperTaskConfigurationDetails.getDescription());
-        }
+        applyMeta();
     }
 
     /**
@@ -175,11 +159,16 @@ public class Launch4jHelperTask extends DefaultTask {
      */
     private void applyMeta() {
         // apply details of description
+        // the gradle description from the map parameter overload gets set before the config closure is called.
         if (helperTaskConfigurationDetails.getGenerateDescription()) {
             setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
         } else {
             setDescription(helperTaskConfigurationDetails.getDescription());
         }
+
+        // apply details for group
+        // the gradle group from the map parameter overload gets set after the config closure is called.
+        setGroup(helperTaskConfigurationDetails.getGroup());
     }
 
     /**
@@ -199,7 +188,6 @@ public class Launch4jHelperTask extends DefaultTask {
 
             // update the description template, because we're "pretending" the description
             // is the same thing as the template, so editing the one should update the other.
-            // todo this is getting set when it shouldn't be...
             helperTaskConfigurationDetails.setDescriptionTemplate(description);
 
             // if there is no task name, use the fallback description
@@ -222,6 +210,17 @@ public class Launch4jHelperTask extends DefaultTask {
     }
 
     /**
+     * Set the group for this task, and also update the meta details.
+     *
+     * @param group the group to specify for this task.
+     */
+    @Override
+    public void setGroup(String group) {
+        helperTaskConfigurationDetails.setGroup(group);
+        super.setGroup(group);
+    }
+
+    /**
      * @return the associated launch4jTask.
      */
     public Task getLaunch4jTask() {
@@ -231,11 +230,12 @@ public class Launch4jHelperTask extends DefaultTask {
     /**
      * Set the associated launch4jTask and update the task description,
      * if that behavior is allowed, per {@link HelperTaskConfigurationDetails}
-     *
-     * todo this logic is messed up!  It's tough to handle state!
+     * <p>
+     * Crucially, this task sets itself as a dependency of the launch4j task
+     * so that this task's outputs are available as inputs to the launch4j task.
      *
      * @param task set the associated launch4jTask.
-     *                     Right now, accepts only launch4jLibraryTask.
+     *             Right now, accepts only launch4jLibraryTask.
      */
     public void setLaunch4jTask(Task task) {
         Launch4jHelperExtension.validateTaskIsLaunch4jLibraryTask(task);
@@ -244,5 +244,13 @@ public class Launch4jHelperTask extends DefaultTask {
         if (helperTaskConfigurationDetails.getGenerateDescription()) {
             setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
         }
+
+        // todo remove existing dependency??
+
+        // create the dependency
+        task.dependsOn(this);
+
+        // todo declare task inputs if any...
+        // todo declare task outputs
     }
 }

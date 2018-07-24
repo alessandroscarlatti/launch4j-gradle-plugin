@@ -35,6 +35,11 @@ public class HelperTaskConfigurationDetails {
      */
     private String description;
 
+    /**
+     * The group to use for this task.
+     */
+    private String group;
+
     public HelperTaskConfigurationDetails() {
     }
 
@@ -43,6 +48,7 @@ public class HelperTaskConfigurationDetails {
         this.descriptionTemplate = other.descriptionTemplate;
         this.launch4jTaskVariable = other.launch4jTaskVariable;
         this.description = other.description;
+        this.group = other.group;
     }
 
     public boolean getGenerateDescription() {
@@ -75,5 +81,13 @@ public class HelperTaskConfigurationDetails {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 }
