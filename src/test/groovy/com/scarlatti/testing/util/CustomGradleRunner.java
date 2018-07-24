@@ -4,6 +4,7 @@ import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.internal.DefaultGradleRunner;
 import org.gradle.util.GFileUtils;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,6 +50,7 @@ public class CustomGradleRunner extends DefaultGradleRunner {
         this.targetDir = targetDir.toString();
         this.targetBuildFile = targetBuildFile.toString();
         try {
+            GFileUtils.deleteDirectory(targetDir.toFile());
             Files.createDirectories(targetDir);
             withProjectDir(targetDir.toFile());
         } catch (Exception e) {

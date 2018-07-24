@@ -54,7 +54,7 @@ public class Launch4jHelperTask extends DefaultTask {
         setGroup(LAUNCH4J_HELPER_TASK_GROUP);
 
         // the gradle description from the map parameter overload gets set before the config closure is called.
-        setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
+        applyMeta();
 
         // todo create the dependencies...
     }
@@ -163,7 +163,23 @@ public class Launch4jHelperTask extends DefaultTask {
         config.call();
 
         // apply changes
-        setDescription(helperTaskConfigurationDetails.getDescription());
+        if (helperTaskConfigurationDetails.getGenerateDescription()) {
+            setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
+        } else {
+            setDescription(helperTaskConfigurationDetails.getDescription());
+        }
+    }
+
+    /**
+     * Apply the information from the Launch4jHelperTaskConfiguration
+     */
+    private void applyMeta() {
+        // apply details of description
+        if (helperTaskConfigurationDetails.getGenerateDescription()) {
+            setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
+        } else {
+            setDescription(helperTaskConfigurationDetails.getDescription());
+        }
     }
 
     /**
@@ -181,14 +197,28 @@ public class Launch4jHelperTask extends DefaultTask {
         // if we have been instructed to attempt it.
         if (helperTaskConfigurationDetails.getGenerateDescription()) {
 
+            // update the description template, because we're "pretending" the description
+            // is the same thing as the template, so editing the one should update the other.
+            // todo this is getting set when it shouldn't be...
+            helperTaskConfigurationDetails.setDescriptionTemplate(description);
+
             // if there is no task name, use the fallback description
             if (launch4jTask != null) {
                 String taskName = launch4jTask.getName();
-                description = description.replace(helperTaskConfigurationDetails.getLaunch4jTaskVariable(), taskName);
+                description = fillInLaunch4jTemplateTaskName(
+                    helperTaskConfigurationDetails.getDescriptionTemplate(),
+                    helperTaskConfigurationDetails.getLaunch4jTaskVariable(),
+                    taskName);
+            } else {
+                description = helperTaskConfigurationDetails.getDescription();
             }
         }
 
         super.setDescription(description);
+    }
+
+    static String fillInLaunch4jTemplateTaskName(String template, String taskNameVariable, String taskName) {
+        return template.replace(taskNameVariable, taskName);
     }
 
     /**
