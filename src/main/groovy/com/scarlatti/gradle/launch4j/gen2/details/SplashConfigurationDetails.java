@@ -16,6 +16,11 @@ public class SplashConfigurationDetails implements AutoGeneratable {
     private boolean autoGenerate;
 
     /**
+     * The name to use when generating a splash.
+     */
+    private String name;
+
+    /**
      * A specific location to use.  Takes precedence over auto-generation;
      */
     private File location;
@@ -29,6 +34,7 @@ public class SplashConfigurationDetails implements AutoGeneratable {
      */
     public SplashConfigurationDetails(SplashConfigurationDetails other) {
         this.autoGenerate = other.autoGenerate;
+        this.name = other.name;
         this.location = other.location;
     }
 
@@ -48,5 +54,13 @@ public class SplashConfigurationDetails implements AutoGeneratable {
 
     public void setLocation(File location) {
         this.location = location;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

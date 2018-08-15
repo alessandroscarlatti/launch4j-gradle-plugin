@@ -16,6 +16,11 @@ public class IconConfigurationDetails implements AutoGeneratable {
     private boolean autoGenerate;
 
     /**
+     * The name to use when generating an icon.
+     */
+    private String name;
+
+    /**
      * A specific location for the icon.  Takes precedence over auto-generation.
      */
     private File location;
@@ -30,6 +35,7 @@ public class IconConfigurationDetails implements AutoGeneratable {
      */
     public IconConfigurationDetails(IconConfigurationDetails other) {
         this.autoGenerate = other.autoGenerate;
+        this.name = other.name;
         this.location = other.location;
     }
 
@@ -49,5 +55,13 @@ public class IconConfigurationDetails implements AutoGeneratable {
     @Override
     public void setAutoGenerate(boolean autoGenerate) {
         this.autoGenerate = autoGenerate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

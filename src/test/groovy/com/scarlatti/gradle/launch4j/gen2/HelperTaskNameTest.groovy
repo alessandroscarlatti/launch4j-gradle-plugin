@@ -8,7 +8,7 @@ import static com.scarlatti.gradle.launch4j.gen2.BuildTemplates.common
 import static com.scarlatti.gradle.launch4j.gen2.BuildTemplates.tasks
 import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension.*
 import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension.DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE
-import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperTask.fillInLaunch4jTemplateTaskName
+import static com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask.fillInLaunch4jTemplateTaskName
 
 /**
  * ______    __                         __           ____             __     __  __  _

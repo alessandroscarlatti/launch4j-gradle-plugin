@@ -1,5 +1,6 @@
-package com.scarlatti.gradle.launch4j.gen2;
+package com.scarlatti.gradle.launch4j.gen2.task;
 
+import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension;
 import com.scarlatti.gradle.launch4j.gen2.details.*;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import groovy.lang.Closure;
@@ -252,5 +253,22 @@ public class Launch4jHelperTask extends DefaultTask {
 
         // todo declare task inputs if any...
         // todo declare task outputs
+
+        // each of these could be tasks...
+        // they would be created (and named) automatically, but skipped based on input values...
+
+        // inputs for:
+        // icon
+        // manifest
+        // splash
+
+        // outputs for:
+        // icon
+        // manifest
+        // splash
+
+        // outputs are files here...
+
+        // launch4j inputs are strings, assumes the file exists.
     }
 }

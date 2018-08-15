@@ -1,6 +1,7 @@
 package com.scarlatti.gradle.launch4j.gen2;
 
 import com.scarlatti.gradle.launch4j.gen2.details.*;
+import com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
@@ -37,6 +38,7 @@ public class Launch4jHelperExtension {
     private MainClassConfigurationDetails mainClassConfigurationDetails = defaultMainClassConfigDtls();
     private HelperTaskConfigurationDetails helperTaskConfigurationDetails = defaultHelperTaskConfigDtls();
 
+    static final String DEFAULT_APP_NAME = "launch4jApp";
     static final String DEFAULT_HELPER_TASK_GROUP = "launch4jHelper";
     static final String DEFAULT_LAUNCH4J_TASK_VARIABLE = "#task";
     static final String DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE = "Configures and generates resources for the " + DEFAULT_LAUNCH4J_TASK_VARIABLE + " task.";
@@ -91,7 +93,7 @@ public class Launch4jHelperExtension {
         config.call();
     }
 
-    static void validateTaskIsLaunch4jLibraryTask(Task task) {
+    public static void validateTaskIsLaunch4jLibraryTask(Task task) {
         if (!(task instanceof Launch4jLibraryTask)) {
             throw new IllegalStateException("Task " + task.getName() + " must be an instance of " + Launch4jLibraryTask.class.getName());
         }
@@ -197,31 +199,33 @@ public class Launch4jHelperExtension {
         config.call();
     }
 
-    private IconConfigurationDetails defaultIconConfigDtls() {
+    public static IconConfigurationDetails defaultIconConfigDtls() {
         IconConfigurationDetails details = new IconConfigurationDetails();
         details.setAutoGenerate(true);
+        details.setName(DEFAULT_APP_NAME);
         return details;
     }
 
-    private SplashConfigurationDetails defaultSplashConfigDtls() {
+    public static SplashConfigurationDetails defaultSplashConfigDtls() {
         SplashConfigurationDetails details = new SplashConfigurationDetails();
         details.setAutoGenerate(true);
+        details.setName(DEFAULT_APP_NAME);
         return details;
     }
 
-    private ManifestConfigurationDetails defaultManifestConfigDtls() {
+    public static ManifestConfigurationDetails defaultManifestConfigDtls() {
         ManifestConfigurationDetails details = new ManifestConfigurationDetails();
         details.setAutoGenerate(true);
         return details;
     }
 
-    private MainClassConfigurationDetails defaultMainClassConfigDtls() {
+    private static MainClassConfigurationDetails defaultMainClassConfigDtls() {
         MainClassConfigurationDetails details = new MainClassConfigurationDetails();
         details.setFindMainClass(true);
         return details;
     }
 
-    private HelperTaskConfigurationDetails defaultHelperTaskConfigDtls() {
+    private static HelperTaskConfigurationDetails defaultHelperTaskConfigDtls() {
         HelperTaskConfigurationDetails details = new HelperTaskConfigurationDetails();
         details.setGenerateDescription(true);
         details.setDescriptionTemplate(DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE);
