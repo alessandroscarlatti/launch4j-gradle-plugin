@@ -250,6 +250,19 @@ public class Launch4jHelperExtension {
 
         // apply the values from the extension
 
+        // set up icon task
+
+        // set up splash task
+
+        // set up manifest task
+
+        // todo aha! could I set up a "read configurations" task
+        // that would be the task that finally updates all the inputs
+        // of the other tasks?
+        // also that would theoretically give a way for
+        // a potential "generateResources" task to generate
+        // the launch4j.properties or an icon.ico, e.g.
+
         return helperTask;
     }
 }
