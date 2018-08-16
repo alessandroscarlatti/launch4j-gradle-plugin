@@ -1,5 +1,7 @@
 package com.scarlatti.gradle.launch4j.gen2.details;
 
+import groovy.lang.Closure;
+
 import java.io.File;
 
 /**
@@ -13,6 +15,29 @@ import java.io.File;
  */
 public class IconConfigurationDetails implements AutoGeneratable {
 
+    /**
+     * Whether configuration of icon is enabled at all, whether by file or automatic generation.
+     */
+    private boolean enabled;
+
+    /**
+     * Strategy to invoke to locate an icon resource.
+     * By default, a default resolutions strategy (this can use closure parameters, or
+     * maybe a delegate so the default closure can be created with the extension).
+     * If null, the plugin will not search for an icon resource.
+     *
+     * If invocation of the resolutionStrategy returns null, the plugin
+     * will evaluate whether or not to auto-generate an icon.
+     *
+     * todo But at runtime, we need to be able to tell the difference between
+     * no specified resolution strategy and desire for the plugin to implement
+     * the default resolutionStrategy?
+     */
+    private Closure<File> iconResolutionStrategy;
+
+    /**
+     * Whether configuration of icon is enabled at all, whether by file or automatic generation.
+     */
     private boolean autoGenerate;
 
     /**
@@ -22,6 +47,11 @@ public class IconConfigurationDetails implements AutoGeneratable {
 
     /**
      * A specific location for the icon.  Takes precedence over auto-generation.
+     * A null value indicates for the plugin to attempt to find a resource,
+     * unless {@code searchForResource} is false.
+     *
+     * todo the accessor for this could actually use the iconResolutionStrategy
+     * do we actually ever need to retrieve this "File" value from this config?
      */
     private File location;
 
@@ -34,6 +64,7 @@ public class IconConfigurationDetails implements AutoGeneratable {
      * @param other the details to copy.
      */
     public IconConfigurationDetails(IconConfigurationDetails other) {
+        this.enabled = other.enabled;
         this.autoGenerate = other.autoGenerate;
         this.name = other.name;
         this.location = other.location;
@@ -63,5 +94,13 @@ public class IconConfigurationDetails implements AutoGeneratable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

@@ -1,18 +1,14 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
-import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension;
-import com.scarlatti.gradle.launch4j.gen2.details.IconConfigurationDetails;
 import com.scarlatti.util.ImageGenerator;
-import groovy.lang.Closure;
-import groovy.lang.DelegatesTo;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
 import java.nio.file.Paths;
-
-import static groovy.lang.Closure.DELEGATE_FIRST;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -25,33 +21,29 @@ public class GenerateIconTask extends DefaultTask {
 
     @OutputFile
     private File destination;
-    private IconConfigurationDetails details;
+
+    @InputFile
+    private File icon;
+
+    @Input
+    private String iconName;
+
+    @Input
+    private boolean autoGenerate;
 
     private static final String NAME_INPUT = "baseIconName";
 
     public GenerateIconTask() {
-        details = Launch4jHelperExtension.defaultIconConfigDtls();
     }
 
-    public void details(@DelegatesTo(value = IconConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(details);
-        config.setResolveStrategy(DELEGATE_FIRST);
-        config.call();
-
-        // update the inputs...
-        updateInputs();
-
-        // todo but how to catch updating the inputs after the details#setName() may have been called?
-    }
-
-    private void updateInputs() {
-        getInputs().property(NAME_INPUT, details.getName());
-    }
-
+    /**
+     * Move the input icon file to the destination,
+     * or if it does not exist, generate an icon.
+     */
     @TaskAction
     public void generateIcon() {
         // todo implement whether to generate?
-        ImageGenerator.generateIconFileForStringHash(Paths.get(destination.getAbsolutePath()), details.getName());
+        ImageGenerator.generateIconFileForStringHash(Paths.get(destination.getAbsolutePath()), iconName);
     }
 
     public File getDestination() {
@@ -62,11 +54,27 @@ public class GenerateIconTask extends DefaultTask {
         this.destination = destination;
     }
 
-    public IconConfigurationDetails getDetails() {
-        return details;
+    public File getIcon() {
+        return icon;
     }
 
-    public void setDetails(IconConfigurationDetails details) {
-        this.details = details;
+    public void setIcon(File icon) {
+        this.icon = icon;
+    }
+
+    public String getIconName() {
+        return iconName;
+    }
+
+    public void setIconName(String iconName) {
+        this.iconName = iconName;
+    }
+
+    public boolean getAutoGenerate() {
+        return autoGenerate;
+    }
+
+    public void setAutoGenerate(boolean autoGenerate) {
+        this.autoGenerate = autoGenerate;
     }
 }

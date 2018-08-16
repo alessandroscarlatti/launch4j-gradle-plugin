@@ -32,6 +32,7 @@ public class Launch4jHelperTask extends DefaultTask {
     private ManifestConfigurationDetails manifestConfigurationDetails;
     private SplashConfigurationDetails splashConfigurationDetails;
     private MainClassConfigurationDetails mainClassConfigurationDetails;
+    private ResourcesConfigurationDetails resourcesConfigurationDetails;
     private HelperTaskConfigurationDetails helperTaskConfigurationDetails;
 
     /**
@@ -47,6 +48,7 @@ public class Launch4jHelperTask extends DefaultTask {
         manifestConfigurationDetails = new ManifestConfigurationDetails(extension.getManifest());
         splashConfigurationDetails = new SplashConfigurationDetails(extension.getSplash());
         mainClassConfigurationDetails = new MainClassConfigurationDetails(extension.getMainClass());
+        resourcesConfigurationDetails = new ResourcesConfigurationDetails(extension.getResources());
         helperTaskConfigurationDetails = new HelperTaskConfigurationDetails(extension.getMeta());
 
         applyMeta();
@@ -87,6 +89,15 @@ public class Launch4jHelperTask extends DefaultTask {
      */
     public MainClassConfigurationDetails getMainClass() {
         return mainClassConfigurationDetails;
+    }
+
+    /**
+     * Public api to access the resources details.
+     *
+     * @return the resources details.
+     */
+    public ResourcesConfigurationDetails getResources() {
+        return resourcesConfigurationDetails;
     }
 
     /**
@@ -138,6 +149,17 @@ public class Launch4jHelperTask extends DefaultTask {
      */
     public void mainClass(@DelegatesTo(value = MainClassConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
         config.setDelegate(mainClassConfigurationDetails);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+    }
+
+    /**
+     * Public api to configure the resources details.
+     *
+     * @param config the closure to apply.
+     */
+    public void resources(@DelegatesTo(value = ResourcesConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(resourcesConfigurationDetails);
         config.setResolveStrategy(DELEGATE_FIRST);
         config.call();
     }

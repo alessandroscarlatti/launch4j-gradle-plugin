@@ -8,6 +8,7 @@ import groovy.lang.DelegatesTo;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public class Launch4jHelperExtension {
     private ManifestConfigurationDetails manifestConfigurationDetails = defaultManifestConfigDtls();
     private SplashConfigurationDetails splashConfigurationDetails = defaultSplashConfigDtls();
     private MainClassConfigurationDetails mainClassConfigurationDetails = defaultMainClassConfigDtls();
+    private ResourcesConfigurationDetails resourcesConfigurationDetails = defaultResourcesConfigDtls();
     private HelperTaskConfigurationDetails helperTaskConfigurationDetails = defaultHelperTaskConfigDtls();
 
     static final String DEFAULT_APP_NAME = "launch4jApp";
@@ -43,6 +45,12 @@ public class Launch4jHelperExtension {
     static final String DEFAULT_LAUNCH4J_TASK_VARIABLE = "#task";
     static final String DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE = "Configures and generates resources for the " + DEFAULT_LAUNCH4J_TASK_VARIABLE + " task.";
     static final String DEFAULT_HELPER_TASK_DESCRIPTION = "Configures and generates resources for a Launch4j task.";
+
+    static final String DEFAULT_RESOURCES_DIR = "launch4j";
+    static final String DEFAULT_ICON_FILE_NAME = "icon.ico";
+    static final String DEFAULT_SPLASH_FILE_NAME = "splash.bmp";
+    static final String DEFAULT_MANIFEST_FILE_NAME = "application.manifests";
+    static final String DEFAULT_LAUNCH4J_PROPERTIES_FILE_NAME = "launch4j.properties";
 
     public Launch4jHelperExtension(Project project) {
         this.project = project;
@@ -136,6 +144,15 @@ public class Launch4jHelperExtension {
     }
 
     /**
+     * Public api to access the resources details.
+     *
+     * @return the resources details.
+     */
+    public ResourcesConfigurationDetails getResources() {
+        return resourcesConfigurationDetails;
+    }
+
+    /**
      * Public api to access the helper task details.
      *
      * @return the helper task details.
@@ -189,6 +206,17 @@ public class Launch4jHelperExtension {
     }
 
     /**
+     * Public api to configure the resources details.
+     *
+     * @param config the closure to apply.
+     */
+    public void resources(@DelegatesTo(value = ResourcesConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(resourcesConfigurationDetails);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+    }
+
+    /**
      * Public api to configure the helper task details.
      *
      * @param config the closure to apply.
@@ -201,6 +229,7 @@ public class Launch4jHelperExtension {
 
     public static IconConfigurationDetails defaultIconConfigDtls() {
         IconConfigurationDetails details = new IconConfigurationDetails();
+        details.setEnabled(true);
         details.setAutoGenerate(true);
         details.setName(DEFAULT_APP_NAME);
         return details;
@@ -222,6 +251,17 @@ public class Launch4jHelperExtension {
     private static MainClassConfigurationDetails defaultMainClassConfigDtls() {
         MainClassConfigurationDetails details = new MainClassConfigurationDetails();
         details.setFindMainClass(true);
+        return details;
+    }
+
+    private ResourcesConfigurationDetails defaultResourcesConfigDtls() {
+        ResourcesConfigurationDetails details = new ResourcesConfigurationDetails();
+        details.setResourcesDir(project.getBuildDir().toPath().resolve(DEFAULT_RESOURCES_DIR).toFile());
+        details.setIconFileName(DEFAULT_ICON_FILE_NAME);
+        details.setSplashFileName(DEFAULT_SPLASH_FILE_NAME);
+        details.setManifestFileName(DEFAULT_MANIFEST_FILE_NAME);
+        details.setLaunch4jPropertiesFileName(DEFAULT_LAUNCH4J_PROPERTIES_FILE_NAME);
+
         return details;
     }
 
