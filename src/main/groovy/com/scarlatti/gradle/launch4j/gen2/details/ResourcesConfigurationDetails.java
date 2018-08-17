@@ -1,5 +1,7 @@
 package com.scarlatti.gradle.launch4j.gen2.details;
 
+import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
+
 import java.io.File;
 
 /**
@@ -18,6 +20,7 @@ public class ResourcesConfigurationDetails {
     private String iconFileName;
     private String splashFileName;
     private String manifestFileName;
+    private FileResolutionStrategy launch4jPropertiesResolutionStrategy;
 
     public ResourcesConfigurationDetails() {
     }
@@ -84,5 +87,13 @@ public class ResourcesConfigurationDetails {
 
     public void setManifestFileName(String manifestFileName) {
         this.manifestFileName = manifestFileName;
+    }
+
+    public FileResolutionStrategy getLaunch4jPropertiesResolutionStrategy() {
+        return launch4jPropertiesResolutionStrategy;
+    }
+
+    public void setLaunch4jPropertiesResolutionStrategy(FileResolutionStrategy launch4jPropertiesResolutionStrategy) {
+        this.launch4jPropertiesResolutionStrategy = launch4jPropertiesResolutionStrategy;
     }
 }

@@ -1,6 +1,8 @@
 package com.scarlatti.gradle.launch4j.gen2;
 
 import com.scarlatti.gradle.launch4j.gen2.details.*;
+import com.scarlatti.gradle.launch4j.gen2.task.ConfigureFromResourcesTask;
+import com.scarlatti.gradle.launch4j.gen2.task.SupplyIconTask;
 import com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import groovy.lang.Closure;
@@ -9,6 +11,9 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -273,6 +278,32 @@ public class Launch4jHelperExtension {
         details.setLaunch4jTaskVariable(DEFAULT_LAUNCH4J_TASK_VARIABLE);
         details.setGroup(DEFAULT_HELPER_TASK_GROUP);
         return details;
+    }
+
+    public FileResolutionStrategy defaultIconResolutionStrategy() {
+        return Launch4jHelperExtension::defaultIconResolutionStrategy;
+    }
+
+    public static File defaultIconResolutionStrategy(Launch4jHelperTask helperTask) {
+        Path iconPath = Paths.get(helperTask.getResources().getResourcesDir().getAbsolutePath(), helperTask.getResources().getIconFileName());
+        if (Files.exists(iconPath)) {
+            return iconPath.toFile();
+        }
+
+        return null;
+    }
+
+    public FileResolutionStrategy defaultLaunch4jPropertiesResolutionStrategy() {
+        return Launch4jHelperExtension::defaultLaunch4jPropertiesResolutionStrategy;
+    }
+
+    public static File defaultLaunch4jPropertiesResolutionStrategy(Launch4jHelperTask helperTask) {
+        Path propertiesPath = Paths.get(helperTask.getResources().getResourcesDir().getAbsolutePath(), helperTask.getResources().getLaunch4jPropertiesFileName());
+        if (Files.exists(propertiesPath)) {
+            return propertiesPath.toFile();
+        }
+
+        return null;
     }
 
     /**

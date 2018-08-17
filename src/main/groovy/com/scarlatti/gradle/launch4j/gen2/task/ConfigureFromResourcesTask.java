@@ -1,9 +1,7 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
-import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
+import com.scarlatti.gradle.launch4j.gen2.details.IconConfigurationDetails;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -21,37 +19,15 @@ import java.util.Properties;
  */
 public class ConfigureFromResourcesTask extends DefaultTask {
 
-    @Input
-    private GenerateIconTask generateIconTask;
-
-    @Input
-    private GenerateSplashTask generateSplashTask;
-
-    @Input
-    private GenerateManifestTask generateManifestTask;
-
-    @Input
     private Launch4jHelperTask helperTask;
-
-    @Input
-    private Launch4jLibraryTask launch4jTask;
 
     // todo but this part of the incremental build may not be that big of a deal.  It may be
     // OK to just use the configuration details from the helperTask.
-    // TODO COULD THE EXTENSION USE THE ICON/SPLASH/MANIFEST GENERATION TASKS INSTEAD OF COPYING THE
+    // TODO COULD THE EXTENSION USE THE ICON/SPLASH/MANIFEST/RESOURCES GENERATION TASKS INSTEAD OF COPYING THE
     // configuration details into this task???
-
-    @InputFile
-    private File iconFile;
-
-    @InputFile
-    private File splashFile;
-
-    @InputFile
-    private File manifestFile;
-
-    @InputFile
-    private File launch4jPropertiesFile;
+    // todo 1 use an interface to define the default configuration details classes.
+    // todo 2 pass generation tasks as delegates for icon/splash/manifest/resources rather than config details
+    // todo 3 connect all of those together
 
     /**
      * This task would do the following:
@@ -64,15 +40,13 @@ public class ConfigureFromResourcesTask extends DefaultTask {
     @TaskAction
     public void configureFromResources() {
         configureLaunch4jPropertiesFile();
-        configureIconTask();
+        configureSupplyIconTask();
     }
 
     private void configureLaunch4jPropertiesFile() {
-        if (launch4jPropertiesFile != null) {
-            Path file = launch4jPropertiesFile.toPath();
-            if (Files.exists(file)) {
-                configureLaunch4jTaskFromProperties(file);
-            }
+        File file = helperTask.getResources().getLaunch4jPropertiesResolutionStrategy().resolve(helperTask);
+        if (file != null) {
+            configureLaunch4jTaskFromProperties(file.toPath());
         }
     }
 
@@ -87,7 +61,8 @@ public class ConfigureFromResourcesTask extends DefaultTask {
         // load the properties
         try (InputStream propsStream = Files.newInputStream(propertiesFile)) {
             props.load(propsStream);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException("Error loading properties file " + propertiesFile, e);
         }
 
@@ -95,36 +70,38 @@ public class ConfigureFromResourcesTask extends DefaultTask {
         for (String key : props.stringPropertyNames()) {
             Object value = props.get(key);
             System.out.println("Configuring launch4j task with " + key + "=" + value);
-            launch4jTask.setProperty(key, value);
+            helperTask.getLaunch4jTask().setProperty(key, value);
         }
     }
 
     /**
-     * Configure the associated GenerateIconTask.
-     *
+     * Configure the associated SupplyIconTask.
+     * <p>
      * If we are not set up to configure an icon, disable the task.
-     *
+     * <p>
      * If we are set up to generate at all:
-     * If an icon resource exists, set the GenerateIconTask to use it.
-     * If we are set up to autogenerate, provide the iconName.
+     * Resolve an icon using the resolution strategy.
      */
-    private void configureIconTask() {
+    private void configureSupplyIconTask() {
+        SupplyIconTask task = helperTask.getSupplyIconTask();
         if (helperTask.getIcon().getEnabled()) {
-            // this is the same as helperTask#getIcon#getLocation because the value in THIS file is set from the helperTask.
-            // how do we know whether or not to use the file location from the resources dir or the icon task?
-            // at helperTask creation time, the icon data from the extension is copied to the task.
-            // it may be changed during configuration time.
-            // it is finally used at runtime...but by whom?
-            // The extension path should be based on the resources dir.
-            // This means that any change to the resources dir should affect the icon path.
-            // todo should we have an iconResolutionStrategy?
-            generateIconTask.setIcon(iconFile);
-            generateIconTask.setIconName(helperTask.getIcon().getName());
-            generateIconTask.setAutoGenerate(helperTask.getIcon().getAutoGenerate());
-            generateIconTask.setDestination(new File("build/launch4j/#taskName/resources/icon.ico"));  // todo get the launch4j resources directory
+            IconConfigurationDetails config = helperTask.getIcon();
+            File icon = config.getResolutionStrategy().resolve(helperTask);
+            task.setIcon(icon);
+            task.setIconName(config.getName());
+            task.setAutoGenerate(config.getAutoGenerate());
+            task.setDestination(new File("build/launch4j/#taskName/resources/icon.ico"));  // todo get the launch4j resources directory
         }
         else {
-            generateIconTask.setEnabled(false);
+            task.setEnabled(false);
         }
+    }
+
+    public Launch4jHelperTask getHelperTask() {
+        return helperTask;
+    }
+
+    public void setHelperTask(Launch4jHelperTask helperTask) {
+        this.helperTask = helperTask;
     }
 }

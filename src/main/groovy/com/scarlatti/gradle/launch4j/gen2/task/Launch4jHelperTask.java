@@ -35,6 +35,11 @@ public class Launch4jHelperTask extends DefaultTask {
     private ResourcesConfigurationDetails resourcesConfigurationDetails;
     private HelperTaskConfigurationDetails helperTaskConfigurationDetails;
 
+    private ConfigureFromResourcesTask configureFromResourcesTask;
+    private SupplyIconTask supplyIconTask;
+    private SupplySplashTask supplySplashTask;
+    private SupplyManifestTask supplyManifestTask;
+
     /**
      * Create a new Launch4jHelperTask for a launch4jTask.
      * All configurations are copied from the launch4jHelper extension
@@ -50,6 +55,8 @@ public class Launch4jHelperTask extends DefaultTask {
         mainClassConfigurationDetails = new MainClassConfigurationDetails(extension.getMainClass());
         resourcesConfigurationDetails = new ResourcesConfigurationDetails(extension.getResources());
         helperTaskConfigurationDetails = new HelperTaskConfigurationDetails(extension.getMeta());
+
+        // todo configure the associated supply tasks...
 
         applyMeta();
     }
@@ -257,40 +264,114 @@ public class Launch4jHelperTask extends DefaultTask {
      * Crucially, this task sets itself as a dependency of the launch4j task
      * so that this task's outputs are available as inputs to the launch4j task.
      *
-     * @param task set the associated launch4jTask.
+     * @param launch4jTask set the associated launch4jTask.
      *             Right now, accepts only launch4jLibraryTask.
      */
-    public void setLaunch4jTask(Task task) {
-        Launch4jHelperExtension.validateTaskIsLaunch4jLibraryTask(task);
-        this.launch4jTask = (Launch4jLibraryTask) task;
+    public void setLaunch4jTask(Task launch4jTask) {
+        Launch4jHelperExtension.validateTaskIsLaunch4jLibraryTask(launch4jTask);
+
+        // remove old dependency, if any.
+        if (this.launch4jTask != null) {
+            getDependsOn().remove(this.launch4jTask);
+        }
 
         if (helperTaskConfigurationDetails.getGenerateDescription()) {
             setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
         }
 
-        // todo remove existing dependency??
-
-        // create the dependency
-        task.dependsOn(this);
+        // set up associated tasks.
+        this.launch4jTask = (Launch4jLibraryTask) launch4jTask;
+        removeAssociatedTasks();
+        createSupplyIconTask();
+        createSupplySplashTask();
+        createSupplyManifestTask();
+        buildTasksDependencies();
 
         // todo declare task inputs if any...
         // todo declare task outputs
-
-        // each of these could be tasks...
-        // they would be created (and named) automatically, but skipped based on input values...
-
-        // inputs for:
-        // icon
-        // manifest
-        // splash
-
-        // outputs for:
-        // icon
-        // manifest
-        // splash
-
-        // outputs are files here...
-
         // launch4j inputs are strings, assumes the file exists.
+    }
+
+    /**
+     * Remove tasks associated to this helper task.
+     * This includes tasks like the ConfigureFromResourcesTask and SupplyIconTask.
+     */
+    private void removeAssociatedTasks() {
+        if (configureFromResourcesTask != null)
+            getProject().getTasks().remove(configureFromResourcesTask);
+        if (supplyIconTask != null)
+            getProject().getTasks().remove(supplyIconTask);
+        if (supplySplashTask != null)
+            getProject().getTasks().remove(supplySplashTask);
+        if (supplyManifestTask != null)
+            getProject().getTasks().remove(supplyManifestTask);
+    }
+
+    private void buildTasksDependencies() {
+        this.dependsOn(supplyIconTask);
+        this.dependsOn(supplySplashTask);
+        this.dependsOn(supplyManifestTask);
+
+        supplyIconTask.dependsOn(configureFromResourcesTask);
+        supplySplashTask.dependsOn(configureFromResourcesTask);
+        supplyManifestTask.dependsOn(configureFromResourcesTask);
+
+        launch4jTask.dependsOn(this);
+    }
+
+    /**
+     * Set up the associated ConfigureFromResourcesTask.
+     *
+     * todo use generated task name...
+     * todo set up dependencies
+     */
+    private void createConfigureFromResourcesTask() {
+        configureFromResourcesTask = getProject().getTasks().create("configureFromResources", ConfigureFromResourcesTask.class);
+    }
+
+    /**
+     * Set up the associated SupplyIconTask.
+     *
+     * todo use generated task name...
+     * todo set up dependencies
+     */
+    private void createSupplyIconTask() {
+        supplyIconTask = getProject().getTasks().create("supplyIcon", SupplyIconTask.class);
+    }
+
+    /**
+     * Set up the associated SupplySplashTask.
+     *
+     * todo use generated task name...
+     * todo set up dependencies
+     */
+    private void createSupplySplashTask() {
+        supplySplashTask = getProject().getTasks().create("supplySplash", SupplySplashTask.class);
+    }    
+    
+    /**
+     * Set up the associated SupplyManifestTask.
+     *
+     * todo use generated task name...
+     * todo set up dependencies
+     */
+    private void createSupplyManifestTask() {
+        supplyManifestTask = getProject().getTasks().create("supplyManifest", SupplyManifestTask.class);
+    }
+
+    public SupplyIconTask getSupplyIconTask() {
+        return supplyIconTask;
+    }
+
+    public ConfigureFromResourcesTask getConfigureFromResourcesTask() {
+        return configureFromResourcesTask;
+    }
+
+    public SupplySplashTask getSupplySplashTask() {
+        return supplySplashTask;
+    }
+
+    public SupplyManifestTask getSupplyManifestTask() {
+        return supplyManifestTask;
     }
 }

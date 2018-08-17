@@ -20,12 +20,12 @@ import static groovy.lang.Closure.DELEGATE_FIRST;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Tuesday, 8/14/2018
  */
-public class GenerateSplashTask extends DefaultTask {
+public class SupplySplashTask extends DefaultTask {
 
     private String destination;
     private SplashConfigurationDetails details;
 
-    public GenerateSplashTask() {
+    public SupplySplashTask() {
         details = Launch4jHelperExtension.defaultSplashConfigDtls();
     }
 

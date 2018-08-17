@@ -17,12 +17,12 @@ import static groovy.lang.Closure.DELEGATE_FIRST;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Tuesday, 8/14/2018
  */
-public class GenerateManifestTask extends DefaultTask {
+public class SupplyManifestTask extends DefaultTask {
 
     private String destination;
     private ManifestConfigurationDetails details;
 
-    public GenerateManifestTask() {
+    public SupplyManifestTask() {
         details = Launch4jHelperExtension.defaultManifestConfigDtls();
     }
 

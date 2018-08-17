@@ -7,7 +7,10 @@ import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
+import javax.activation.FileDataSource;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -17,7 +20,7 @@ import java.nio.file.Paths;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Tuesday, 8/14/2018
  */
-public class GenerateIconTask extends DefaultTask {
+public class SupplyIconTask extends DefaultTask {
 
     @OutputFile
     private File destination;
@@ -31,9 +34,11 @@ public class GenerateIconTask extends DefaultTask {
     @Input
     private boolean autoGenerate;
 
+    private Launch4jHelperTask helperTask;
+
     private static final String NAME_INPUT = "baseIconName";
 
-    public GenerateIconTask() {
+    public SupplyIconTask() {
     }
 
     /**
@@ -43,6 +48,9 @@ public class GenerateIconTask extends DefaultTask {
     @TaskAction
     public void generateIcon() {
         // todo implement whether to generate?
+
+
+
         ImageGenerator.generateIconFileForStringHash(Paths.get(destination.getAbsolutePath()), iconName);
     }
 
