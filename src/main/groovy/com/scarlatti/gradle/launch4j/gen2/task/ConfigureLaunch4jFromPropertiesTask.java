@@ -39,7 +39,7 @@ public class ConfigureLaunch4jFromPropertiesTask extends DefaultTask {
      */
     @TaskAction
     public void configureLaunch4jPropertiesFile() {
-        File file = helperTask.getProperties().getResolve().resolve(helperTask);
+        File file = resolve.resolve(helperTask);
         if (file != null) {
             configureLaunch4jTaskFromProperties(file.toPath());
         }
@@ -47,13 +47,16 @@ public class ConfigureLaunch4jFromPropertiesTask extends DefaultTask {
 
     /**
      * Apply the properties in the properties file to the launch4j task.
+     * If the file doesn't exist, we won't read it.
      *
      * @param propertiesFile the properties file to use
      */
     private void configureLaunch4jTaskFromProperties(Path propertiesFile) {
-        Properties props = new Properties();
+        if (!Files.exists(propertiesFile))
+            return;
 
         // load the properties
+        Properties props = new Properties();
         try (InputStream propsStream = Files.newInputStream(propertiesFile)) {
             props.load(propsStream);
         }
@@ -65,7 +68,7 @@ public class ConfigureLaunch4jFromPropertiesTask extends DefaultTask {
         for (String key : props.stringPropertyNames()) {
             Object value = props.get(key);
             System.out.println("Configuring launch4j task with " + key + "=" + value);
-            helperTask.getLaunch4jTask().setProperty(key, value);
+            helperTask.getLaunch4jTask().setProperty(key, value);  // this will succeed even if the task doesn't explicitly declare the property
         }
     }
 

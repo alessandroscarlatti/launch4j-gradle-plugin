@@ -186,9 +186,6 @@ task configureExeResources(type: Launch4jHelperTask) {
     }
 
     properties {
-        resolve = {
-            file("exe/launch4j.properties")
-        }
     }
 
     resources {

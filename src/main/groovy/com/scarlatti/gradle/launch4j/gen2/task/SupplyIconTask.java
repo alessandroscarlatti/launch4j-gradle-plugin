@@ -1,18 +1,14 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
-import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
+import com.scarlatti.gradle.launch4j.gen2.details.IconConfigurationDetails;
 import com.scarlatti.util.ImageGenerator;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
-import javax.activation.FileDataSource;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -30,20 +26,15 @@ public class SupplyIconTask extends DefaultTask {
     private File icon;
 
     /**
-     * Whether configuration of icon is enabled at all, whether by file or automatic generation.
-     */
-    private boolean enabled;
-
-    /**
-     * Strategy to invoke to locate an icon resource.
-     * By default, a default resolutions strategy (this can use closure parameters, or
-     * maybe a delegate so the default closure can be created with the extension).
-     * If null, the plugin will not search for an icon resource.
+     * this task should be blind to the HelperTask
      *
-     * If invocation of the resolutionStrategy returns null, the plugin
-     * will evaluate whether or not to auto-generate an icon.
+     * this won't be invoked during this task,
+     * but it should be invoked before the task inputs/outputs are evaluated.
+     *
+     * this probably means that we need to encapsulate
+     * the FileResolutionStrategy inside a {@link Supplier<File>}
      */
-    private FileResolutionStrategy resolve;
+    private Supplier<File> resolve;
 
     /**
      * Whether configuration of icon is enabled at all, whether by file or automatic generation.
@@ -55,9 +46,13 @@ public class SupplyIconTask extends DefaultTask {
      */
     private String text;
 
-    private Launch4jHelperTask helperTask;
-
-    public SupplyIconTask() {
+    /**
+     * Configure this task from a PropertiesConfigurationDetails instance.
+     * Called after this task has been created.
+     */
+    public void configureFromIconConfigDtls(IconConfigurationDetails details) {
+        autoGenerate = details.getAutoGenerate();
+        text = details.getText();
     }
 
     /**
@@ -66,8 +61,8 @@ public class SupplyIconTask extends DefaultTask {
      */
     @TaskAction
     public void generateIcon() {
-        // todo implement whether to generate?
-//        ImageGenerator.generateIconFileForStringHash(Paths.get(destination.getAbsolutePath()), iconName);
+        // todo implement what to name the icon once it is in the launch4j resources dir
+        ImageGenerator.generateIconFileForStringHash(destination.toPath(), "icon.ico");
     }
 
     public File getDestination() {
@@ -86,21 +81,11 @@ public class SupplyIconTask extends DefaultTask {
         this.icon = icon;
     }
 
-    @Override
-    public boolean getEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public FileResolutionStrategy getResolve() {
+    public Supplier<File> getResolve() {
         return resolve;
     }
 
-    public void setResolve(FileResolutionStrategy resolve) {
+    public void setResolve(Supplier<File> resolve) {
         this.resolve = resolve;
     }
 

@@ -287,13 +287,14 @@ public class Launch4jHelperTask extends DefaultTask {
      * Set up the associated SupplyIconTask.
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
-     *
-     * todo set up dependencies
      */
     private void createSupplyIconTask() {
         supplyIconTask = getProject().getTasks().create(supplyIconTaskName(), SupplyIconTask.class);
         supplyIconTask.setDescription(supplyIconTaskDescription());
         supplyIconTask.setGroup(helperTaskConfigurationDetails.getGroup());
+
+        supplyIconTask.configureFromIconConfigDtls(iconConfigurationDetails);
+        supplyIconTask.setResolve(() -> iconConfigurationDetails.getResolve().resolve(this));
     }
 
     private String supplyIconTaskName() {
