@@ -15,7 +15,7 @@ import java.nio.file.Paths
  */
 class IdeIntegrationTest extends Specification {
 
-    def "debug ideIntegration project"() {
+    def "run :tasks"() {
         when:
             def result = GradleRunner.create()
                     .withProjectDir(Paths.get("ideIntegration").toFile())
@@ -26,7 +26,20 @@ class IdeIntegrationTest extends Specification {
 
         then:
             println result.output
-            result.task(":build").outcome == TaskOutcome.SUCCESS
+            result.task(":tasks").outcome == TaskOutcome.SUCCESS
+    }
 
+    def "run :configureExeResourcesConfigureProperties"() {
+        when:
+            def result = GradleRunner.create()
+                    .withProjectDir(Paths.get("ideIntegration").toFile())
+                    .withArguments('configureExeResourcesConfigureProperties', '--stacktrace')
+                    .withPluginClasspath()
+                    .withDebug(true)
+                    .build()
+
+        then:
+            println result.output
+            result.task(":configureExeResourcesConfigureProperties").outcome == TaskOutcome.SUCCESS
     }
 }

@@ -13,35 +13,16 @@ import java.io.File;
  * <p>
  * Details regarding locating or generating an icon.
  */
-public class IconConfigurationDetails implements AutoGeneratable {
+public class PropertiesConfigurationDetails {
 
     /**
      * Whether configuration of icon is enabled at all, whether by file or automatic generation.
      */
     private boolean enabled;
 
-    /**
-     * Strategy to invoke to locate an icon resource.
-     * By default, a default resolutions strategy (this can use closure parameters, or
-     * maybe a delegate so the default closure can be created with the extension).
-     * If null, the plugin will not search for an icon resource.
-     *
-     * If invocation of the resolutionStrategy returns null, the plugin
-     * will evaluate whether or not to auto-generate an icon.
-     */
     private FileResolutionStrategy resolve;
 
-    /**
-     * Whether configuration of icon is enabled at all, whether by file or automatic generation.
-     */
-    private boolean autoGenerate;
-
-    /**
-     * The name to use when generating an icon.
-     */
-    private String text;
-
-    public IconConfigurationDetails() {
+    public PropertiesConfigurationDetails() {
     }
 
     /**
@@ -49,29 +30,9 @@ public class IconConfigurationDetails implements AutoGeneratable {
      *
      * @param other the details to copy.
      */
-    public IconConfigurationDetails(IconConfigurationDetails other) {
+    public PropertiesConfigurationDetails(PropertiesConfigurationDetails other) {
         this.enabled = other.enabled;
         this.resolve = other.resolve;
-        this.autoGenerate = other.autoGenerate;
-        this.text = other.text;
-    }
-
-    @Override
-    public boolean getAutoGenerate() {
-        return autoGenerate;
-    }
-
-    @Override
-    public void setAutoGenerate(boolean autoGenerate) {
-        this.autoGenerate = autoGenerate;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     public boolean getEnabled() {

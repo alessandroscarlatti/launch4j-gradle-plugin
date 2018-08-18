@@ -1,6 +1,6 @@
 package com.scarlatti.gradle.launch4j.gen2.details;
 
-import java.io.File;
+import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -16,9 +16,9 @@ public class ManifestConfigurationDetails implements AutoGeneratable {
     private boolean autoGenerate;
 
     /**
-     * A specific location to use.  Takes precedence over auto-generation.
+     * A specific resolve to use.  Takes precedence over auto-generation.
      */
-    private File location;
+    private FileResolutionStrategy resolve;
 
     public ManifestConfigurationDetails() {
     }
@@ -29,7 +29,7 @@ public class ManifestConfigurationDetails implements AutoGeneratable {
      */
     public ManifestConfigurationDetails(ManifestConfigurationDetails other) {
         this.autoGenerate = other.autoGenerate;
-        this.location = other.location;
+        this.resolve = other.resolve;
     }
 
     @Override
@@ -42,11 +42,11 @@ public class ManifestConfigurationDetails implements AutoGeneratable {
         this.autoGenerate = autoGenerate;
     }
 
-    public File getLocation() {
-        return location;
+    public FileResolutionStrategy getResolve() {
+        return resolve;
     }
 
-    public void setLocation(File location) {
-        this.location = location;
+    public void setResolve(FileResolutionStrategy resolve) {
+        this.resolve = resolve;
     }
 }

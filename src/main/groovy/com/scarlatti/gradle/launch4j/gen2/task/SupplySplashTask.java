@@ -1,17 +1,10 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
-import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension;
-import com.scarlatti.gradle.launch4j.gen2.details.ManifestConfigurationDetails;
-import com.scarlatti.gradle.launch4j.gen2.details.SplashConfigurationDetails;
-import com.scarlatti.util.ImageGenerator;
-import groovy.lang.Closure;
-import groovy.lang.DelegatesTo;
+import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
-import java.nio.file.Paths;
-
-import static groovy.lang.Closure.DELEGATE_FIRST;
+import java.io.File;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -22,21 +15,44 @@ import static groovy.lang.Closure.DELEGATE_FIRST;
  */
 public class SupplySplashTask extends DefaultTask {
 
-    private String destination;
-    private SplashConfigurationDetails details;
+    private boolean autoGenerate;
 
-    public SupplySplashTask() {
-        details = Launch4jHelperExtension.defaultSplashConfigDtls();
-    }
+    /**
+     * A specific location to use.  Takes precedence over auto-generation;
+     */
+    private FileResolutionStrategy resolve;
 
-    public void details(@DelegatesTo(value = ManifestConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(details);
-        config.setResolveStrategy(DELEGATE_FIRST);
-        config.call();
-    }
+    /**
+     * The text to use when generating a splash.
+     */
+    private String text;
 
     @TaskAction
     public void generateSplash() {
-        ImageGenerator.generateSplashFileForStringHash(Paths.get(destination), details.getName());
+//        ImageGenerator.generateSplashFileForStringHash(Paths.get(destination), details.getName());
+    }
+
+    public boolean getAutoGenerate() {
+        return autoGenerate;
+    }
+
+    public void setAutoGenerate(boolean autoGenerate) {
+        this.autoGenerate = autoGenerate;
+    }
+
+    public FileResolutionStrategy getResolve() {
+        return resolve;
+    }
+
+    public void setResolve(FileResolutionStrategy resolve) {
+        this.resolve = resolve;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

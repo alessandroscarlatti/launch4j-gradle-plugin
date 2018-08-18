@@ -1,23 +1,20 @@
 package com.scarlatti.gradle.launch4j.gen2;
 
 import com.scarlatti.gradle.launch4j.gen2.details.*;
-import com.scarlatti.gradle.launch4j.gen2.task.ConfigureFromResourcesTask;
-import com.scarlatti.gradle.launch4j.gen2.task.SupplyIconTask;
 import com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.internal.impldep.com.fasterxml.jackson.databind.ser.std.ObjectArraySerializer;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static groovy.lang.Closure.DELEGATE_FIRST;
 
@@ -44,20 +41,32 @@ public class Launch4jHelperExtension {
     private ManifestConfigurationDetails manifestConfigurationDetails;
     private SplashConfigurationDetails splashConfigurationDetails;
     private MainClassConfigurationDetails mainClassConfigurationDetails;
+    private PropertiesConfigurationDetails propertiesConfigurationDetails;
     private ResourcesConfigurationDetails resourcesConfigurationDetails;
     private HelperTaskConfigurationDetails helperTaskConfigurationDetails;
 
     static final String DEFAULT_APP_NAME = "launch4jApp";
     static final String DEFAULT_HELPER_TASK_GROUP = "launch4jHelper";
     static final String DEFAULT_LAUNCH4J_TASK_VARIABLE = "#task";
-    static final String DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE = "Configures and generates resources for the " + DEFAULT_LAUNCH4J_TASK_VARIABLE + " task.";
-    static final String DEFAULT_HELPER_TASK_DESCRIPTION = "Configures and generates resources for a Launch4j task.";
+    static final String DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE =
+        "Configures and generates resources for the " + DEFAULT_LAUNCH4J_TASK_VARIABLE + " task.";
+    static final String DEFAULT_HELPER_TASK_DESCRIPTION =
+        "Configures and generates resources for a Launch4j task.";
 
     static final String DEFAULT_RESOURCES_DIR = "launch4j";
     static final String DEFAULT_ICON_FILE_NAME = "icon.ico";
     static final String DEFAULT_SPLASH_FILE_NAME = "splash.bmp";
-    static final String DEFAULT_MANIFEST_FILE_NAME = "application.manifests";
+    static final String DEFAULT_MANIFEST_FILE_NAME = "application.manifest";
     static final String DEFAULT_LAUNCH4J_PROPERTIES_FILE_NAME = "launch4j.properties";
+
+    public static final String DEFAULT_CONFIGURE_RESOURCES_TASK_DESCRIPTION_TEMPLATE =
+        "Configures resource tasks to support the " + DEFAULT_LAUNCH4J_TASK_VARIABLE + " task.";
+    public static final String DEFAULT_SUPPLY_ICON_TASK_DESCRIPTION_TEMPLATE =
+        "Supplies an icon resource for the " + DEFAULT_LAUNCH4J_TASK_VARIABLE + " task.";
+    public static final String DEFAULT_SUPPLY_SPLASH_TASK_DESCRIPTION_TEMPLATE =
+        "Supplies a splash screen resource for the " + DEFAULT_LAUNCH4J_TASK_VARIABLE + " task.";
+    public static final String DEFAULT_SUPPLY_MANIFEST_TASK_DESCRIPTION_TEMPLATE =
+        "Supplies an icon resource for the " + DEFAULT_LAUNCH4J_TASK_VARIABLE + " task.";
 
     public Launch4jHelperExtension(Project project) {
         this.project = project;
@@ -65,6 +74,7 @@ public class Launch4jHelperExtension {
         manifestConfigurationDetails = defaultManifestConfigDtls();
         splashConfigurationDetails = defaultSplashConfigDtls();
         mainClassConfigurationDetails = defaultMainClassConfigDtls();
+        propertiesConfigurationDetails = defaultPropertiesConfigDtls();
         resourcesConfigurationDetails = defaultResourcesConfigDtls();
         helperTaskConfigurationDetails = defaultHelperTaskConfigDtls();
     }
@@ -74,6 +84,7 @@ public class Launch4jHelperExtension {
      *
      * @param task the launch4jTask to help.  For the time being, a launch4jLibraryTask.
      * @return the newly created helper task.
+     * @deprecated in favor of creating a stand-alone helper task.
      */
     public Launch4jHelperTask help(Task task) {
         validateTaskIsLaunch4jLibraryTask(task);
@@ -104,6 +115,7 @@ public class Launch4jHelperExtension {
      *
      * @param task   the launch4jTask
      * @param config the configuration closure for the launch4jHelperTask
+     *               @deprecated in favor of creating a standalone helper task.
      */
     public void help(Task task, @DelegatesTo(value = Launch4jHelperTask.class, strategy = DELEGATE_FIRST) Closure config) {
         // create the task
@@ -154,6 +166,15 @@ public class Launch4jHelperExtension {
      */
     public MainClassConfigurationDetails getMainClass() {
         return mainClassConfigurationDetails;
+    }
+
+    /**
+     * Public api to access the properties details.
+     *
+     * @return the properties details.
+     */
+    public PropertiesConfigurationDetails getProperties() {
+        return propertiesConfigurationDetails;
     }
 
     /**
@@ -230,6 +251,17 @@ public class Launch4jHelperExtension {
     }
 
     /**
+     * Public api to configure the properties details.
+     *
+     * @param config the closure to apply.
+     */
+    public void properties(@DelegatesTo(value = PropertiesConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(propertiesConfigurationDetails);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+    }
+
+    /**
      * Public api to configure the helper task details.
      *
      * @param config the closure to apply.
@@ -244,14 +276,14 @@ public class Launch4jHelperExtension {
         IconConfigurationDetails details = new IconConfigurationDetails();
         details.setEnabled(true);
         details.setAutoGenerate(true);
-        details.setName(DEFAULT_APP_NAME);
+        details.setText(DEFAULT_APP_NAME);
         return details;
     }
 
     public static SplashConfigurationDetails defaultSplashConfigDtls() {
         SplashConfigurationDetails details = new SplashConfigurationDetails();
         details.setAutoGenerate(true);
-        details.setName(DEFAULT_APP_NAME);
+        details.setText(DEFAULT_APP_NAME);
         return details;
     }
 
@@ -267,6 +299,13 @@ public class Launch4jHelperExtension {
         return details;
     }
 
+    private PropertiesConfigurationDetails defaultPropertiesConfigDtls() {
+        PropertiesConfigurationDetails details = new PropertiesConfigurationDetails();
+        details.setEnabled(true);
+        details.setResolve(defaultLaunch4jPropertiesResolutionStrategy());
+        return details;
+    }
+
     private ResourcesConfigurationDetails defaultResourcesConfigDtls() {
         ResourcesConfigurationDetails details = new ResourcesConfigurationDetails();
         details.setResourcesDir(project.getProjectDir().toPath().resolve(DEFAULT_RESOURCES_DIR).toFile());
@@ -274,11 +313,6 @@ public class Launch4jHelperExtension {
         details.setSplashFileName(DEFAULT_SPLASH_FILE_NAME);
         details.setManifestFileName(DEFAULT_MANIFEST_FILE_NAME);
         details.setLaunch4jPropertiesFileName(DEFAULT_LAUNCH4J_PROPERTIES_FILE_NAME);
-        // todo could set the default resource resolution strategies in a constructor.
-        // another option is to just override all the set methods to also set the associated
-        // resolution strategy.  Then there would probably have to be a special "internal"
-        // setter method.
-
         return details;
     }
 
@@ -293,30 +327,32 @@ public class Launch4jHelperExtension {
     }
 
     public FileResolutionStrategy defaultLaunch4jPropertiesResolutionStrategy() {
-        return new SimpleDirFileResolutionStrategy(
-            resourcesConfigurationDetails.getResourcesDir().toPath(),
-            resourcesConfigurationDetails.getLaunch4jPropertiesFileName()
+        return new DynamicDirFileResolutionStrategy(
+            // todo the resources task has no properties filled in...
+            // getResourcesDir() is null
+            task -> task.getResources().getResourcesDir().toPath(),
+            task -> task.getResources().getLaunch4jPropertiesFileName()
         );
     }
 
     public FileResolutionStrategy defaultIconResolutionStrategy() {
-        return new SimpleDirFileResolutionStrategy(
-            resourcesConfigurationDetails.getResourcesDir().toPath(),
-            resourcesConfigurationDetails.getIconFileName()
+        return new DynamicDirFileResolutionStrategy(
+            task -> task.getResources().getResourcesDir().toPath(),
+            task -> task.getResources().getIconFileName()
         );
     }
 
     public FileResolutionStrategy defaultSplashResolutionStrategy() {
-        return new SimpleDirFileResolutionStrategy(
-            resourcesConfigurationDetails.getResourcesDir().toPath(),
-            resourcesConfigurationDetails.getSplashFileName()
+        return new DynamicDirFileResolutionStrategy(
+            task -> task.getResources().getResourcesDir().toPath(),
+            task -> task.getResources().getSplashFileName()
         );
     }
 
     public FileResolutionStrategy defaultManifestResolutionStrategy() {
-        return new SimpleDirFileResolutionStrategy(
-            resourcesConfigurationDetails.getResourcesDir().toPath(),
-            resourcesConfigurationDetails.getManifestFileName()
+        return new DynamicDirFileResolutionStrategy(
+            task -> task.getResources().getResourcesDir().toPath(),
+            task -> task.getResources().getManifestFileName()
         );
     }
 
@@ -351,22 +387,26 @@ public class Launch4jHelperExtension {
         return helperTask;
     }
 
-    private static class SimpleDirFileResolutionStrategy implements FileResolutionStrategy {
+    private static class DynamicDirFileResolutionStrategy implements FileResolutionStrategy {
 
-        private Path dir;
-        private String fileName;
+        private Function<Launch4jHelperTask, Path> dir;
+        private Function<Launch4jHelperTask, String> fileName;
 
-        SimpleDirFileResolutionStrategy(Path dir, String fileName) {
-            Objects.requireNonNull(dir, "Directory must not be null");
+        DynamicDirFileResolutionStrategy(
+            Function<Launch4jHelperTask, Path> dir,
+            Function<Launch4jHelperTask, String> fileName
+        ) {
+            Objects.requireNonNull(dir, "Cannot have null dir function");
+            Objects.requireNonNull(fileName, "Cannot have null file name function");
             this.dir = dir;
             this.fileName = fileName;
         }
 
         @Override
-        public File resolve(Launch4jHelperTask launch4jHelperTask) {
-            Path propertiesPath = dir.resolve(fileName);
-            if (Files.exists(propertiesPath)) {
-                return propertiesPath.toFile();
+        public File resolve(Launch4jHelperTask task) {
+            Path path = dir.apply(task).resolve(fileName.apply(task));
+            if (Files.exists(path)) {
+                return path.toFile();
             }
 
             return null;

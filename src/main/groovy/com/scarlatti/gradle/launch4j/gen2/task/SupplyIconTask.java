@@ -1,5 +1,6 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
+import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import com.scarlatti.util.ImageGenerator;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
@@ -28,15 +29,33 @@ public class SupplyIconTask extends DefaultTask {
     @InputFile
     private File icon;
 
-    @Input
-    private String iconName;
+    /**
+     * Whether configuration of icon is enabled at all, whether by file or automatic generation.
+     */
+    private boolean enabled;
 
-    @Input
+    /**
+     * Strategy to invoke to locate an icon resource.
+     * By default, a default resolutions strategy (this can use closure parameters, or
+     * maybe a delegate so the default closure can be created with the extension).
+     * If null, the plugin will not search for an icon resource.
+     *
+     * If invocation of the resolutionStrategy returns null, the plugin
+     * will evaluate whether or not to auto-generate an icon.
+     */
+    private FileResolutionStrategy resolve;
+
+    /**
+     * Whether configuration of icon is enabled at all, whether by file or automatic generation.
+     */
     private boolean autoGenerate;
 
-    private Launch4jHelperTask helperTask;
+    /**
+     * The name to use when generating an icon.
+     */
+    private String text;
 
-    private static final String NAME_INPUT = "baseIconName";
+    private Launch4jHelperTask helperTask;
 
     public SupplyIconTask() {
     }
@@ -48,10 +67,7 @@ public class SupplyIconTask extends DefaultTask {
     @TaskAction
     public void generateIcon() {
         // todo implement whether to generate?
-
-
-
-        ImageGenerator.generateIconFileForStringHash(Paths.get(destination.getAbsolutePath()), iconName);
+//        ImageGenerator.generateIconFileForStringHash(Paths.get(destination.getAbsolutePath()), iconName);
     }
 
     public File getDestination() {
@@ -70,12 +86,22 @@ public class SupplyIconTask extends DefaultTask {
         this.icon = icon;
     }
 
-    public String getIconName() {
-        return iconName;
+    @Override
+    public boolean getEnabled() {
+        return enabled;
     }
 
-    public void setIconName(String iconName) {
-        this.iconName = iconName;
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public FileResolutionStrategy getResolve() {
+        return resolve;
+    }
+
+    public void setResolve(FileResolutionStrategy resolve) {
+        this.resolve = resolve;
     }
 
     public boolean getAutoGenerate() {
@@ -84,5 +110,13 @@ public class SupplyIconTask extends DefaultTask {
 
     public void setAutoGenerate(boolean autoGenerate) {
         this.autoGenerate = autoGenerate;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

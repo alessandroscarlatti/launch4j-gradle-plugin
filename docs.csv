@@ -1,5 +1,5 @@
 ﻿Property Name,Default Value,Opinion,Comment
-String outputDir,"""launch4j""",${output} + ${nameOfExeSpec},This is the plugin's working path relative to $buildDir. Use the distribution plugin or a custom implementation to copy necessary files to an output location instead of adjusting this property.
+String outputDir,"""launch4j""",${output} + ${nameOfExeSpec},This is the plugin's working path relative to $buildDir. Use the distribution plugin or a custom implementation to copy necessary files to an output resolve instead of adjusting this property.
 String libraryDir,"""lib""",will continue to use lib,
 Object copyConfigurable,,,
 Set<String> classpath,[],,Use this property to override the classpath or configure it on you own if the copyConfigurable does not provide the results you want

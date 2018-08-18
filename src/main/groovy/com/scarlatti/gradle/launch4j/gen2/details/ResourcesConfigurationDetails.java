@@ -1,7 +1,5 @@
 package com.scarlatti.gradle.launch4j.gen2.details;
 
-import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
-
 import java.io.File;
 
 /**
@@ -20,10 +18,6 @@ public class ResourcesConfigurationDetails {
     private String iconFileName;
     private String splashFileName;
     private String manifestFileName;
-    private FileResolutionStrategy launch4jPropertiesResolutionStrategy;
-    private FileResolutionStrategy iconResolutionStrategy;
-    private FileResolutionStrategy splashResolutionStrategy;
-    private FileResolutionStrategy manifestResolutionStrategy;
 
     public ResourcesConfigurationDetails() {
     }
@@ -39,22 +33,7 @@ public class ResourcesConfigurationDetails {
         this.iconFileName = other.iconFileName;
         this.splashFileName = other.splashFileName;
         this.manifestFileName = other.manifestFileName;
-        this.launch4jPropertiesResolutionStrategy = other.launch4jPropertiesResolutionStrategy;
-        this.iconResolutionStrategy = other.iconResolutionStrategy;
-        this.splashResolutionStrategy = other.splashResolutionStrategy;
-        this.manifestResolutionStrategy = other.manifestResolutionStrategy;
     }
-
-    // set file name?
-    // use current resource directory for path
-    //
-    // set file path?
-    // keep all other files the same.
-    //
-    // set resourcesDir?
-    // keep any paths configured using name only.
-    // replace paths configured by path
-
 
     public File getResourcesDir() {
         return resourcesDir;
@@ -94,13 +73,5 @@ public class ResourcesConfigurationDetails {
 
     public void setManifestFileName(String manifestFileName) {
         this.manifestFileName = manifestFileName;
-    }
-
-    public FileResolutionStrategy getLaunch4jPropertiesResolutionStrategy() {
-        return launch4jPropertiesResolutionStrategy;
-    }
-
-    public void setLaunch4jPropertiesResolutionStrategy(FileResolutionStrategy launch4jPropertiesResolutionStrategy) {
-        this.launch4jPropertiesResolutionStrategy = launch4jPropertiesResolutionStrategy;
     }
 }

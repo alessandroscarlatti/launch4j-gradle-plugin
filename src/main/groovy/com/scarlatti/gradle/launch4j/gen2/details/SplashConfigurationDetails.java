@@ -1,6 +1,6 @@
 package com.scarlatti.gradle.launch4j.gen2.details;
 
-import java.io.File;
+import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -16,17 +16,18 @@ public class SplashConfigurationDetails implements AutoGeneratable {
     private boolean autoGenerate;
 
     /**
-     * The name to use when generating a splash.
-     */
-    private String name;
-
-    /**
      * A specific location to use.  Takes precedence over auto-generation;
      */
-    private File location;
+    private FileResolutionStrategy resolve;
+
+    /**
+     * The text to use when generating a splash.
+     */
+    private String text;
 
     public SplashConfigurationDetails() {
     }
+
 
     /**
      * Copy constructor.
@@ -34,8 +35,8 @@ public class SplashConfigurationDetails implements AutoGeneratable {
      */
     public SplashConfigurationDetails(SplashConfigurationDetails other) {
         this.autoGenerate = other.autoGenerate;
-        this.name = other.name;
-        this.location = other.location;
+        this.resolve = other.resolve;
+        this.text = other.text;
     }
 
     @Override
@@ -48,19 +49,19 @@ public class SplashConfigurationDetails implements AutoGeneratable {
         this.autoGenerate = autoGenerate;
     }
 
-    public File getLocation() {
-        return location;
+    public FileResolutionStrategy getResolve() {
+        return resolve;
     }
 
-    public void setLocation(File location) {
-        this.location = location;
+    public void setResolve(FileResolutionStrategy resolve) {
+        this.resolve = resolve;
     }
 
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setText(String text) {
+        this.text = text;
     }
 }

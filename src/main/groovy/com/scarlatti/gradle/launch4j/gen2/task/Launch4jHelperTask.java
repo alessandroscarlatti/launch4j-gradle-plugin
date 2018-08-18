@@ -32,10 +32,13 @@ public class Launch4jHelperTask extends DefaultTask {
     private ManifestConfigurationDetails manifestConfigurationDetails;
     private SplashConfigurationDetails splashConfigurationDetails;
     private MainClassConfigurationDetails mainClassConfigurationDetails;
+    private PropertiesConfigurationDetails propertiesConfigurationDetails;
     private ResourcesConfigurationDetails resourcesConfigurationDetails;
     private HelperTaskConfigurationDetails helperTaskConfigurationDetails;
 
+    private ConfigureLaunch4jFromPropertiesTask configurePropertiesTask;
     private ConfigureFromResourcesTask configureFromResourcesTask;
+    private FindMainClassTask findMainClassTask;
     private SupplyIconTask supplyIconTask;
     private SupplySplashTask supplySplashTask;
     private SupplyManifestTask supplyManifestTask;
@@ -49,14 +52,14 @@ public class Launch4jHelperTask extends DefaultTask {
         this.extension = (Launch4jHelperExtension) getProject().getExtensions().findByName(LAUNCH4J_HELPER_EXTENSION_NAME);
 
         // copy the details from the extension
+        // todo create the tasks and
         iconConfigurationDetails = new IconConfigurationDetails(extension.getIcon());
         manifestConfigurationDetails = new ManifestConfigurationDetails(extension.getManifest());
         splashConfigurationDetails = new SplashConfigurationDetails(extension.getSplash());
         mainClassConfigurationDetails = new MainClassConfigurationDetails(extension.getMainClass());
+        propertiesConfigurationDetails = new PropertiesConfigurationDetails(extension.getProperties());
         resourcesConfigurationDetails = new ResourcesConfigurationDetails(extension.getResources());
         helperTaskConfigurationDetails = new HelperTaskConfigurationDetails(extension.getMeta());
-
-        // todo configure the associated supply tasks...
 
         applyMeta();
     }
@@ -160,9 +163,12 @@ public class Launch4jHelperTask extends DefaultTask {
         // set up associated tasks.
         this.launch4jTask = (Launch4jLibraryTask) launch4jTask;
         removeAssociatedTasks();
+        createConfigureLaunch4jPropertiesTask();
+        createConfigureFromResourcesTask();
         createSupplyIconTask();
         createSupplySplashTask();
         createSupplyManifestTask();
+        createFindMainClassTask();
         buildTasksDependencies();
 
         // todo declare task inputs if any...
@@ -186,55 +192,158 @@ public class Launch4jHelperTask extends DefaultTask {
     }
 
     private void buildTasksDependencies() {
+        launch4jTask.dependsOn(this);
         this.dependsOn(supplyIconTask);
         this.dependsOn(supplySplashTask);
         this.dependsOn(supplyManifestTask);
+        this.dependsOn(findMainClassTask);
 
         supplyIconTask.dependsOn(configureFromResourcesTask);
         supplySplashTask.dependsOn(configureFromResourcesTask);
         supplyManifestTask.dependsOn(configureFromResourcesTask);
+        findMainClassTask.dependsOn(configureFromResourcesTask);
 
-        launch4jTask.dependsOn(this);
+        configureFromResourcesTask.dependsOn(configurePropertiesTask);
+    }
+
+    /**
+     * Set up the associated ConfigureLaunch4jPropertiesTask.
+     *
+     * Only call when we actually have a launch4j task associated to this HelperTask,
+     * since the names and descriptions of these tasks depend on the launch4j task.
+     *
+     * todo set up dependencies
+     */
+    private void createConfigureLaunch4jPropertiesTask() {
+        configurePropertiesTask = getProject().getTasks().create(
+            supplyConfigureLaunch4jPropertiesTaskName(),
+            ConfigureLaunch4jFromPropertiesTask.class
+        );
+
+        configurePropertiesTask.setDescription(supplyConfigureLaunch4jPropertiesTaskDescription());
+        configurePropertiesTask.setGroup(helperTaskConfigurationDetails.getGroup());
+
+        configurePropertiesTask.setHelperTask(this);
+        configurePropertiesTask.configureFromPropertiesConfigDtls(extension.getProperties());
+    }
+
+    private String supplyConfigureLaunch4jPropertiesTaskName() {
+        return getName() + "ConfigureProperties";
+    }
+
+    private String supplyConfigureLaunch4jPropertiesTaskDescription() {
+        return "Configure properties source for the " + launch4jTask.getName() + " task.";
     }
 
     /**
      * Set up the associated ConfigureFromResourcesTask.
+     * Only call when we actually have a launch4j task associated to this HelperTask,
+     * since the names and descriptions of these tasks depend on the launch4j task.
      *
-     * todo use generated task name...
      * todo set up dependencies
      */
     private void createConfigureFromResourcesTask() {
-        configureFromResourcesTask = getProject().getTasks().create("configureFromResources", ConfigureFromResourcesTask.class);
+        configureFromResourcesTask = getProject().getTasks().create(
+            supplyConfigureResourcesTaskName(),
+            ConfigureFromResourcesTask.class
+        );
+        configureFromResourcesTask.setDescription(supplyConfigureResourcesTaskDescription());
+        configureFromResourcesTask.setGroup(helperTaskConfigurationDetails.getGroup());
+
+        configureFromResourcesTask.setHelperTask(this);
+        configureFromResourcesTask.configureFromResourcesDtls(resourcesConfigurationDetails);
+    }
+
+    private String supplyConfigureResourcesTaskName() {
+        return getName() + "ConfigureResources";
+    }
+
+    private String supplyConfigureResourcesTaskDescription() {
+        return "Configure resources for the " + launch4jTask.getName() + " task.";
+    }
+
+    /**
+     * Set up the associated findMainClassTask.
+     * Only call when we actually have a launch4j task associated to this HelperTask,
+     * since the names and descriptions of these tasks depend on the launch4j task.
+     *
+     * todo set up dependencies
+     */
+    private void createFindMainClassTask() {
+        findMainClassTask = getProject().getTasks().create(findMainClassTaskName(), FindMainClassTask.class);
+        findMainClassTask.setDescription(findMainClassTaskDescription());
+        findMainClassTask.setGroup(helperTaskConfigurationDetails.getGroup());
+    }
+
+    private String findMainClassTaskName() {
+        return getName() + "FindMainClass";
+    }
+
+    private String findMainClassTaskDescription() {
+        return "Find an main class for the " + launch4jTask.getName() + " task.";
     }
 
     /**
      * Set up the associated SupplyIconTask.
+     * Only call when we actually have a launch4j task associated to this HelperTask,
+     * since the names and descriptions of these tasks depend on the launch4j task.
      *
-     * todo use generated task name...
      * todo set up dependencies
      */
     private void createSupplyIconTask() {
-        supplyIconTask = getProject().getTasks().create("supplyIcon", SupplyIconTask.class);
+        supplyIconTask = getProject().getTasks().create(supplyIconTaskName(), SupplyIconTask.class);
+        supplyIconTask.setDescription(supplyIconTaskDescription());
+        supplyIconTask.setGroup(helperTaskConfigurationDetails.getGroup());
+    }
+
+    private String supplyIconTaskName() {
+        return getName() + "SupplyIcon";
+    }
+
+    private String supplyIconTaskDescription() {
+        return "Supply an icon resource for the " + launch4jTask.getName() + " task.";
     }
 
     /**
      * Set up the associated SupplySplashTask.
+     * Only call when we actually have a launch4j task associated to this HelperTask,
+     * since the names and descriptions of these tasks depend on the launch4j task.
      *
-     * todo use generated task name...
      * todo set up dependencies
      */
     private void createSupplySplashTask() {
-        supplySplashTask = getProject().getTasks().create("supplySplash", SupplySplashTask.class);
-    }    
+        supplySplashTask = getProject().getTasks().create(supplySplashTaskName(), SupplySplashTask.class);
+        supplySplashTask.setDescription(supplySplashTaskDescription());
+        supplySplashTask.setGroup(helperTaskConfigurationDetails.getGroup());
+    }
+
+    private String supplySplashTaskName() {
+        return getName() + "SupplySplash";
+    }
+
+    private String supplySplashTaskDescription() {
+        return "Supply a splash screen resource for the " + launch4jTask.getName() + " task.";
+    }
     
     /**
      * Set up the associated SupplyManifestTask.
+     * Only call when we actually have a launch4j task associated to this HelperTask,
+     * since the names and descriptions of these tasks depend on the launch4j task.
      *
-     * todo use generated task name...
      * todo set up dependencies
      */
     private void createSupplyManifestTask() {
-        supplyManifestTask = getProject().getTasks().create("supplyManifest", SupplyManifestTask.class);
+        supplyManifestTask = getProject().getTasks().create(supplyManifestTaskName(), SupplyManifestTask.class);
+        supplyManifestTask.setDescription(supplyManifestTaskDescription());
+        supplyManifestTask.setGroup(helperTaskConfigurationDetails.getGroup());
+    }
+
+    private String supplyManifestTaskName() {
+        return getName() + "SupplyManifest";
+    }
+
+    private String supplyManifestTaskDescription() {
+        return "Supply a manifest screen resource for the " + launch4jTask.getName() + " task.";
     }
 
     public SupplyIconTask getSupplyIconTask() {
@@ -254,106 +363,126 @@ public class Launch4jHelperTask extends DefaultTask {
     }
 
     /**
-     * Public api to access the icon details.
+     * Public api to access the icon task.
      *
-     * @return the icon details
+     * @return the icon task
      */
-    public IconConfigurationDetails getIcon() {
-        return iconConfigurationDetails;
+    public SupplyIconTask getIcon() {
+        return supplyIconTask;
     }
 
     /**
-     * Public api to access the manifest details.
+     * Public api to access the manifest task.
      *
-     * @return the manifest details.
+     * @return the manifest task.
      */
-    public ManifestConfigurationDetails getManifest() {
-        return manifestConfigurationDetails;
+    public SupplyManifestTask getManifest() {
+        return supplyManifestTask;
     }
 
     /**
-     * Public api to access the splash details.
+     * Public api to access the splash task.
      *
-     * @return the splash details.
+     * @return the splash task.
      */
-    public SplashConfigurationDetails getSplash() {
-        return splashConfigurationDetails;
+    public SupplySplashTask getSplash() {
+        return supplySplashTask;
     }
 
 
     /**
-     * Public api to access the main class details.
+     * Public api to access the main class task.
      *
-     * @return the main class details.
+     * @return the main class task.
      */
-    public MainClassConfigurationDetails getMainClass() {
-        return mainClassConfigurationDetails;
+    public FindMainClassTask getMainClass() {
+        return findMainClassTask;
     }
 
     /**
-     * Public api to access the resources details.
+     * Public api to access the properties task.
      *
-     * @return the resources details.
+     * @return the properties task.
      */
-    public ResourcesConfigurationDetails getResources() {
-        return resourcesConfigurationDetails;
+    public ConfigureLaunch4jFromPropertiesTask getProperties() {
+        return configurePropertiesTask;
     }
 
     /**
-     * Public api to access the helper task details.
+     * Public api to access the resources task.
      *
-     * @return the helper task details.
+     * @return the resources task.
+     */
+    public ConfigureFromResourcesTask getResources() {
+        return configureFromResourcesTask;
+    }
+
+    /**
+     * Public api to access the helper task task.
+     *
+     * @return the helper task task.
      */
     public HelperTaskConfigurationDetails getMeta() {
         return helperTaskConfigurationDetails;
     }
 
     /**
-     * Public api to configure the icon details.
+     * Public api to configure the icon task.
      *
      * @param config the closure to apply.
      */
-    public void icon(@DelegatesTo(value = IconConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(iconConfigurationDetails);
+    public void icon(@DelegatesTo(value = SupplyIconTask.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(supplyIconTask);
         config.setResolveStrategy(DELEGATE_FIRST);
         config.call();
     }
 
     /**
-     * Public api to configure the manifest details.
+     * Public api to configure the manifest task.
      *
      * @param config the closure to apply.
      */
-    public void manifest(@DelegatesTo(value = ManifestConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(manifestConfigurationDetails);
+    public void manifest(@DelegatesTo(value = SupplyManifestTask.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(supplyManifestTask);
         config.setResolveStrategy(DELEGATE_FIRST);
         config.call();
     }
 
     /**
-     * Public api to configure the splash details.
+     * Public api to configure the splash task.
      *
      * @param config the closure to apply.
      */
-    public void splash(@DelegatesTo(value = SplashConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(splashConfigurationDetails);
+    public void splash(@DelegatesTo(value = SupplySplashTask.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(supplySplashTask);
         config.setResolveStrategy(DELEGATE_FIRST);
         config.call();
     }
 
     /**
-     * Public api to configure the mainClass details.
+     * Public api to configure the mainClass task.
      *
      * @param config the closure to apply.
      */
-    public void mainClass(@DelegatesTo(value = MainClassConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(mainClassConfigurationDetails);
+    public void mainClass(@DelegatesTo(value = FindMainClassTask.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(findMainClassTask);
         config.setResolveStrategy(DELEGATE_FIRST);
         config.call();
     }
 
     /**
-     * Public api to configure the resources details.
+     * Public api to configure the properties task.
+     *
+     * @param config the closure to apply.
+     */
+    public void properties(@DelegatesTo(value = ConfigureLaunch4jFromPropertiesTask.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(configurePropertiesTask);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+    }
+
+    /**
+     * Public api to configure the resources task.
      *
      * @param config the closure to apply.
      */
@@ -364,7 +493,7 @@ public class Launch4jHelperTask extends DefaultTask {
     }
 
     /**
-     * Public api to configure the helper task details.
+     * Public api to configure the helper task.
      *
      * @param config the closure to apply.
      */

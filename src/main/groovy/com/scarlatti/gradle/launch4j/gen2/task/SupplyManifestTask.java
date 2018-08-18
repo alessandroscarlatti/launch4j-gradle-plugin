@@ -1,5 +1,6 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
+import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension;
 import com.scarlatti.gradle.launch4j.gen2.details.IconConfigurationDetails;
 import com.scarlatti.gradle.launch4j.gen2.details.ManifestConfigurationDetails;
@@ -19,21 +20,32 @@ import static groovy.lang.Closure.DELEGATE_FIRST;
  */
 public class SupplyManifestTask extends DefaultTask {
 
-    private String destination;
-    private ManifestConfigurationDetails details;
+    private boolean autoGenerate;
 
-    public SupplyManifestTask() {
-        details = Launch4jHelperExtension.defaultManifestConfigDtls();
-    }
+    /**
+     * A specific resolve to use.  Takes precedence over auto-generation.
+     */
+    private FileResolutionStrategy resolve;
 
-    public void details(@DelegatesTo(value = ManifestConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(details);
-        config.setResolveStrategy(DELEGATE_FIRST);
-        config.call();
-    }
 
     @TaskAction
     public void generateManifest() {
-        details = Launch4jHelperExtension.defaultManifestConfigDtls();
+
+    }
+
+    public boolean getAutoGenerate() {
+        return autoGenerate;
+    }
+
+    public void setAutoGenerate(boolean autoGenerate) {
+        this.autoGenerate = autoGenerate;
+    }
+
+    public FileResolutionStrategy getResolve() {
+        return resolve;
+    }
+
+    public void setResolve(FileResolutionStrategy resolve) {
+        this.resolve = resolve;
     }
 }

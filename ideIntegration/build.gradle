@@ -14,17 +14,17 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'com.scarlatti.launch4j.integration'
 
-task standardExe(type: Launch4jTemplateTask) {
-    manifest {
-        base = asInvoker()
-    }
-}
+//task standardExe(type: Launch4jTemplateTask) {
+//    manifest {
+//        base = asInvoker()
+//    }
+//}
 
-task testTask(type:  Launch4jLibraryTask)
-
-launch4jTemplate {
-    baseResourcesDir = file("asdf")
-}
+//task testTask(type:  Launch4jLibraryTask)
+//
+//launch4jTemplate {
+//    baseResourcesDir = file("asdf")
+//}
 
 //launch4jTemplate.configure(testTask)
 //
@@ -78,24 +78,24 @@ launch4jTemplate {
 //    // will implement the same methods!
 //}
 
-task standardConsoleExe(type: Launch4jTemplateTask) {
-    resourcesDir = file('exeConsole')
-}
-
-task runExe() {
-    doLast {
-        def p = "${buildDir}/launch4j/standardExe/standardExe.exe".execute()
-        p.waitFor()
-        println ">>> process output:"
-        println p.inputStream.text
-    }
-}
-
-task launch4jTask(type: Launch4jTemplateTask) {
-    config {
-        internalName = "launch4jTask"
-    }
-}
+//task standardConsoleExe(type: Launch4jTemplateTask) {
+//    resourcesDir = file('exeConsole')
+//}
+//
+//task runExe() {
+//    doLast {
+//        def p = "${buildDir}/launch4j/standardExe/standardExe.exe".execute()
+//        p.waitFor()
+//        println ">>> process output:"
+//        println p.inputStream.text
+//    }
+//}
+//
+//task launch4jTask(type: Launch4jTemplateTask) {
+//    config {
+//        internalName = "launch4jTask"
+//    }
+//}
 
 //task launch4jTask2(type: Launch4jLibraryTask) {
 //    println "this: $it"
@@ -116,12 +116,16 @@ launch4jHelper {
     }
 
     splash {
-        location = file("Qwer")
+        resolve = { return file("Qwer") }
     }
 
     mainClass {
         findMainClass = false
         mainClassName = "asdf"
+    }
+
+    properties {
+
     }
 }
 
@@ -129,38 +133,77 @@ launch4jHelper {
 //
 //}
 
-launch4jHelper.help(createExe)
+//launch4jHelper.help(createExe)
 
-launch4jHelper.help(createExe) {
+// todo take away this functionality
+// it is causing confusion...
+//launch4jHelper.help(createExe) {
+//    icon {
+//        autoGenerate = false
+//    }
+//
+//    mainClass {
+//        mainClassName = "asdf"
+//    }
+//
+//    mainClass.mainClassName = "qwer"
+//
+//    meta {
+//        descriptionTemplate = "#task"
+//    }
+//
+//    meta.descriptionTemplate = "qwer"
+//}
+
+//launch4jHelper.helper(createExe).icon.autoGenerate = false
+//
+task configureExeResources(type: Launch4jHelperTask) {
+    launch4jTask createExe
+
     icon {
+        text = "asdf"
+        resolve {
+
+        }
+    }
+
+    splash {
+        text = "asdf"
+        resolve {
+
+        }
+    }
+
+    manifest {
         autoGenerate = false
+        resolve {
+
+        }
     }
 
     mainClass {
-        mainClassName = "asdf"
+
     }
 
-    mainClass.mainClassName = "qwer"
-
-    meta {
-        descriptionTemplate = "#task"
+    properties {
+        resolve = {
+            file("exe/launch4j.properties")
+        }
     }
 
-    meta.descriptionTemplate = "qwer"
-}
-
-launch4jHelper.helper(createExe).icon.autoGenerate = false
-
-task silly(type: Launch4jHelperTask) {
-    meta {
-        descriptionTemplate = "asdf #task"
-    }
-
-    launch4jTask(project.tasks.createExe)
-}
-
-task silly2(type:  Launch4jHelperTask, group: "qwer", description: "qwerpiou") {
-    meta {
-//        generateDescription = false
+    resources {
+        resourcesDir = file("asdf")
+        launch4jPropertiesFileName = "launch4j.properties"
+        iconFileName = "icon2.icon"
+        splashFileName = "wer"
+        manifestFileName = "qwer"
     }
 }
+
+
+//
+//task silly2(type:  Launch4jHelperTask, group: "qwer", description: "qwerpiou") {
+//    meta {
+////        generateDescription = false
+//    }
+//}
