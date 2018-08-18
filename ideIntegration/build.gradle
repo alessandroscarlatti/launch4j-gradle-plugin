@@ -1,6 +1,6 @@
 import com.scarlatti.gradle.launch4j.Launch4jTemplateTask
 import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin
-import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperTask
+import com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 
 buildscript {
@@ -112,7 +112,7 @@ launch4jHelper {
     }
 
     icon {
-        location = file("Asdf")
+        resolutionStrategy = file("build")
     }
 
     splash {

@@ -1,6 +1,9 @@
 package com.scarlatti.gradle.launch4j.gen2.details;
 
 import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
+import com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask;
+
+import java.io.File;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -86,5 +89,9 @@ public class IconConfigurationDetails implements AutoGeneratable {
 
     public void setResolutionStrategy(FileResolutionStrategy resolutionStrategy) {
         this.resolutionStrategy = resolutionStrategy;
+    }
+
+    public void setResolutionStrategy(File file) {
+        this.resolutionStrategy = (task) -> file;
     }
 }

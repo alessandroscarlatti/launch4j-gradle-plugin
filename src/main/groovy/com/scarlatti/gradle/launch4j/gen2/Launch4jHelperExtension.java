@@ -9,6 +9,7 @@ import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.internal.impldep.com.fasterxml.jackson.databind.ser.std.ObjectArraySerializer;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static groovy.lang.Closure.DELEGATE_FIRST;
 
@@ -38,12 +40,12 @@ public class Launch4jHelperExtension {
     private Project project;
     private Map<Task, Launch4jHelperTask> helperTasks = new HashMap<>();
 
-    private IconConfigurationDetails iconConfigurationDetails = defaultIconConfigDtls();
-    private ManifestConfigurationDetails manifestConfigurationDetails = defaultManifestConfigDtls();
-    private SplashConfigurationDetails splashConfigurationDetails = defaultSplashConfigDtls();
-    private MainClassConfigurationDetails mainClassConfigurationDetails = defaultMainClassConfigDtls();
-    private ResourcesConfigurationDetails resourcesConfigurationDetails = defaultResourcesConfigDtls();
-    private HelperTaskConfigurationDetails helperTaskConfigurationDetails = defaultHelperTaskConfigDtls();
+    private IconConfigurationDetails iconConfigurationDetails;
+    private ManifestConfigurationDetails manifestConfigurationDetails;
+    private SplashConfigurationDetails splashConfigurationDetails;
+    private MainClassConfigurationDetails mainClassConfigurationDetails;
+    private ResourcesConfigurationDetails resourcesConfigurationDetails;
+    private HelperTaskConfigurationDetails helperTaskConfigurationDetails;
 
     static final String DEFAULT_APP_NAME = "launch4jApp";
     static final String DEFAULT_HELPER_TASK_GROUP = "launch4jHelper";
@@ -59,6 +61,12 @@ public class Launch4jHelperExtension {
 
     public Launch4jHelperExtension(Project project) {
         this.project = project;
+        iconConfigurationDetails = defaultIconConfigDtls();
+        manifestConfigurationDetails = defaultManifestConfigDtls();
+        splashConfigurationDetails = defaultSplashConfigDtls();
+        mainClassConfigurationDetails = defaultMainClassConfigDtls();
+        resourcesConfigurationDetails = defaultResourcesConfigDtls();
+        helperTaskConfigurationDetails = defaultHelperTaskConfigDtls();
     }
 
     /**
@@ -261,11 +269,15 @@ public class Launch4jHelperExtension {
 
     private ResourcesConfigurationDetails defaultResourcesConfigDtls() {
         ResourcesConfigurationDetails details = new ResourcesConfigurationDetails();
-        details.setResourcesDir(project.getBuildDir().toPath().resolve(DEFAULT_RESOURCES_DIR).toFile());
+        details.setResourcesDir(project.getProjectDir().toPath().resolve(DEFAULT_RESOURCES_DIR).toFile());
         details.setIconFileName(DEFAULT_ICON_FILE_NAME);
         details.setSplashFileName(DEFAULT_SPLASH_FILE_NAME);
         details.setManifestFileName(DEFAULT_MANIFEST_FILE_NAME);
         details.setLaunch4jPropertiesFileName(DEFAULT_LAUNCH4J_PROPERTIES_FILE_NAME);
+        // todo could set the default resource resolution strategies in a constructor.
+        // another option is to just override all the set methods to also set the associated
+        // resolution strategy.  Then there would probably have to be a special "internal"
+        // setter method.
 
         return details;
     }
@@ -280,30 +292,32 @@ public class Launch4jHelperExtension {
         return details;
     }
 
-    public FileResolutionStrategy defaultIconResolutionStrategy() {
-        return Launch4jHelperExtension::defaultIconResolutionStrategy;
-    }
-
-    public static File defaultIconResolutionStrategy(Launch4jHelperTask helperTask) {
-        Path iconPath = Paths.get(helperTask.getResources().getResourcesDir().getAbsolutePath(), helperTask.getResources().getIconFileName());
-        if (Files.exists(iconPath)) {
-            return iconPath.toFile();
-        }
-
-        return null;
-    }
-
     public FileResolutionStrategy defaultLaunch4jPropertiesResolutionStrategy() {
-        return Launch4jHelperExtension::defaultLaunch4jPropertiesResolutionStrategy;
+        return new SimpleDirFileResolutionStrategy(
+            resourcesConfigurationDetails.getResourcesDir().toPath(),
+            resourcesConfigurationDetails.getLaunch4jPropertiesFileName()
+        );
     }
 
-    public static File defaultLaunch4jPropertiesResolutionStrategy(Launch4jHelperTask helperTask) {
-        Path propertiesPath = Paths.get(helperTask.getResources().getResourcesDir().getAbsolutePath(), helperTask.getResources().getLaunch4jPropertiesFileName());
-        if (Files.exists(propertiesPath)) {
-            return propertiesPath.toFile();
-        }
+    public FileResolutionStrategy defaultIconResolutionStrategy() {
+        return new SimpleDirFileResolutionStrategy(
+            resourcesConfigurationDetails.getResourcesDir().toPath(),
+            resourcesConfigurationDetails.getIconFileName()
+        );
+    }
 
-        return null;
+    public FileResolutionStrategy defaultSplashResolutionStrategy() {
+        return new SimpleDirFileResolutionStrategy(
+            resourcesConfigurationDetails.getResourcesDir().toPath(),
+            resourcesConfigurationDetails.getSplashFileName()
+        );
+    }
+
+    public FileResolutionStrategy defaultManifestResolutionStrategy() {
+        return new SimpleDirFileResolutionStrategy(
+            resourcesConfigurationDetails.getResourcesDir().toPath(),
+            resourcesConfigurationDetails.getManifestFileName()
+        );
     }
 
     /**
@@ -335,5 +349,27 @@ public class Launch4jHelperExtension {
         // the launch4j.properties or an icon.ico, e.g.
 
         return helperTask;
+    }
+
+    private static class SimpleDirFileResolutionStrategy implements FileResolutionStrategy {
+
+        private Path dir;
+        private String fileName;
+
+        SimpleDirFileResolutionStrategy(Path dir, String fileName) {
+            Objects.requireNonNull(dir, "Directory must not be null");
+            this.dir = dir;
+            this.fileName = fileName;
+        }
+
+        @Override
+        public File resolve(Launch4jHelperTask launch4jHelperTask) {
+            Path propertiesPath = dir.resolve(fileName);
+            if (Files.exists(propertiesPath)) {
+                return propertiesPath.toFile();
+            }
+
+            return null;
+        }
     }
 }

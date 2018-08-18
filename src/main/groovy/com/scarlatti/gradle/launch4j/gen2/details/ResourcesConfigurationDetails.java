@@ -21,6 +21,9 @@ public class ResourcesConfigurationDetails {
     private String splashFileName;
     private String manifestFileName;
     private FileResolutionStrategy launch4jPropertiesResolutionStrategy;
+    private FileResolutionStrategy iconResolutionStrategy;
+    private FileResolutionStrategy splashResolutionStrategy;
+    private FileResolutionStrategy manifestResolutionStrategy;
 
     public ResourcesConfigurationDetails() {
     }
@@ -36,6 +39,10 @@ public class ResourcesConfigurationDetails {
         this.iconFileName = other.iconFileName;
         this.splashFileName = other.splashFileName;
         this.manifestFileName = other.manifestFileName;
+        this.launch4jPropertiesResolutionStrategy = other.launch4jPropertiesResolutionStrategy;
+        this.iconResolutionStrategy = other.iconResolutionStrategy;
+        this.splashResolutionStrategy = other.splashResolutionStrategy;
+        this.manifestResolutionStrategy = other.manifestResolutionStrategy;
     }
 
     // set file name?

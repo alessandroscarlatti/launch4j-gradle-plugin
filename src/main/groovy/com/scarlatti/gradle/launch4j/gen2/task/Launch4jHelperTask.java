@@ -62,129 +62,6 @@ public class Launch4jHelperTask extends DefaultTask {
     }
 
     /**
-     * Public api to access the icon details.
-     *
-     * @return the icon details
-     */
-    public IconConfigurationDetails getIcon() {
-        return iconConfigurationDetails;
-    }
-
-    /**
-     * Public api to access the manifest details.
-     *
-     * @return the manifest details.
-     */
-    public ManifestConfigurationDetails getManifest() {
-        return manifestConfigurationDetails;
-    }
-
-    /**
-     * Public api to access the splash details.
-     *
-     * @return the splash details.
-     */
-    public SplashConfigurationDetails getSplash() {
-        return splashConfigurationDetails;
-    }
-
-
-    /**
-     * Public api to access the main class details.
-     *
-     * @return the main class details.
-     */
-    public MainClassConfigurationDetails getMainClass() {
-        return mainClassConfigurationDetails;
-    }
-
-    /**
-     * Public api to access the resources details.
-     *
-     * @return the resources details.
-     */
-    public ResourcesConfigurationDetails getResources() {
-        return resourcesConfigurationDetails;
-    }
-
-    /**
-     * Public api to access the helper task details.
-     *
-     * @return the helper task details.
-     */
-    public HelperTaskConfigurationDetails getMeta() {
-        return helperTaskConfigurationDetails;
-    }
-
-    /**
-     * Public api to configure the icon details.
-     *
-     * @param config the closure to apply.
-     */
-    public void icon(@DelegatesTo(value = IconConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(iconConfigurationDetails);
-        config.setResolveStrategy(DELEGATE_FIRST);
-        config.call();
-    }
-
-    /**
-     * Public api to configure the manifest details.
-     *
-     * @param config the closure to apply.
-     */
-    public void manifest(@DelegatesTo(value = ManifestConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(manifestConfigurationDetails);
-        config.setResolveStrategy(DELEGATE_FIRST);
-        config.call();
-    }
-
-    /**
-     * Public api to configure the splash details.
-     *
-     * @param config the closure to apply.
-     */
-    public void splash(@DelegatesTo(value = SplashConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(splashConfigurationDetails);
-        config.setResolveStrategy(DELEGATE_FIRST);
-        config.call();
-    }
-
-    /**
-     * Public api to configure the mainClass details.
-     *
-     * @param config the closure to apply.
-     */
-    public void mainClass(@DelegatesTo(value = MainClassConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(mainClassConfigurationDetails);
-        config.setResolveStrategy(DELEGATE_FIRST);
-        config.call();
-    }
-
-    /**
-     * Public api to configure the resources details.
-     *
-     * @param config the closure to apply.
-     */
-    public void resources(@DelegatesTo(value = ResourcesConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(resourcesConfigurationDetails);
-        config.setResolveStrategy(DELEGATE_FIRST);
-        config.call();
-    }
-
-    /**
-     * Public api to configure the helper task details.
-     *
-     * @param config the closure to apply.
-     */
-    public void meta(@DelegatesTo(value = HelperTaskConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
-        config.setDelegate(helperTaskConfigurationDetails);
-        config.setResolveStrategy(DELEGATE_FIRST);
-        config.call();
-
-        applyMeta();
-    }
-
-    /**
      * Apply the information from the Launch4jHelperTaskConfiguration
      */
     private void applyMeta() {
@@ -192,7 +69,8 @@ public class Launch4jHelperTask extends DefaultTask {
         // the gradle description from the map parameter overload gets set before the config closure is called.
         if (helperTaskConfigurationDetails.getGenerateDescription()) {
             setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
-        } else {
+        }
+        else {
             setDescription(helperTaskConfigurationDetails.getDescription());
         }
 
@@ -373,5 +251,128 @@ public class Launch4jHelperTask extends DefaultTask {
 
     public SupplyManifestTask getSupplyManifestTask() {
         return supplyManifestTask;
+    }
+
+    /**
+     * Public api to access the icon details.
+     *
+     * @return the icon details
+     */
+    public IconConfigurationDetails getIcon() {
+        return iconConfigurationDetails;
+    }
+
+    /**
+     * Public api to access the manifest details.
+     *
+     * @return the manifest details.
+     */
+    public ManifestConfigurationDetails getManifest() {
+        return manifestConfigurationDetails;
+    }
+
+    /**
+     * Public api to access the splash details.
+     *
+     * @return the splash details.
+     */
+    public SplashConfigurationDetails getSplash() {
+        return splashConfigurationDetails;
+    }
+
+
+    /**
+     * Public api to access the main class details.
+     *
+     * @return the main class details.
+     */
+    public MainClassConfigurationDetails getMainClass() {
+        return mainClassConfigurationDetails;
+    }
+
+    /**
+     * Public api to access the resources details.
+     *
+     * @return the resources details.
+     */
+    public ResourcesConfigurationDetails getResources() {
+        return resourcesConfigurationDetails;
+    }
+
+    /**
+     * Public api to access the helper task details.
+     *
+     * @return the helper task details.
+     */
+    public HelperTaskConfigurationDetails getMeta() {
+        return helperTaskConfigurationDetails;
+    }
+
+    /**
+     * Public api to configure the icon details.
+     *
+     * @param config the closure to apply.
+     */
+    public void icon(@DelegatesTo(value = IconConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(iconConfigurationDetails);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+    }
+
+    /**
+     * Public api to configure the manifest details.
+     *
+     * @param config the closure to apply.
+     */
+    public void manifest(@DelegatesTo(value = ManifestConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(manifestConfigurationDetails);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+    }
+
+    /**
+     * Public api to configure the splash details.
+     *
+     * @param config the closure to apply.
+     */
+    public void splash(@DelegatesTo(value = SplashConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(splashConfigurationDetails);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+    }
+
+    /**
+     * Public api to configure the mainClass details.
+     *
+     * @param config the closure to apply.
+     */
+    public void mainClass(@DelegatesTo(value = MainClassConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(mainClassConfigurationDetails);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+    }
+
+    /**
+     * Public api to configure the resources details.
+     *
+     * @param config the closure to apply.
+     */
+    public void resources(@DelegatesTo(value = ResourcesConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(resourcesConfigurationDetails);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+    }
+
+    /**
+     * Public api to configure the helper task details.
+     *
+     * @param config the closure to apply.
+     */
+    public void meta(@DelegatesTo(value = HelperTaskConfigurationDetails.class, strategy = DELEGATE_FIRST) Closure config) {
+        config.setDelegate(helperTaskConfigurationDetails);
+        config.setResolveStrategy(DELEGATE_FIRST);
+        config.call();
+
+        applyMeta();
     }
 }
