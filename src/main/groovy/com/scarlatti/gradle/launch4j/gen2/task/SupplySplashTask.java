@@ -63,6 +63,14 @@ public class SupplySplashTask extends DefaultTask {
 
             ImageGenerator.generateSplashFileForStringHash(destination.toPath(), text);
         }
+
+        // after this we need to somehow update the launch4j task.
+        // if we actually created a splash, we should update launch4j.
+        //
+        // this task should only have been called when it is OK to use a splash.
+        // that is, when the headerType is set to gui.
+        //
+        // so we shouldn't have to worry about that.
     }
 
     public boolean getAutoGenerate() {

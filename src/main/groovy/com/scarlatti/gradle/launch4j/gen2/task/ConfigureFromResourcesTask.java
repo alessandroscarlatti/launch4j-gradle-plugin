@@ -1,14 +1,11 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
-import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import com.scarlatti.gradle.launch4j.gen2.details.ResourcesConfigurationDetails;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.internal.resource.local.PathKeyFileStore;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -54,10 +51,20 @@ public class ConfigureFromResourcesTask extends DefaultTask {
         File icon = helperTask.getIcon().getResolve().get();
         helperTask.getIcon().setIcon(nullifyIfNotExists(icon));
 
+        // todo implement "should we even try to produce a splash?"
+
+        // look at the headerType first.
+        // ACTUALLY, we don't care.  We would assume that the user put a splash
+        // in the directory, so that's what they want.  If they don't want to use a splash
+        // they can disable the splash task.
+
         // set splash file as input for supplySplash task
         // if splash file is present change header type to gui if it is not already set.
         File splash = helperTask.getSplash().getResolve().get();
         helperTask.getSplash().setSplash(nullifyIfNotExists(splash));
+
+        // todo update the launch4jTask with a "gui" headerType.
+        // if we actually produced a splash, that is...
     }
 
     private File nullifyIfNotExists(File file) {

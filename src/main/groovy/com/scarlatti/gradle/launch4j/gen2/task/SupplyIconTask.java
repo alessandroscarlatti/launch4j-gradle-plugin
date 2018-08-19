@@ -82,6 +82,15 @@ public class SupplyIconTask extends DefaultTask {
 
             ImageGenerator.generateIconFileForStringHash(destination.toPath(), text);
         }
+
+        // todo somehow we need to "update" the launch4jTask to let it know that we have or haven't
+        // actually created an icon.
+        // Because if autogenerate == false and no icon was provided, that means that we
+        // should definitely not modify the launch4j icon property.
+        // but if we did make an icon, we should configure the launch4j task appropriately.
+        //
+        // If there is already a value for the launch4j icon property, we don't care.
+        // if the user has set it, that is their concern.
     }
 
     public File getDestination() {
