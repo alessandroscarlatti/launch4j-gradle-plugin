@@ -116,8 +116,10 @@ launch4jHelper {
         text = "qpweoiruiweopq"
     }
 
+    // asdf
     splash {
-        resolve = { return file("Qwer") }
+        resolve = { file("C:\\Users\\pc\\IdeaProjects\\launch4j-gradle-plugin\\ideIntegration\\exe\\splash2.bmp") }
+//        autoGenerate = false
     }
 
     mainClass {
@@ -162,17 +164,13 @@ task configureExeResources(type: Launch4jHelperTask) {
     launch4jTask createExe
 
     icon {
-        text = "qpwieoruweoqp"
-        resolve {
-
-        }
+        enabled = true
+        text = "Asdf"
     }
 
     splash {
-        text = "asdf"
-        resolve {
-
-        }
+//        text = "qwerewq"
+//        resolve {}
     }
 
     manifest {

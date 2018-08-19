@@ -4,8 +4,11 @@ import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import com.scarlatti.gradle.launch4j.gen2.details.ResourcesConfigurationDetails;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.internal.resource.local.PathKeyFileStore;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -38,18 +41,31 @@ public class ConfigureFromResourcesTask extends DefaultTask {
      * should we infer a gui header type based on the presence of splash...
      * or if header type is explicitly set as console, to ignore a splash, even if present.
      * <p>
-     * todo we may still need this to do some logic relating to headerType and whether or not to apply a splash, or infer header type based on presence of splash.
+     * todo we may still need this to do some logic relating to headerType and
+     * whether or not to apply a splash, or infer header type based on presence of splash.
+     *
+     * todo and we will need to handle what to do when a new iteration of the build results
+     * in NOT generating an icon.  The launch4jTask should not specify the icon (unless
+     * it was actually explicitly configured that way by the task author.
      */
     @TaskAction
     public void configureFromResources() {
         // set icon file as input for supplyIcon task
         File icon = helperTask.getIcon().getResolve().get();
-        helperTask.getIcon().setIcon(icon);
+        helperTask.getIcon().setIcon(nullifyIfNotExists(icon));
 
         // set splash file as input for supplySplash task
         // if splash file is present change header type to gui if it is not already set.
         File splash = helperTask.getSplash().getResolve().get();
-        helperTask.getSplash().setSplash(splash);
+        helperTask.getSplash().setSplash(nullifyIfNotExists(splash));
+    }
+
+    private File nullifyIfNotExists(File file) {
+        if (Files.exists(file.toPath())) {
+            return file;
+        }
+
+        return null;
     }
 
     public Launch4jHelperTask getHelperTask() {

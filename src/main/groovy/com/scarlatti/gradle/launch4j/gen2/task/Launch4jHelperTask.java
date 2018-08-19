@@ -317,6 +317,10 @@ public class Launch4jHelperTask extends DefaultTask {
         supplySplashTask = getProject().getTasks().create(supplySplashTaskName(), SupplySplashTask.class);
         supplySplashTask.setDescription(supplySplashTaskDescription());
         supplySplashTask.setGroup(helperTaskConfigurationDetails.getGroup());
+
+        supplySplashTask.configureFromSplashConfigDtls(splashConfigurationDetails);
+        supplySplashTask.setResolve(() -> splashConfigurationDetails.getResolve().resolve(this));
+        supplySplashTask.setDestination(resourcesConfigurationDetails.getLaunch4jResourcesDir().resolve(this).toPath().resolve("splash.bmp").toFile());
     }
 
     private String supplySplashTaskName() {

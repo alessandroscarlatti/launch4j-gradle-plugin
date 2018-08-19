@@ -66,7 +66,7 @@ public class SupplyIconTask extends DefaultTask {
      */
     @TaskAction
     public void generateIcon() {
-        if (icon != null && icon.exists()) {
+        if (icon != null) {
             try {
                 Files.copy(icon.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }

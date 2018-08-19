@@ -1,5 +1,6 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
+import com.scarlatti.gradle.launch4j.gen2.details.SplashConfigurationDetails;
 import com.scarlatti.util.ImageGenerator;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.*;
@@ -41,9 +42,13 @@ public class SupplySplashTask extends DefaultTask {
      */
     private Supplier<File> resolve;
 
+    public void configureFromSplashConfigDtls(SplashConfigurationDetails details) {
+        autoGenerate = details.getAutoGenerate();
+        text = details.getText();
+    }
+
     @TaskAction
     public void generateSplash() {
-
         if (splash != null) {
             try {
                 Files.copy(splash.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
