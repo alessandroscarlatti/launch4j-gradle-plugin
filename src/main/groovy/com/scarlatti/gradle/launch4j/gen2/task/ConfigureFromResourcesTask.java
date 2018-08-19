@@ -1,15 +1,11 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
-import com.scarlatti.gradle.launch4j.gen2.details.IconConfigurationDetails;
+import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import com.scarlatti.gradle.launch4j.gen2.details.ResourcesConfigurationDetails;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Properties;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -37,43 +33,23 @@ public class ConfigureFromResourcesTask extends DefaultTask {
     }
 
     /**
-     * This task would do the following:
+     * Determine conventional settings, such as:
      * <p>
-     * - read launchj.properties and apply to the launch4j task
-     * - if headerType turns out to use splash, configure generateSplashTask
-     * - configure generateIconTask
-     * - configure generateManifestTask
-     *
+     * should we infer a gui header type based on the presence of splash...
+     * or if header type is explicitly set as console, to ignore a splash, even if present.
+     * <p>
      * todo we may still need this to do some logic relating to headerType and whether or not to apply a splash, or infer header type based on presence of splash.
      */
     @TaskAction
     public void configureFromResources() {
-        configureSupplyIconTask();
-    }
+        // set icon file as input for supplyIcon task
+        File icon = helperTask.getIcon().getResolve().get();
+        helperTask.getIcon().setIcon(icon);
 
-    /**
-     * Configure the associated SupplyIconTask.
-     * <p>
-     * If we are not set up to configure an icon, disable the task.
-     * <p>
-     * If we are set up to generate at all:
-     * Resolve an icon using the resolution strategy.
-     */
-    private void configureSupplyIconTask() {
-        SupplyIconTask task = helperTask.getSupplyIconTask();
-        if (helperTask.getIcon().getEnabled()) {
-
-            // this stuff will be done earlier at the initial task creation...
-            SupplyIconTask config = helperTask.getIcon();
-            File icon = config.getResolve().resolve(helperTask);
-            task.setIcon(icon);
-            task.setText(config.getText());
-            task.setAutoGenerate(config.getAutoGenerate());
-            task.setDestination(new File("build/launch4j/#taskName/resources/icon.ico"));  // todo get the launch4j resources directory
-        }
-        else {
-            task.setEnabled(false);
-        }
+        // set splash file as input for supplySplash task
+        // if splash file is present change header type to gui if it is not already set.
+        File splash = helperTask.getSplash().getResolve().get();
+        helperTask.getSplash().setSplash(splash);
     }
 
     public Launch4jHelperTask getHelperTask() {

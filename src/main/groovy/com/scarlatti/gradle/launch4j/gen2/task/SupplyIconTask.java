@@ -3,11 +3,12 @@ package com.scarlatti.gradle.launch4j.gen2.task;
 import com.scarlatti.gradle.launch4j.gen2.details.IconConfigurationDetails;
 import com.scarlatti.util.ImageGenerator;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.OutputFile;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.*;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.Random;
 import java.util.function.Supplier;
 
 /**
@@ -19,11 +20,25 @@ import java.util.function.Supplier;
  */
 public class SupplyIconTask extends DefaultTask {
 
-    @OutputFile
-    private File destination;
-
+    @Optional
     @InputFile
     private File icon;
+
+    /**
+     * Whether configuration of icon is enabled at all, whether by file or automatic generation.
+     */
+    @Input
+    private boolean autoGenerate;
+
+    /**
+     * The name to use when generating an icon.
+     */
+    @Optional
+    @Input
+    private String text;
+
+    @OutputFile
+    private File destination;
 
     /**
      * this task should be blind to the HelperTask
@@ -35,16 +50,6 @@ public class SupplyIconTask extends DefaultTask {
      * the FileResolutionStrategy inside a {@link Supplier<File>}
      */
     private Supplier<File> resolve;
-
-    /**
-     * Whether configuration of icon is enabled at all, whether by file or automatic generation.
-     */
-    private boolean autoGenerate;
-
-    /**
-     * The name to use when generating an icon.
-     */
-    private String text;
 
     /**
      * Configure this task from a PropertiesConfigurationDetails instance.
@@ -61,8 +66,22 @@ public class SupplyIconTask extends DefaultTask {
      */
     @TaskAction
     public void generateIcon() {
-        // todo implement what to name the icon once it is in the launch4j resources dir
-        ImageGenerator.generateIconFileForStringHash(destination.toPath(), "icon.ico");
+        if (icon != null && icon.exists()) {
+            try {
+                Files.copy(icon.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            catch (Exception e) {
+                throw new RuntimeException("Error copying icon " + icon + " to " + destination, e);
+            }
+        }
+        else if (autoGenerate) {
+            // if text is null generate a random string
+            if (text == null) {
+                text = String.valueOf(Math.abs(new Random(System.currentTimeMillis()).nextInt()));
+            }
+
+            ImageGenerator.generateIconFileForStringHash(destination.toPath(), text);
+        }
     }
 
     public File getDestination() {

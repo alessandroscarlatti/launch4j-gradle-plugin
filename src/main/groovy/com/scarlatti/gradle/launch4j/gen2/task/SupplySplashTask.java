@@ -1,10 +1,14 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
-import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
+import com.scarlatti.util.ImageGenerator;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.*;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.Random;
+import java.util.function.Supplier;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -15,21 +19,45 @@ import java.io.File;
  */
 public class SupplySplashTask extends DefaultTask {
 
+    @Input
     private boolean autoGenerate;
-
-    /**
-     * A specific location to use.  Takes precedence over auto-generation;
-     */
-    private FileResolutionStrategy resolve;
 
     /**
      * The text to use when generating a splash.
      */
+    @Optional
+    @Input
     private String text;
+
+    @Optional
+    @InputFile
+    private File splash;
+
+    @OutputFile
+    private File destination;
+
+    /**
+     * A specific location to use.  Takes precedence over auto-generation;
+     */
+    private Supplier<File> resolve;
 
     @TaskAction
     public void generateSplash() {
-//        ImageGenerator.generateSplashFileForStringHash(Paths.get(destination), details.getName());
+
+        if (splash != null) {
+            try {
+                Files.copy(splash.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                throw new RuntimeException("Error copying splash " + splash + " to " + destination, e);
+            }
+        } else if (autoGenerate) {
+            // if text is null generate a random string
+            if (text == null) {
+                text = String.valueOf(Math.abs(new Random(System.currentTimeMillis()).nextInt()));
+            }
+
+            ImageGenerator.generateSplashFileForStringHash(destination.toPath(), text);
+        }
     }
 
     public boolean getAutoGenerate() {
@@ -40,11 +68,11 @@ public class SupplySplashTask extends DefaultTask {
         this.autoGenerate = autoGenerate;
     }
 
-    public FileResolutionStrategy getResolve() {
+    public Supplier<File> getResolve() {
         return resolve;
     }
 
-    public void setResolve(FileResolutionStrategy resolve) {
+    public void setResolve(Supplier<File> resolve) {
         this.resolve = resolve;
     }
 
@@ -54,5 +82,21 @@ public class SupplySplashTask extends DefaultTask {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public File getDestination() {
+        return destination;
+    }
+
+    public void setDestination(File destination) {
+        this.destination = destination;
+    }
+
+    public File getSplash() {
+        return splash;
+    }
+
+    public void setSplash(File splash) {
+        this.splash = splash;
     }
 }

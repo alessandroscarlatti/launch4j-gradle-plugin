@@ -272,18 +272,20 @@ public class Launch4jHelperExtension {
         config.call();
     }
 
-    public static IconConfigurationDetails defaultIconConfigDtls() {
+    public IconConfigurationDetails defaultIconConfigDtls() {
         IconConfigurationDetails details = new IconConfigurationDetails();
         details.setEnabled(true);
         details.setAutoGenerate(true);
         details.setText(DEFAULT_APP_NAME);
+        details.setResolve(defaultIconResolutionStrategy());
         return details;
     }
 
-    public static SplashConfigurationDetails defaultSplashConfigDtls() {
+    public SplashConfigurationDetails defaultSplashConfigDtls() {
         SplashConfigurationDetails details = new SplashConfigurationDetails();
         details.setAutoGenerate(true);
         details.setText(DEFAULT_APP_NAME);
+        details.setResolve(defaultSplashResolutionStrategy());
         return details;
     }
 
@@ -313,6 +315,7 @@ public class Launch4jHelperExtension {
         details.setSplashFileName(DEFAULT_SPLASH_FILE_NAME);
         details.setManifestFileName(DEFAULT_MANIFEST_FILE_NAME);
         details.setLaunch4jPropertiesFileName(DEFAULT_LAUNCH4J_PROPERTIES_FILE_NAME);
+        details.setLaunch4jResourcesDir(defaultLaunch4jResourceDirResolutionStrategy());
         return details;
     }
 
@@ -328,8 +331,6 @@ public class Launch4jHelperExtension {
 
     public FileResolutionStrategy defaultLaunch4jPropertiesResolutionStrategy() {
         return new DynamicDirFileResolutionStrategy(
-            // todo the resources task has no properties filled in...
-            // getResourcesDir() is null
             task -> task.getResources().getResourcesDir().toPath(),
             task -> task.getResources().getLaunch4jPropertiesFileName()
         );
@@ -354,6 +355,15 @@ public class Launch4jHelperExtension {
             task -> task.getResources().getResourcesDir().toPath(),
             task -> task.getResources().getManifestFileName()
         );
+    }
+
+    public FileResolutionStrategy defaultLaunch4jResourceDirResolutionStrategy() {
+        return task -> project.getBuildDir()
+            .toPath()
+            .resolve("launch4j")
+            .resolve(task.getLaunch4jTask().getName())
+            .resolve("resources")
+            .toFile();
     }
 
     /**

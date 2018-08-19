@@ -295,6 +295,7 @@ public class Launch4jHelperTask extends DefaultTask {
 
         supplyIconTask.configureFromIconConfigDtls(iconConfigurationDetails);
         supplyIconTask.setResolve(() -> iconConfigurationDetails.getResolve().resolve(this));
+        supplyIconTask.setDestination(resourcesConfigurationDetails.getLaunch4jResourcesDir().resolve(this).toPath().resolve("icon.ico").toFile());
     }
 
     private String supplyIconTaskName() {
@@ -310,7 +311,7 @@ public class Launch4jHelperTask extends DefaultTask {
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
      *
-     * todo set up dependencies
+     * todo set up configurations regarding destination...
      */
     private void createSupplySplashTask() {
         supplySplashTask = getProject().getTasks().create(supplySplashTaskName(), SupplySplashTask.class);

@@ -112,7 +112,8 @@ launch4jHelper {
     }
 
     icon {
-        resolutionStrategy = file("build")
+//        resolve = { file("build") }
+        text = "qpweoiruiweopq"
     }
 
     splash {
@@ -161,7 +162,7 @@ task configureExeResources(type: Launch4jHelperTask) {
     launch4jTask createExe
 
     icon {
-        text = "asdf"
+        text = "qpwieoruweoqp"
         resolve {
 
         }

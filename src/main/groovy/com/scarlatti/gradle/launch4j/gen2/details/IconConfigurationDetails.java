@@ -89,8 +89,4 @@ public class IconConfigurationDetails implements AutoGeneratable {
     public void setResolve(FileResolutionStrategy resolve) {
         this.resolve = resolve;
     }
-
-    public void setResolutionStrategy(File file) {
-        this.resolve = (task) -> file;
-    }
 }
