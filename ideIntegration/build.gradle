@@ -106,31 +106,31 @@ apply plugin: 'com.scarlatti.launch4j.integration'
 
 apply plugin: Launch4jHelperPlugin
 
-launch4jHelper {
-    manifest {
-        autoGenerate = true
-    }
-
-    icon {
-//        resolve = { file("build") }
-        text = "qpweoiruiweopq"
-    }
-
-    // asdf
-    splash {
-        resolve = { file("C:\\Users\\pc\\IdeaProjects\\launch4j-gradle-plugin\\ideIntegration\\exe\\splash2.bmp") }
-//        autoGenerate = false
-    }
-
-    mainClass {
-        findMainClass = false
-        mainClassName = "asdf"
-    }
-
-    properties {
-
-    }
-}
+//launch4jHelper {
+//    manifest {
+//        autoGenerate = true
+//    }
+//
+//    icon {
+////        resolve = { file("build") }
+//        text = "qpweoiruiweopq"
+//    }
+//
+//    // asdf
+//    splash {
+//        resolve = { file("C:\\Users\\pc\\IdeaProjects\\launch4j-gradle-plugin\\ideIntegration\\exe\\splash2.bmp") }
+////        autoGenerate = false
+//    }
+//
+//    mainClass {
+//        findMainClass = false
+//        mainClassName = "asdf"
+//    }
+//
+//    properties {
+//
+//    }
+//}
 
 //launch4jHelper.helper(createExe).configure {
 //
@@ -163,36 +163,10 @@ launch4jHelper {
 task configureExeResources(type: Launch4jHelperTask) {
     launch4jTask createExe
 
-    icon {
-        enabled = true
-        text = "Asdf"
-    }
-
+    icon.text = "fghjgfjhjf"
     splash {
-//        text = "qwerewq"
-//        resolve {}
-    }
-
-    manifest {
-        autoGenerate = false
-        resolve {
-
-        }
-    }
-
-    mainClass {
-
-    }
-
-    properties {
-    }
-
-    resources {
-        resourcesDir = file("asdf")
-        launch4jPropertiesFileName = "launch4j.properties"
-        iconFileName = "icon2.icon"
-        splashFileName = "wer"
-        manifestFileName = "qwer"
+        resolve { null }
+        text = ";sldfkjgldjsk;"
     }
 }
 

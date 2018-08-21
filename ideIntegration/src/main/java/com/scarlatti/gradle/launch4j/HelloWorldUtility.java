@@ -12,6 +12,6 @@ import javax.swing.*;
 public class HelloWorldUtility {
     public static void main(String[] args) throws Exception {
         System.out.println("hello world");
-//        JOptionPane.showMessageDialog(null, "what do you know");
+        JOptionPane.showMessageDialog(null, "what do you know 2");
     }
 }

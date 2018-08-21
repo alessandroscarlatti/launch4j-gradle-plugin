@@ -68,6 +68,9 @@ public class ConfigureFromResourcesTask extends DefaultTask {
     }
 
     private File nullifyIfNotExists(File file) {
+        if (file == null)
+            return null;
+
         if (Files.exists(file.toPath())) {
             return file;
         }

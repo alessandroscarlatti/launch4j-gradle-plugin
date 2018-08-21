@@ -7,6 +7,9 @@ import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
+import org.gradle.api.internal.tasks.execution.TaskValidator;
+import org.gradle.api.specs.Spec;
+import org.gradle.api.tasks.TaskAction;
 
 import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin.LAUNCH4J_HELPER_EXTENSION_NAME;
 import static groovy.lang.Closure.DELEGATE_FIRST;
@@ -72,8 +75,7 @@ public class Launch4jHelperTask extends DefaultTask {
         // the gradle description from the map parameter overload gets set before the config closure is called.
         if (helperTaskConfigurationDetails.getGenerateDescription()) {
             setDescription(helperTaskConfigurationDetails.getDescriptionTemplate());
-        }
-        else {
+        } else {
             setDescription(helperTaskConfigurationDetails.getDescription());
         }
 
@@ -120,6 +122,23 @@ public class Launch4jHelperTask extends DefaultTask {
         return template.replace(taskNameVariable, taskName);
     }
 
+    @TaskAction
+    public void configureLaunch4jTask() {
+        // were we even supposed to think about this task??
+        if (supplyIconTask.shouldSupplyIcon()) {
+            launch4jTask.setIcon(supplyIconTask.getDestination().getAbsolutePath());
+        }
+
+        if (supplySplashTask.shouldSupplySplash()) {
+            launch4jTask.setSplashFileName(supplySplashTask.getDestination().getAbsolutePath());
+            launch4jTask.setHeaderType("gui");
+        }
+
+        if (findMainClassTask.getResult() != null) {
+            launch4jTask.setMainClassName(findMainClassTask.getResult().getMainClassName());
+        }
+    }
+
     /**
      * Set the group for this task, and also update the meta details.
      *
@@ -146,7 +165,7 @@ public class Launch4jHelperTask extends DefaultTask {
      * so that this task's outputs are available as inputs to the launch4j task.
      *
      * @param launch4jTask set the associated launch4jTask.
-     *             Right now, accepts only launch4jLibraryTask.
+     *                     Right now, accepts only launch4jLibraryTask.
      */
     public void setLaunch4jTask(Task launch4jTask) {
         Launch4jHelperExtension.validateTaskIsLaunch4jLibraryTask(launch4jTask);
@@ -174,6 +193,7 @@ public class Launch4jHelperTask extends DefaultTask {
         // todo declare task inputs if any...
         // todo declare task outputs
         // launch4j inputs are strings, assumes the file exists.
+        this.launch4jTask.setHeaderType("console");
     }
 
     /**
@@ -208,10 +228,10 @@ public class Launch4jHelperTask extends DefaultTask {
 
     /**
      * Set up the associated ConfigureLaunch4jPropertiesTask.
-     *
+     * <p>
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
-     *
+     * <p>
      * todo set up dependencies
      */
     private void createConfigureLaunch4jPropertiesTask() {
@@ -239,7 +259,7 @@ public class Launch4jHelperTask extends DefaultTask {
      * Set up the associated ConfigureFromResourcesTask.
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
-     *
+     * <p>
      * todo set up dependencies
      */
     private void createConfigureFromResourcesTask() {
@@ -266,13 +286,15 @@ public class Launch4jHelperTask extends DefaultTask {
      * Set up the associated findMainClassTask.
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
-     *
+     * <p>
      * todo set up dependencies
      */
     private void createFindMainClassTask() {
         findMainClassTask = getProject().getTasks().create(findMainClassTaskName(), FindMainClassTask.class);
         findMainClassTask.setDescription(findMainClassTaskDescription());
         findMainClassTask.setGroup(helperTaskConfigurationDetails.getGroup());
+
+        findMainClassTask.configureFromMainClassDetails(mainClassConfigurationDetails);
     }
 
     private String findMainClassTaskName() {
@@ -296,6 +318,9 @@ public class Launch4jHelperTask extends DefaultTask {
         supplyIconTask.configureFromIconConfigDtls(iconConfigurationDetails);
         supplyIconTask.setResolve(() -> iconConfigurationDetails.getResolve().resolve(this));
         supplyIconTask.setDestination(resourcesConfigurationDetails.getLaunch4jResourcesDir().resolve(this).toPath().resolve("icon.ico").toFile());
+
+        // if anything at all has changed about the icon, we need to rebuild the exe.
+        supplyIconTask.doLast(task -> launch4jTask.getOutputs().upToDateWhen(t -> false));
     }
 
     private String supplyIconTaskName() {
@@ -310,8 +335,6 @@ public class Launch4jHelperTask extends DefaultTask {
      * Set up the associated SupplySplashTask.
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
-     *
-     * todo set up configurations regarding destination...
      */
     private void createSupplySplashTask() {
         supplySplashTask = getProject().getTasks().create(supplySplashTaskName(), SupplySplashTask.class);
@@ -321,6 +344,9 @@ public class Launch4jHelperTask extends DefaultTask {
         supplySplashTask.configureFromSplashConfigDtls(splashConfigurationDetails);
         supplySplashTask.setResolve(() -> splashConfigurationDetails.getResolve().resolve(this));
         supplySplashTask.setDestination(resourcesConfigurationDetails.getLaunch4jResourcesDir().resolve(this).toPath().resolve("splash.bmp").toFile());
+
+        // if anything at all has changed about the splash, we need to rebuild the exe.
+        supplySplashTask.doLast(task -> launch4jTask.getOutputs().upToDateWhen(t -> false));
     }
 
     private String supplySplashTaskName() {
@@ -330,12 +356,12 @@ public class Launch4jHelperTask extends DefaultTask {
     private String supplySplashTaskDescription() {
         return "Supply a splash screen resource for the " + launch4jTask.getName() + " task.";
     }
-    
+
     /**
      * Set up the associated SupplyManifestTask.
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
-     *
+     * <p>
      * todo set up dependencies
      */
     private void createSupplyManifestTask() {

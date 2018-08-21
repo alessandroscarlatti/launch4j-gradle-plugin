@@ -111,9 +111,17 @@ class MainClassFinder {
         return mainClassNames
     }
 
-    class Result {
+    static class Result {
         boolean mainClassInManifest
         String mainClassName
+
+        Result() {
+        }
+
+        Result(boolean mainClassInManifest, String mainClassName) {
+            this.mainClassInManifest = mainClassInManifest
+            this.mainClassName = mainClassName
+        }
 
         boolean isExecutable() {
             return (mainClassInManifest)

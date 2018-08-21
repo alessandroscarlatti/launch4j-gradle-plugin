@@ -56,4 +56,18 @@ class IdeIntegrationTest extends Specification {
             println result.output
             result.task(":configureExeResourcesSupplyIcon").outcome == TaskOutcome.SUCCESS
     }
+
+    def "run :createExe"() {
+        when:
+            def result = GradleRunner.create()
+                    .withProjectDir(Paths.get("ideIntegration").toFile())
+                    .withArguments('createExe', '--stacktrace')
+                    .withPluginClasspath()
+                    .withDebug(true)
+                    .build()
+
+        then:
+            println result.output
+            result.task(":createExe").outcome == TaskOutcome.SUCCESS
+    }
 }

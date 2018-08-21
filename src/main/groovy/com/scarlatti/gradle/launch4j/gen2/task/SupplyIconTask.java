@@ -51,6 +51,9 @@ public class SupplyIconTask extends DefaultTask {
      */
     private Supplier<File> resolve;
 
+    private boolean ran;
+    private boolean suppliedIcon;
+
     /**
      * Configure this task from a PropertiesConfigurationDetails instance.
      * Called after this task has been created.
@@ -66,9 +69,11 @@ public class SupplyIconTask extends DefaultTask {
      */
     @TaskAction
     public void generateIcon() {
+        ran = true;
         if (icon != null) {
             try {
                 Files.copy(icon.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                suppliedIcon = true;
             }
             catch (Exception e) {
                 throw new RuntimeException("Error copying icon " + icon + " to " + destination, e);
@@ -81,6 +86,7 @@ public class SupplyIconTask extends DefaultTask {
             }
 
             ImageGenerator.generateIconFileForStringHash(destination.toPath(), text);
+            suppliedIcon = true;
         }
 
         // todo somehow we need to "update" the launch4jTask to let it know that we have or haven't
@@ -98,6 +104,18 @@ public class SupplyIconTask extends DefaultTask {
         // "destination", but we didn't ACTUALLY "generate" it this particular build.
         // So we wouldn't want to get that mixed up as looking like we had actually generated it
         // when we hadn't.
+    }
+
+    public boolean shouldSupplyIcon() {
+        if (!isEnabled())
+            return false;
+
+        if (ran) {
+            return suppliedIcon;
+        }
+        else {
+            return icon != null || autoGenerate;
+        }
     }
 
     public File getDestination() {

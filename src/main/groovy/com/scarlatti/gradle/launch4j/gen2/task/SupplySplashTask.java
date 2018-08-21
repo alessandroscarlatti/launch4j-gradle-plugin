@@ -37,6 +37,9 @@ public class SupplySplashTask extends DefaultTask {
     @OutputFile
     private File destination;
 
+    private boolean ran;
+    private boolean suppliedSplash;
+
     /**
      * A specific location to use.  Takes precedence over auto-generation;
      */
@@ -49,9 +52,11 @@ public class SupplySplashTask extends DefaultTask {
 
     @TaskAction
     public void generateSplash() {
+        ran = true;
         if (splash != null) {
             try {
                 Files.copy(splash.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                suppliedSplash = true;
             } catch (Exception e) {
                 throw new RuntimeException("Error copying splash " + splash + " to " + destination, e);
             }
@@ -62,6 +67,7 @@ public class SupplySplashTask extends DefaultTask {
             }
 
             ImageGenerator.generateSplashFileForStringHash(destination.toPath(), text);
+            suppliedSplash = true;
         }
 
         // after this we need to somehow update the launch4j task.
@@ -71,6 +77,18 @@ public class SupplySplashTask extends DefaultTask {
         // that is, when the headerType is set to gui.
         //
         // so we shouldn't have to worry about that.
+    }
+
+    public boolean shouldSupplySplash() {
+        if (!isEnabled())
+            return false;
+
+        if (ran) {
+            return suppliedSplash;
+        }
+        else {
+            return splash != null || autoGenerate;
+        }
     }
 
     public boolean getAutoGenerate() {
