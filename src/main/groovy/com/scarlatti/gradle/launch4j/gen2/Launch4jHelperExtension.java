@@ -289,9 +289,10 @@ public class Launch4jHelperExtension {
         return details;
     }
 
-    public static ManifestConfigurationDetails defaultManifestConfigDtls() {
+    public  ManifestConfigurationDetails defaultManifestConfigDtls() {
         ManifestConfigurationDetails details = new ManifestConfigurationDetails();
         details.setAutoGenerate(true);
+        details.setResolve(defaultManifestResolutionStrategy());
         return details;
     }
 

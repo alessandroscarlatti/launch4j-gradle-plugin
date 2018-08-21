@@ -65,6 +65,9 @@ public class ConfigureFromResourcesTask extends DefaultTask {
 
         // todo update the launch4jTask with a "gui" headerType.
         // if we actually produced a splash, that is...
+
+        File manifest = helperTask.getManifest().getResolve().get();
+        helperTask.getManifest().setManifest(nullifyIfNotExists(manifest));
     }
 
     private File nullifyIfNotExists(File file) {

@@ -1,6 +1,11 @@
 package com.scarlatti.gradle.launch4j.gen2.details;
 
+import com.scarlatti.gradle.launch4j.ManifestProvider;
+import com.scarlatti.gradle.launch4j.gen2.EmptyManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
+import com.scarlatti.gradle.launch4j.gen2.SimpleManifestProvider;
+
+import java.io.Serializable;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -11,7 +16,7 @@ import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
  *
  * Details about locating or generating a manifest.
  */
-public class ManifestConfigurationDetails implements AutoGeneratable {
+public class ManifestConfigurationDetails implements AutoGeneratable, Serializable {
 
     private boolean autoGenerate;
 
@@ -19,6 +24,33 @@ public class ManifestConfigurationDetails implements AutoGeneratable {
      * A specific resolve to use.  Takes precedence over auto-generation.
      */
     private FileResolutionStrategy resolve;
+
+    private ManifestProvider base = new EmptyManifestProvider();
+
+    private String emptyManifest() {
+        return "";
+    }
+
+    public ManifestProvider asInvoker() {
+        return new SimpleManifestProvider(ElevationLevel.AS_INVOKER);
+    }
+
+    public ManifestProvider requireAdministrator() {
+        return new SimpleManifestProvider(ElevationLevel.REQUIRE_ADMINISTRATOR);
+    }
+
+    public ManifestProvider getBase() {
+        return base;
+    }
+
+    public void setBase(ManifestProvider base) {
+        this.base = base;
+    }
+
+    public enum ElevationLevel {
+        AS_INVOKER,
+        REQUIRE_ADMINISTRATOR
+    }
 
     public ManifestConfigurationDetails() {
     }
@@ -30,6 +62,7 @@ public class ManifestConfigurationDetails implements AutoGeneratable {
     public ManifestConfigurationDetails(ManifestConfigurationDetails other) {
         this.autoGenerate = other.autoGenerate;
         this.resolve = other.resolve;
+        this.base = other.base;
     }
 
     @Override

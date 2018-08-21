@@ -1,33 +1,29 @@
-package com.scarlatti.gradle.launch4j;
+package com.scarlatti.gradle.launch4j.gen2;
+
+import com.scarlatti.gradle.launch4j.ManifestProvider;
+import com.scarlatti.gradle.launch4j.gen2.details.ManifestConfigurationDetails.ElevationLevel;
 
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Scanner;
 
-/**
- * ______    __                         __           ____             __     __  __  _
- * ___/ _ | / /__ ___ ___ ___ ____  ___/ /______    / __/______ _____/ /__ _/ /_/ /_(_)
- * __/ __ |/ / -_|_-<(_-</ _ `/ _ \/ _  / __/ _ \  _\ \/ __/ _ `/ __/ / _ `/ __/ __/ /
- * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
- * Tuesday, 5/22/2018
- */
 public class SimpleManifestProvider implements ManifestProvider {
 
-    private ManifestConfigurationDelegate.ElevationLevel elevationLevel;
+    private ElevationLevel elevationLevel;
 
     private final String AS_INVOKER_MANIFEST_RESOURCE_PATH = "/manifest/asInvoker.manifest";
     private final String REQUIRE_ADMINISTRATOR_MANIFEST_RESOURCE_PATH = "/manifest/requireAdministrator.manifest";
 
-    public SimpleManifestProvider(ManifestConfigurationDelegate.ElevationLevel elevationLevel) {
+    public SimpleManifestProvider(ElevationLevel elevationLevel) {
         this.elevationLevel = elevationLevel;
     }
 
     @Override
     public String buildRawManifest() {
-        if (elevationLevel == ManifestConfigurationDelegate.ElevationLevel.AS_INVOKER) {
+        if (elevationLevel == ElevationLevel.AS_INVOKER) {
             return getResource(AS_INVOKER_MANIFEST_RESOURCE_PATH);
         }
-        else if (elevationLevel == ManifestConfigurationDelegate.ElevationLevel.REQUIRE_ADMINISTRATOR) {
+        else if (elevationLevel == ElevationLevel.REQUIRE_ADMINISTRATOR) {
             return getResource(REQUIRE_ADMINISTRATOR_MANIFEST_RESOURCE_PATH);
         }
         else {
@@ -59,6 +55,7 @@ public class SimpleManifestProvider implements ManifestProvider {
 
     @Override
     public int hashCode() {
+
         return Objects.hash(elevationLevel);
     }
 }

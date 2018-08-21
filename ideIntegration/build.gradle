@@ -163,10 +163,14 @@ apply plugin: Launch4jHelperPlugin
 task configureExeResources(type: Launch4jHelperTask) {
     launch4jTask createExe
 
-    icon.text = "fghjgfjhjf"
+    icon.text = "qwerweq"
     splash {
         resolve { null }
         text = ";sldfkjgldjsk;"
+    }
+
+    manifest {
+        base = asInvoker()
     }
 }
 

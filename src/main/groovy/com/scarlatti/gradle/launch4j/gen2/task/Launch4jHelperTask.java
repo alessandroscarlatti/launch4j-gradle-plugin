@@ -11,6 +11,11 @@ import org.gradle.api.internal.tasks.execution.TaskValidator;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.TaskAction;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin.LAUNCH4J_HELPER_EXTENSION_NAME;
 import static groovy.lang.Closure.DELEGATE_FIRST;
 
@@ -137,6 +142,10 @@ public class Launch4jHelperTask extends DefaultTask {
         if (findMainClassTask.getResult() != null) {
             launch4jTask.setMainClassName(findMainClassTask.getResult().getMainClassName());
         }
+
+        if (supplyManifestTask.shouldSupplyManifest()) {
+            launch4jTask.setManifest(supplyManifestTask.getDestination().getAbsolutePath());
+        }
     }
 
     /**
@@ -194,6 +203,26 @@ public class Launch4jHelperTask extends DefaultTask {
         // todo declare task outputs
         // launch4j inputs are strings, assumes the file exists.
         this.launch4jTask.setHeaderType("console");
+
+        // set up output files
+        File launch4jResourcesDir = resourcesConfigurationDetails.getLaunch4jResourcesDir().resolve(this);
+        if (launch4jResourcesDir != null) {
+            Path launch4jOutputDir = getProject()
+                .getBuildDir()
+                .toPath().toAbsolutePath()
+                .relativize(launch4jResourcesDir.toPath().toAbsolutePath())
+                .getParent();
+            this.launch4jTask.setOutputDir(launch4jOutputDir.toString());
+            this.launch4jTask.setOutfile(getProject().getName() + ".exe");  // todo make this configurable??? Or just use outfile...
+        }
+
+        launch4jTask.getOutputs().upToDateWhen(task ->
+            Files.exists(
+                getProject().getBuildDir().toPath().toAbsolutePath()
+                    .resolve(this.launch4jTask.getOutputDir())
+                    .resolve(this.launch4jTask.getOutfile())
+            )
+        );
     }
 
     /**
@@ -368,6 +397,12 @@ public class Launch4jHelperTask extends DefaultTask {
         supplyManifestTask = getProject().getTasks().create(supplyManifestTaskName(), SupplyManifestTask.class);
         supplyManifestTask.setDescription(supplyManifestTaskDescription());
         supplyManifestTask.setGroup(helperTaskConfigurationDetails.getGroup());
+
+        supplyManifestTask.configureFromManifestConfigDetails(manifestConfigurationDetails);
+        supplyManifestTask.setResolve(() -> manifestConfigurationDetails.getResolve().resolve(this));
+        supplyManifestTask.setDestination(resourcesConfigurationDetails.getLaunch4jResourcesDir().resolve(this).toPath().resolve("manifest.xml").toFile());
+
+        supplyManifestTask.doLast(task -> launch4jTask.getOutputs().upToDateWhen(t -> false));
     }
 
     private String supplyManifestTaskName() {

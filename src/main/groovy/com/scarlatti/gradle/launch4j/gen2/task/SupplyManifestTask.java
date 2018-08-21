@@ -1,13 +1,23 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
+import com.scarlatti.gradle.launch4j.ManifestProvider;
+import com.scarlatti.gradle.launch4j.gen2.EmptyManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension;
+import com.scarlatti.gradle.launch4j.gen2.SimpleManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.details.IconConfigurationDetails;
 import com.scarlatti.gradle.launch4j.gen2.details.ManifestConfigurationDetails;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
+
+import java.io.File;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 import static groovy.lang.Closure.DELEGATE_FIRST;
 
@@ -18,19 +28,86 @@ import static groovy.lang.Closure.DELEGATE_FIRST;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Tuesday, 8/14/2018
  */
-public class SupplyManifestTask extends DefaultTask {
+public class SupplyManifestTask extends DefaultTask implements Serializable {
 
+    @Input
     private boolean autoGenerate;
+
+    @Optional
+    @InputFile
+    private File manifest;
+
+    @OutputFile
+    private File destination;
+
+    @Input
+    private ManifestProvider base = new EmptyManifestProvider();
 
     /**
      * A specific resolve to use.  Takes precedence over auto-generation.
      */
-    private FileResolutionStrategy resolve;
+    @Internal
+    private Supplier<File> resolve;
 
+    public void configureFromManifestConfigDetails(ManifestConfigurationDetails details) {
+        autoGenerate = details.getAutoGenerate();
+        base = details.getBase();
+    }
+
+    @Internal
+    private boolean ran;
+
+    @Internal
+    private boolean suppliedManifest;
+
+    private String emptyManifest() {
+        return "";
+    }
+
+    public ManifestProvider asInvoker() {
+        return new SimpleManifestProvider(ManifestConfigurationDetails.ElevationLevel.AS_INVOKER);
+    }
+
+    public ManifestProvider requireAdministrator() {
+        return new SimpleManifestProvider(ManifestConfigurationDetails.ElevationLevel.REQUIRE_ADMINISTRATOR);
+    }
+
+    public ManifestProvider getBase() {
+        return base;
+    }
+
+    public void setBase(ManifestProvider base) {
+        this.base = base;
+    }
 
     @TaskAction
-    public void generateManifest() {
+    public void generateManifest(IncrementalTaskInputs inputs) {
+        ran = true;
+        try {
+            byte[] bytes;
+            if (manifest != null) {
+                bytes = Files.readAllBytes(manifest.toPath());
+            } else {
+                bytes = base.buildRawManifest().getBytes();
+            }
 
+            Files.write(destination.toPath(), bytes);
+            suppliedManifest = true;
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating manifest file at " + destination, e);
+        }
+    }
+
+    public boolean shouldSupplyManifest() {
+        if (!isEnabled())
+            return false;
+
+        if (ran) {
+            return suppliedManifest;
+        }
+        else {
+            return manifest != null || autoGenerate;
+        }
     }
 
     public boolean getAutoGenerate() {
@@ -41,11 +118,27 @@ public class SupplyManifestTask extends DefaultTask {
         this.autoGenerate = autoGenerate;
     }
 
-    public FileResolutionStrategy getResolve() {
+    public Supplier<File> getResolve() {
         return resolve;
     }
 
-    public void setResolve(FileResolutionStrategy resolve) {
+    public void setResolve(Supplier<File> resolve) {
         this.resolve = resolve;
+    }
+
+    public File getManifest() {
+        return manifest;
+    }
+
+    public void setManifest(File manifest) {
+        this.manifest = manifest;
+    }
+
+    public File getDestination() {
+        return destination;
+    }
+
+    public void setDestination(File destination) {
+        this.destination = destination;
     }
 }

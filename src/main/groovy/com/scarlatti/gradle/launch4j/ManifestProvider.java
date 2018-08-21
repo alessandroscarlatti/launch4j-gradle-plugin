@@ -1,5 +1,7 @@
 package com.scarlatti.gradle.launch4j;
 
+import java.io.Serializable;
+
 /**
  * ______    __                         __           ____             __     __  __  _
  * ___/ _ | / /__ ___ ___ ___ ____  ___/ /______    / __/______ _____/ /__ _/ /_/ /_(_)
@@ -7,6 +9,6 @@ package com.scarlatti.gradle.launch4j;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Tuesday, 5/22/2018
  */
-public interface ManifestProvider {
+public interface ManifestProvider extends Serializable {
     String buildRawManifest();
 }
