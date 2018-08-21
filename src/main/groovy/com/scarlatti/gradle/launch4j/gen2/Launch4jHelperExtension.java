@@ -283,7 +283,7 @@ public class Launch4jHelperExtension {
 
     public SplashConfigurationDetails defaultSplashConfigDtls() {
         SplashConfigurationDetails details = new SplashConfigurationDetails();
-        details.setAutoGenerate(true);
+        details.setAutoGenerate(false);
         details.setText(DEFAULT_APP_NAME);
         details.setResolve(defaultSplashResolutionStrategy());
         return details;

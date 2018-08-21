@@ -3,6 +3,7 @@ package com.scarlatti.gradle.launch4j.gen2.task;
 import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import com.scarlatti.gradle.launch4j.gen2.details.PropertiesConfigurationDetails;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -20,8 +21,9 @@ import java.util.Properties;
  */
 public class ConfigureLaunch4jFromPropertiesTask extends DefaultTask {
 
+    @Internal
     private Launch4jHelperTask helperTask;
-
+    @Internal
     private FileResolutionStrategy resolve;
 
     /**

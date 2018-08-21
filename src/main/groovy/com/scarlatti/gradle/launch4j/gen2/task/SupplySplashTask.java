@@ -37,12 +37,15 @@ public class SupplySplashTask extends DefaultTask {
     @OutputFile
     private File destination;
 
+    @Internal
     private boolean ran;
+    @Internal
     private boolean suppliedSplash;
 
     /**
      * A specific location to use.  Takes precedence over auto-generation;
      */
+    @Internal
     private Supplier<File> resolve;
 
     public void configureFromSplashConfigDtls(SplashConfigurationDetails details) {

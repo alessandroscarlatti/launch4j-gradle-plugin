@@ -9,6 +9,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.internal.tasks.execution.TaskValidator;
 import org.gradle.api.specs.Spec;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -33,22 +34,37 @@ import static groovy.lang.Closure.DELEGATE_FIRST;
  * - local resources, based on naming conventions
  */
 public class Launch4jHelperTask extends DefaultTask {
+    @Internal
     private Launch4jHelperExtension extension;
+    @Internal
     private Launch4jLibraryTask launch4jTask;
 
+    @Internal
     private IconConfigurationDetails iconConfigurationDetails;
+    @Internal
     private ManifestConfigurationDetails manifestConfigurationDetails;
+    @Internal
     private SplashConfigurationDetails splashConfigurationDetails;
+    @Internal
     private MainClassConfigurationDetails mainClassConfigurationDetails;
+    @Internal
     private PropertiesConfigurationDetails propertiesConfigurationDetails;
+    @Internal
     private ResourcesConfigurationDetails resourcesConfigurationDetails;
+    @Internal
     private HelperTaskConfigurationDetails helperTaskConfigurationDetails;
 
+    @Internal
     private ConfigureLaunch4jFromPropertiesTask configurePropertiesTask;
+    @Internal
     private ConfigureFromResourcesTask configureFromResourcesTask;
+    @Internal
     private FindMainClassTask findMainClassTask;
+    @Internal
     private SupplyIconTask supplyIconTask;
+    @Internal
     private SupplySplashTask supplySplashTask;
+    @Internal
     private SupplyManifestTask supplyManifestTask;
 
     /**
@@ -203,6 +219,7 @@ public class Launch4jHelperTask extends DefaultTask {
         // todo declare task outputs
         // launch4j inputs are strings, assumes the file exists.
         this.launch4jTask.setHeaderType("console");
+        this.launch4jTask.setStayAlive(true);
 
         // set up output files
         File launch4jResourcesDir = resourcesConfigurationDetails.getLaunch4jResourcesDir().resolve(this);
@@ -434,6 +451,7 @@ public class Launch4jHelperTask extends DefaultTask {
      *
      * @return the icon task
      */
+    @Internal
     public SupplyIconTask getIcon() {
         return supplyIconTask;
     }
@@ -443,6 +461,7 @@ public class Launch4jHelperTask extends DefaultTask {
      *
      * @return the manifest task.
      */
+    @Internal
     public SupplyManifestTask getManifest() {
         return supplyManifestTask;
     }
@@ -452,6 +471,7 @@ public class Launch4jHelperTask extends DefaultTask {
      *
      * @return the splash task.
      */
+    @Internal
     public SupplySplashTask getSplash() {
         return supplySplashTask;
     }
@@ -462,6 +482,7 @@ public class Launch4jHelperTask extends DefaultTask {
      *
      * @return the main class task.
      */
+    @Internal
     public FindMainClassTask getMainClass() {
         return findMainClassTask;
     }
@@ -471,6 +492,7 @@ public class Launch4jHelperTask extends DefaultTask {
      *
      * @return the properties task.
      */
+    @Internal
     public ConfigureLaunch4jFromPropertiesTask getProperties() {
         return configurePropertiesTask;
     }
@@ -480,6 +502,7 @@ public class Launch4jHelperTask extends DefaultTask {
      *
      * @return the resources task.
      */
+    @Internal
     public ConfigureFromResourcesTask getResources() {
         return configureFromResourcesTask;
     }
@@ -489,6 +512,7 @@ public class Launch4jHelperTask extends DefaultTask {
      *
      * @return the helper task task.
      */
+    @Internal
     public HelperTaskConfigurationDetails getMeta() {
         return helperTaskConfigurationDetails;
     }

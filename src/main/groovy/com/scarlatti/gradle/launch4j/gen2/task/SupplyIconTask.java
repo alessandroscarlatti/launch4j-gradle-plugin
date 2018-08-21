@@ -49,9 +49,12 @@ public class SupplyIconTask extends DefaultTask {
      * this probably means that we need to encapsulate
      * the FileResolutionStrategy inside a {@link Supplier<File>}
      */
+    @Internal
     private Supplier<File> resolve;
 
+    @Internal
     private boolean ran;
+    @Internal
     private boolean suppliedIcon;
 
     /**

@@ -1,4 +1,6 @@
 import com.scarlatti.gradle.launch4j.Launch4jTemplateTask
+import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin
+import com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask
 
 buildscript {
     ext.springBootVersion = '1.5.6.RELEASE'
@@ -17,6 +19,7 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'com.scarlatti.launch4j.integration'
+apply plugin: Launch4jHelperPlugin
 
 sourceCompatibility = 1.8
 
@@ -36,4 +39,8 @@ task springExe(type: Launch4jTemplateTask) {
 
 bootRun{
     standardInput = System.in
+}
+
+task createExeHelper(type: Launch4jHelperTask) {
+    launch4jTask(createExe)
 }

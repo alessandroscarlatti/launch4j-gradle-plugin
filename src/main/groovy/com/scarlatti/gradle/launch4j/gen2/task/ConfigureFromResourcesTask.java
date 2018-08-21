@@ -2,6 +2,7 @@ package com.scarlatti.gradle.launch4j.gen2.task;
 
 import com.scarlatti.gradle.launch4j.gen2.details.ResourcesConfigurationDetails;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -16,12 +17,17 @@ import java.nio.file.Files;
  */
 public class ConfigureFromResourcesTask extends DefaultTask {
 
+    @Internal
     private Launch4jHelperTask helperTask;
-
+    @Internal
     private File resourcesDir;
+    @Internal
     private String launch4jPropertiesFileName;
+    @Internal
     private String iconFileName;
+    @Internal
     private String splashFileName;
+    @Internal
     private String manifestFileName;
 
     public void configureFromResourcesDtls(ResourcesConfigurationDetails details) {

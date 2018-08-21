@@ -11,14 +11,14 @@ import java.io.Serializable;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Monday, 8/20/2018
  */
-public class EmptyManifestProvider implements ManifestProvider, Serializable {
+public class DefaultManifestProvider implements ManifestProvider, Serializable {
     @Override
     public String buildRawManifest() {
-        return "";
+        return SimpleManifestProvider.getResource("/manifest/asInvoker.manifest");
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj) || obj.getClass() == EmptyManifestProvider.class;
+        return super.equals(obj) || obj.getClass() == DefaultManifestProvider.class;
     }
 }

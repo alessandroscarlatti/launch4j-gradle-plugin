@@ -1,7 +1,7 @@
 package com.scarlatti.gradle.launch4j.gen2.details;
 
 import com.scarlatti.gradle.launch4j.ManifestProvider;
-import com.scarlatti.gradle.launch4j.gen2.EmptyManifestProvider;
+import com.scarlatti.gradle.launch4j.gen2.DefaultManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import com.scarlatti.gradle.launch4j.gen2.SimpleManifestProvider;
 
@@ -25,7 +25,7 @@ public class ManifestConfigurationDetails implements AutoGeneratable, Serializab
      */
     private FileResolutionStrategy resolve;
 
-    private ManifestProvider base = new EmptyManifestProvider();
+    private ManifestProvider base = new DefaultManifestProvider();
 
     private String emptyManifest() {
         return "";

@@ -1,14 +1,9 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
 import com.scarlatti.gradle.launch4j.ManifestProvider;
-import com.scarlatti.gradle.launch4j.gen2.EmptyManifestProvider;
-import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
-import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension;
+import com.scarlatti.gradle.launch4j.gen2.DefaultManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.SimpleManifestProvider;
-import com.scarlatti.gradle.launch4j.gen2.details.IconConfigurationDetails;
 import com.scarlatti.gradle.launch4j.gen2.details.ManifestConfigurationDetails;
-import groovy.lang.Closure;
-import groovy.lang.DelegatesTo;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.*;
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
@@ -16,10 +11,7 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.function.Supplier;
-
-import static groovy.lang.Closure.DELEGATE_FIRST;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -41,7 +33,7 @@ public class SupplyManifestTask extends DefaultTask implements Serializable {
     private File destination;
 
     @Input
-    private ManifestProvider base = new EmptyManifestProvider();
+    private ManifestProvider base = new DefaultManifestProvider();
 
     /**
      * A specific resolve to use.  Takes precedence over auto-generation.

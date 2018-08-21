@@ -4,6 +4,7 @@ import com.scarlatti.gradle.launch4j.MainClassFinder;
 import com.scarlatti.gradle.launch4j.gen2.details.MainClassConfigurationDetails;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.io.File;
  */
 public class FindMainClassTask extends DefaultTask {
 
+    @Internal
     private MainClassFinder.Result result;
 
     /**
