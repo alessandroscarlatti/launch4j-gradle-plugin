@@ -2,6 +2,7 @@ package com.scarlatti.gradle.launch4j
 
 import com.scarlatti.launch4j.MainClassFinder
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner
+import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
@@ -11,6 +12,7 @@ import spock.lang.Specification
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Monday, 5/28/2018
  */
+@Ignore
 class MainClassFinderTest extends Specification {
 
     static String projectDir = System.getProperty("user.dir")
