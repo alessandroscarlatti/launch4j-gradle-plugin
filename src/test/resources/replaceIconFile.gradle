@@ -1,0 +1,17 @@
+task replaceIconFile() {
+    doLast {
+        copy {
+            from file('exe2/icon.ico')
+            into file('exe')
+        }
+    }
+}
+
+task replaceIconFileForExe2() {
+    doLast {
+        copy {
+            from file('exe/icon.ico')
+            into file('exe2')
+        }
+    }
+}
