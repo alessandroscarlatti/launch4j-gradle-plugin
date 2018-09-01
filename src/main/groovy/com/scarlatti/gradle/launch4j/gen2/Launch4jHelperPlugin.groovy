@@ -1,5 +1,6 @@
 package com.scarlatti.gradle.launch4j.gen2
 
+import edu.sc.seis.launch4j.Launch4jPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -23,5 +24,9 @@ class Launch4jHelperPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.extensions.add(LAUNCH4J_HELPER_EXTENSION_NAME, new Launch4jHelperExtension(project))
+
+        if (!project.getPlugins().hasPlugin(Launch4jPlugin)) {
+            project.getPlugins().apply(Launch4jPlugin)
+        }
     }
 }

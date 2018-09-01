@@ -1,7 +1,5 @@
 package com.scarlatti.gradle.launch4j.gen2;
 
-import com.scarlatti.gradle.launch4j.ManifestProvider;
-
 import java.io.Serializable;
 
 /**

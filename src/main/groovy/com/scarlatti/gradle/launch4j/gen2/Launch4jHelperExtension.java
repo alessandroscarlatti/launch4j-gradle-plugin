@@ -11,9 +11,7 @@ import org.gradle.api.Task;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 import static groovy.lang.Closure.DELEGATE_FIRST;
@@ -115,7 +113,7 @@ public class Launch4jHelperExtension {
      *
      * @param task   the launch4jTask
      * @param config the configuration closure for the launch4jHelperTask
-     *               @deprecated in favor of creating a standalone helper task.
+     * @deprecated in favor of creating a standalone helper task.
      */
     public void help(Task task, @DelegatesTo(value = Launch4jHelperTask.class, strategy = DELEGATE_FIRST) Closure config) {
         // create the task
@@ -289,7 +287,7 @@ public class Launch4jHelperExtension {
         return details;
     }
 
-    public  ManifestConfigurationDetails defaultManifestConfigDtls() {
+    public ManifestConfigurationDetails defaultManifestConfigDtls() {
         ManifestConfigurationDetails details = new ManifestConfigurationDetails();
         details.setAutoGenerate(true);
         details.setResolve(defaultManifestResolutionStrategy());
@@ -331,30 +329,62 @@ public class Launch4jHelperExtension {
     }
 
     public FileResolutionStrategy defaultLaunch4jPropertiesResolutionStrategy() {
-        return new DynamicDirFileResolutionStrategy(
-            task -> task.getResources().getResourcesDir().toPath(),
-            task -> task.getResources().getLaunch4jPropertiesFileName()
+        return new ChainingDynamicDirFileResolutionStrategy(
+            Arrays.asList(
+                new DynamicDirFileResolutionStrategy(
+                    task -> task.getResources().getResourcesDir().toPath(),
+                    task -> task.getResources().getLaunch4jPropertiesFileName()
+                ),
+                new DynamicDirFileResolutionStrategy(
+                    task -> project.getProjectDir().toPath(),
+                    task -> task.getResources().getLaunch4jPropertiesFileName()
+                )
+            )
         );
     }
 
     public FileResolutionStrategy defaultIconResolutionStrategy() {
-        return new DynamicDirFileResolutionStrategy(
-            task -> task.getResources().getResourcesDir().toPath(),
-            task -> task.getResources().getIconFileName()
+        return new ChainingDynamicDirFileResolutionStrategy(
+            Arrays.asList(
+                new DynamicDirFileResolutionStrategy(
+                    task -> task.getResources().getResourcesDir().toPath(),
+                    task -> task.getResources().getIconFileName()
+                ),
+                new DynamicDirFileResolutionStrategy(
+                    task -> project.getProjectDir().toPath(),
+                    task -> task.getResources().getIconFileName()
+                )
+            )
         );
     }
 
     public FileResolutionStrategy defaultSplashResolutionStrategy() {
-        return new DynamicDirFileResolutionStrategy(
-            task -> task.getResources().getResourcesDir().toPath(),
-            task -> task.getResources().getSplashFileName()
+        return new ChainingDynamicDirFileResolutionStrategy(
+            Arrays.asList(
+                new DynamicDirFileResolutionStrategy(
+                    task -> task.getResources().getResourcesDir().toPath(),
+                    task -> task.getResources().getSplashFileName()
+                ),
+                new DynamicDirFileResolutionStrategy(
+                    task -> project.getProjectDir().toPath(),
+                    task -> task.getResources().getSplashFileName()
+                )
+            )
         );
     }
 
     public FileResolutionStrategy defaultManifestResolutionStrategy() {
-        return new DynamicDirFileResolutionStrategy(
-            task -> task.getResources().getResourcesDir().toPath(),
-            task -> task.getResources().getManifestFileName()
+        return new ChainingDynamicDirFileResolutionStrategy(
+            Arrays.asList(
+                new DynamicDirFileResolutionStrategy(
+                    task -> task.getResources().getResourcesDir().toPath(),
+                    task -> task.getResources().getManifestFileName()
+                ),
+                new DynamicDirFileResolutionStrategy(
+                    task -> project.getProjectDir().toPath(),
+                    task -> task.getResources().getManifestFileName()
+                )
+            )
         );
     }
 
@@ -418,6 +448,26 @@ public class Launch4jHelperExtension {
             Path path = dir.apply(task).resolve(fileName.apply(task));
             if (Files.exists(path)) {
                 return path.toFile();
+            }
+
+            return null;
+        }
+    }
+
+    private static class ChainingDynamicDirFileResolutionStrategy implements FileResolutionStrategy {
+
+        private List<DynamicDirFileResolutionStrategy> strategies;
+
+        public ChainingDynamicDirFileResolutionStrategy(List<DynamicDirFileResolutionStrategy> strategies) {
+            this.strategies = strategies;
+        }
+
+        @Override
+        public File resolve(Launch4jHelperTask launch4jHelperTask) {
+            for (FileResolutionStrategy strategy : strategies) {
+                File resolved = strategy.resolve(launch4jHelperTask);
+                if (resolved != null)
+                    return resolved;
             }
 
             return null;

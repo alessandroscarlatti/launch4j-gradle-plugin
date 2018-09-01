@@ -1,6 +1,5 @@
 package com.scarlatti.gradle.launch4j.gen2;
 
-import com.scarlatti.gradle.launch4j.ManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.details.ManifestConfigurationDetails.ElevationLevel;
 
 import java.io.InputStream;

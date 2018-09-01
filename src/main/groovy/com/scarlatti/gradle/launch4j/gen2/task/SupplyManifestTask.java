@@ -1,6 +1,6 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
-import com.scarlatti.gradle.launch4j.ManifestProvider;
+import com.scarlatti.gradle.launch4j.gen2.ManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.DefaultManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.SimpleManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.details.ManifestConfigurationDetails;

@@ -1,6 +1,6 @@
 package com.scarlatti.gradle.launch4j.gen2.details;
 
-import com.scarlatti.gradle.launch4j.ManifestProvider;
+import com.scarlatti.gradle.launch4j.gen2.ManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.DefaultManifestProvider;
 import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
 import com.scarlatti.gradle.launch4j.gen2.SimpleManifestProvider;
