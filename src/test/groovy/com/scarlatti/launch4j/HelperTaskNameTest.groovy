@@ -1,14 +1,14 @@
-package com.scarlatti.gradle.launch4j.gen2
+package com.scarlatti.launch4j
 
 import com.scarlatti.testing.util.GradleBuildSpecification
 import org.gradle.testkit.runner.TaskOutcome
 
-import static com.scarlatti.gradle.launch4j.gen2.BuildTemplates.applyLaunch4jPlugin
-import static com.scarlatti.gradle.launch4j.gen2.BuildTemplates.common
-import static com.scarlatti.gradle.launch4j.gen2.BuildTemplates.tasks
-import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension.*
-import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension.DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE
-import static com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask.fillInLaunch4jTemplateTaskName
+import static BuildTemplates.applyLaunch4jPlugin
+import static BuildTemplates.common
+import static BuildTemplates.tasks
+import static Launch4jHelperExtension.*
+import static Launch4jHelperExtension.DEFAULT_HELPER_TASK_DESCRIPTION_TEMPLATE
+import static com.scarlatti.launch4j.task.Launch4jHelperTask.fillInLaunch4jTemplateTaskName
 
 /**
  * ______    __                         __           ____             __     __  __  _

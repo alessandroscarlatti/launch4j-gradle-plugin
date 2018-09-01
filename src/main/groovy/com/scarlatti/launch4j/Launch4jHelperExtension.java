@@ -1,7 +1,7 @@
-package com.scarlatti.gradle.launch4j.gen2;
+package com.scarlatti.launch4j;
 
-import com.scarlatti.gradle.launch4j.gen2.details.*;
-import com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask;
+import com.scarlatti.launch4j.details.*;
+import com.scarlatti.launch4j.task.Launch4jHelperTask;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;

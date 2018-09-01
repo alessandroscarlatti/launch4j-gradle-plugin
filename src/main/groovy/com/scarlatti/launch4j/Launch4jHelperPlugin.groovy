@@ -1,4 +1,4 @@
-package com.scarlatti.gradle.launch4j.gen2
+package com.scarlatti.launch4j
 
 import edu.sc.seis.launch4j.Launch4jPlugin
 import org.gradle.api.Plugin

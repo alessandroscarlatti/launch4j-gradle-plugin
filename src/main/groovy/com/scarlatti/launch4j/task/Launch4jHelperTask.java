@@ -1,23 +1,20 @@
-package com.scarlatti.gradle.launch4j.gen2.task;
+package com.scarlatti.launch4j.task;
 
-import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperExtension;
-import com.scarlatti.gradle.launch4j.gen2.details.*;
+import com.scarlatti.launch4j.Launch4jHelperExtension;
+import com.scarlatti.launch4j.details.*;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
-import org.gradle.api.internal.tasks.execution.TaskValidator;
-import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin.LAUNCH4J_HELPER_EXTENSION_NAME;
+import static com.scarlatti.launch4j.Launch4jHelperPlugin.LAUNCH4J_HELPER_EXTENSION_NAME;
 import static groovy.lang.Closure.DELEGATE_FIRST;
 
 /**

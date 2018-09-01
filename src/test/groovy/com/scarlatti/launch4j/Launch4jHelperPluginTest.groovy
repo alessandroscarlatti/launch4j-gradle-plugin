@@ -1,9 +1,9 @@
-package com.scarlatti.gradle.launch4j.gen2
+package com.scarlatti.launch4j
 
 import com.scarlatti.testing.util.GradleBuildSpecification
 import org.gradle.testkit.runner.TaskOutcome
 
-import static com.scarlatti.gradle.launch4j.gen2.BuildTemplates.*
+import static BuildTemplates.*
 
 /**
  * ______    __                         __           ____             __     __  __  _

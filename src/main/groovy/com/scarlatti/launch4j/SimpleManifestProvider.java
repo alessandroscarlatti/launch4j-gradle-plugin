@@ -1,6 +1,6 @@
-package com.scarlatti.gradle.launch4j.gen2;
+package com.scarlatti.launch4j;
 
-import com.scarlatti.gradle.launch4j.gen2.details.ManifestConfigurationDetails.ElevationLevel;
+import com.scarlatti.launch4j.details.ManifestConfigurationDetails;
 
 import java.io.InputStream;
 import java.util.Objects;
@@ -8,21 +8,21 @@ import java.util.Scanner;
 
 public class SimpleManifestProvider implements ManifestProvider {
 
-    private ElevationLevel elevationLevel;
+    private ManifestConfigurationDetails.ElevationLevel elevationLevel;
 
     private final String AS_INVOKER_MANIFEST_RESOURCE_PATH = "/manifest/asInvoker.manifest";
     private final String REQUIRE_ADMINISTRATOR_MANIFEST_RESOURCE_PATH = "/manifest/requireAdministrator.manifest";
 
-    public SimpleManifestProvider(ElevationLevel elevationLevel) {
+    public SimpleManifestProvider(ManifestConfigurationDetails.ElevationLevel elevationLevel) {
         this.elevationLevel = elevationLevel;
     }
 
     @Override
     public String buildRawManifest() {
-        if (elevationLevel == ElevationLevel.AS_INVOKER) {
+        if (elevationLevel == ManifestConfigurationDetails.ElevationLevel.AS_INVOKER) {
             return getResource(AS_INVOKER_MANIFEST_RESOURCE_PATH);
         }
-        else if (elevationLevel == ElevationLevel.REQUIRE_ADMINISTRATOR) {
+        else if (elevationLevel == ManifestConfigurationDetails.ElevationLevel.REQUIRE_ADMINISTRATOR) {
             return getResource(REQUIRE_ADMINISTRATOR_MANIFEST_RESOURCE_PATH);
         }
         else {

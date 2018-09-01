@@ -1,7 +1,7 @@
-package com.scarlatti.gradle.launch4j.gen2.task;
+package com.scarlatti.launch4j.task;
 
-import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
-import com.scarlatti.gradle.launch4j.gen2.details.PropertiesConfigurationDetails;
+import com.scarlatti.launch4j.FileResolutionStrategy;
+import com.scarlatti.launch4j.details.PropertiesConfigurationDetails;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;

@@ -1,8 +1,6 @@
-package com.scarlatti.gradle.launch4j.gen2.details;
+package com.scarlatti.launch4j.details;
 
-import com.scarlatti.gradle.launch4j.gen2.FileResolutionStrategy;
-
-import java.io.File;
+import com.scarlatti.launch4j.FileResolutionStrategy;
 
 /**
  * ______    __                         __           ____             __     __  __  _

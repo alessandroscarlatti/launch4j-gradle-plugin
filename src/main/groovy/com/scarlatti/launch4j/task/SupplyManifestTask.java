@@ -1,9 +1,9 @@
-package com.scarlatti.gradle.launch4j.gen2.task;
+package com.scarlatti.launch4j.task;
 
-import com.scarlatti.gradle.launch4j.gen2.ManifestProvider;
-import com.scarlatti.gradle.launch4j.gen2.DefaultManifestProvider;
-import com.scarlatti.gradle.launch4j.gen2.SimpleManifestProvider;
-import com.scarlatti.gradle.launch4j.gen2.details.ManifestConfigurationDetails;
+import com.scarlatti.launch4j.ManifestProvider;
+import com.scarlatti.launch4j.DefaultManifestProvider;
+import com.scarlatti.launch4j.SimpleManifestProvider;
+import com.scarlatti.launch4j.details.ManifestConfigurationDetails;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.*;
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs;

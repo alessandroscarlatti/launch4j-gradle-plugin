@@ -1,6 +1,6 @@
-package com.scarlatti.gradle.launch4j.gen2.task;
+package com.scarlatti.launch4j.task;
 
-import com.scarlatti.gradle.launch4j.gen2.details.ResourcesConfigurationDetails;
+import com.scarlatti.launch4j.details.ResourcesConfigurationDetails;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;

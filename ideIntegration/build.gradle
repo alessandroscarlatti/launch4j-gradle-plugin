@@ -1,5 +1,5 @@
-import com.scarlatti.gradle.launch4j.gen2.Launch4jHelperPlugin
-import com.scarlatti.gradle.launch4j.gen2.task.Launch4jHelperTask
+import com.scarlatti.launch4j.Launch4jHelperPlugin
+import com.scarlatti.launch4j.task.Launch4jHelperTask
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 
 buildscript {

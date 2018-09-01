@@ -1,7 +1,7 @@
-package com.scarlatti.gradle.launch4j.gen2.task;
+package com.scarlatti.launch4j.task;
 
-import com.scarlatti.gradle.launch4j.gen2.details.SplashConfigurationDetails;
-import com.scarlatti.gradle.launch4j.gen2.ImageGenerator;
+import com.scarlatti.launch4j.details.SplashConfigurationDetails;
+import com.scarlatti.launch4j.ImageGenerator;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.*;
 
