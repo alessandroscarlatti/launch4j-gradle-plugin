@@ -1,7 +1,7 @@
 package com.scarlatti.gradle.launch4j.gen2.task;
 
 import com.scarlatti.gradle.launch4j.gen2.details.IconConfigurationDetails;
-import com.scarlatti.util.ImageGenerator;
+import com.scarlatti.gradle.launch4j.gen2.ImageGenerator;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.*;
 
@@ -91,22 +91,6 @@ public class SupplyIconTask extends DefaultTask {
             ImageGenerator.generateIconFileForStringHash(destination.toPath(), text);
             suppliedIcon = true;
         }
-
-        // todo somehow we need to "update" the launch4jTask to let it know that we have or haven't
-        // actually created an icon.
-        // Because if autogenerate == false and no icon was provided, that means that we
-        // should definitely not modify the launch4j icon property.
-        // but if we did make an icon, we should configure the launch4j task appropriately.
-        //
-        // If there is already a value for the launch4j icon property, we don't care.
-        // if the user has set it, that is their concern.
-        // todo we could use a doLast clause that is added by the helperTask.
-        // this will keep this task free of any launch4j constructs.
-        // however, we would need to access some kind of field or property on this task
-        // to know what was the result.  That's because an icon may already exist at the
-        // "destination", but we didn't ACTUALLY "generate" it this particular build.
-        // So we wouldn't want to get that mixed up as looking like we had actually generated it
-        // when we hadn't.
     }
 
     public boolean shouldSupplyIcon() {

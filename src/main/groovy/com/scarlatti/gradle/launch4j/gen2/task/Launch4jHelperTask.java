@@ -76,7 +76,6 @@ public class Launch4jHelperTask extends DefaultTask {
         this.extension = (Launch4jHelperExtension) getProject().getExtensions().findByName(LAUNCH4J_HELPER_EXTENSION_NAME);
 
         // copy the details from the extension
-        // todo create the tasks and
         iconConfigurationDetails = new IconConfigurationDetails(extension.getIcon());
         manifestConfigurationDetails = new ManifestConfigurationDetails(extension.getManifest());
         splashConfigurationDetails = new SplashConfigurationDetails(extension.getSplash());
@@ -215,8 +214,6 @@ public class Launch4jHelperTask extends DefaultTask {
         createFindMainClassTask();
         buildTasksDependencies();
 
-        // todo declare task inputs if any...
-        // todo declare task outputs
         // launch4j inputs are strings, assumes the file exists.
         this.launch4jTask.setHeaderType("console");
         this.launch4jTask.setStayAlive(true);
@@ -230,7 +227,7 @@ public class Launch4jHelperTask extends DefaultTask {
                 .relativize(launch4jResourcesDir.toPath().toAbsolutePath())
                 .getParent();
             this.launch4jTask.setOutputDir(launch4jOutputDir.toString());
-            this.launch4jTask.setOutfile(getProject().getName() + ".exe");  // todo make this configurable??? Or just use outfile...
+            this.launch4jTask.setOutfile(getProject().getName() + ".exe");
         }
 
         launch4jTask.getOutputs().upToDateWhen(task ->
@@ -270,6 +267,17 @@ public class Launch4jHelperTask extends DefaultTask {
         findMainClassTask.dependsOn(configureFromResourcesTask);
 
         configureFromResourcesTask.dependsOn(configurePropertiesTask);
+
+        // evaluate if spring boot is involved, either with v1x or v2x
+        if (getProject().getTasks().findByName("bootRepackage") != null) {
+            launch4jTask.dependsOn("bootRepackage");
+            launch4jTask.setCopyConfigurable(getProject().getTasks().findByName("jar").getOutputs().getFiles());
+        }
+
+        if (getProject().getTasks().findByName("bootJar") != null) {
+            launch4jTask.dependsOn("bootJar");
+            launch4jTask.setCopyConfigurable(getProject().getTasks().findByName("bootJar").getOutputs().getFiles());
+        }
     }
 
     /**
@@ -277,8 +285,6 @@ public class Launch4jHelperTask extends DefaultTask {
      * <p>
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
-     * <p>
-     * todo set up dependencies
      */
     private void createConfigureLaunch4jPropertiesTask() {
         configurePropertiesTask = getProject().getTasks().create(
@@ -305,8 +311,6 @@ public class Launch4jHelperTask extends DefaultTask {
      * Set up the associated ConfigureFromResourcesTask.
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
-     * <p>
-     * todo set up dependencies
      */
     private void createConfigureFromResourcesTask() {
         configureFromResourcesTask = getProject().getTasks().create(
@@ -332,8 +336,6 @@ public class Launch4jHelperTask extends DefaultTask {
      * Set up the associated findMainClassTask.
      * Only call when we actually have a launch4j task associated to this HelperTask,
      * since the names and descriptions of these tasks depend on the launch4j task.
-     * <p>
-     * todo set up dependencies
      */
     private void createFindMainClassTask() {
         findMainClassTask = getProject().getTasks().create(findMainClassTaskName(), FindMainClassTask.class);

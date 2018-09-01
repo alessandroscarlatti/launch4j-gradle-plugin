@@ -1,4 +1,4 @@
-package com.scarlatti.util
+package com.scarlatti.gradle.launch4j.gen2
 
 import com.talanlabs.avatargenerator.IdenticonAvatar
 import net.sf.image4j.codec.bmp.BMPEncoder

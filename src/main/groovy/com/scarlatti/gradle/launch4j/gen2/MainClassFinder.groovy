@@ -1,4 +1,4 @@
-package com.scarlatti.gradle.launch4j
+package com.scarlatti.gradle.launch4j.gen2
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult

@@ -160,18 +160,15 @@ apply plugin: Launch4jHelperPlugin
 
 //launch4jHelper.helper(createExe).icon.autoGenerate = false
 //
-task configureExeResources(type: Launch4jHelperTask) {
+task launch4jHelperTask(type: Launch4jHelperTask) {
     launch4jTask createExe
 
-    icon.text = "qwerweq"
-    splash {
-        resolve { null }
-        text = ";sldfkjgldjsk;"
+    icon {
+        resolve = { null }
+        text = "what do you know~!!!"
     }
 
-    manifest {
-        base = asInvoker()
-    }
+    splash.enabled = false
 }
 
 task createExe2(type: Launch4jLibraryTask) {

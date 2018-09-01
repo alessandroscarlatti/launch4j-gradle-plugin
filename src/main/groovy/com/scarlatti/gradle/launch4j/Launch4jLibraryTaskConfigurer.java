@@ -1,6 +1,7 @@
 package com.scarlatti.gradle.launch4j;
 
-import com.scarlatti.util.ImageGenerator;
+import com.scarlatti.gradle.launch4j.gen2.MainClassFinder;
+import com.scarlatti.gradle.launch4j.gen2.ImageGenerator;
 import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
