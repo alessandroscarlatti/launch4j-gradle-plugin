@@ -5,7 +5,7 @@
 
 The [Launch4j Gradle plugin](https://github.com/TheBoegl/gradle-launch4j) made even simpler.
 
-*You want to quickly package your jar as a great-looking exe.*  This is easy with the `Launch4jTemplateTask` Gradle task.
+*You want to quickly package your Java project as a great-looking exe.*  This is easy with the `Launch4jHelper` Gradle plugin.
 Building an executable is now only a few lines of code, thanks to a few sensible conventions and defaults.
 
 # How to Use
@@ -20,46 +20,41 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.scarlatti:launch4j-gradle-plugin:1.0.1'
+        classpath 'com.scarlatti:launch4j-gradle-plugin:2.0.2'
     }
 }
 
 apply plugin: 'java'  // and other plugins...
-apply plugin: 'com.scarlatti.launch4j.integration'
+apply plugin: 'com.scarlatti.launch4j-helper'
 ```
 
 ## Configure your Exe.
-If your build produces an executable jar this can be extremely simple.
-```
-import com.scarlatti.launch4j.Launch4jTemplateTask
 
-task simpleExe(type: Launch4jTemplateTask) {
-    exeName = 'simple'
+```
+import com.scarlatti.launch4j.task.Launch4jHelperTask
+
+task helpCreateExe(type: Launch4jHelperTask) {
+    launch4jTask(createExe)
 }
 ```
-Go ahead and run the `simpleExe` task. You should now have an exe waiting for you at `/build/launch4j/simpleExe/simple.exe`.
+Go ahead and run the `createExe` task. You should now have an exe waiting for you at `/build/launch4j/createExe/<project name>.exe`.
 
 That's it.
 
 ## Congratulations! *Enjoy your Exe.*
 
+## Things `Launch4jHelperPlugin` Configures for You
+
+| Configuration | Details |
+| ----- | ------|
+| Icon  | Generates a Github avatar style icon, or you can provide your own.
+| Splash  | Generates a Github avatar style splash, or you can provide your own.
+
 ## Add an Icon
-The `Launch4jTemplateTask` takes an opinionated view on providing resources, such as an icon.  Just provide an icon (.ico) file at `/exe/icon.ico` and the template will automatically use it for the exe.
+The `Launch4jHelperTask` takes an opinionated view on providing resources, such as an icon.  Just provide an icon (.ico) file at `/icon.ico` in your project and the Launch4jHelper task will automatically use it for your exe.
 
 ## Add a Splash Screen
-Provide a splash (.bmp only) file at `/exe/splash.bmp` and the template will automatically use it for the exe.
+Provide a splash (.bmp only) file at `/splash.bmp` and the Launch4jHelper task will automatically use it for the exe.
 
 ## Expert Options
-Of course, properties of the actual Launch4j task can be configured.
-```
-task simpleExe(type: Launch4jTemplateTask) {
-
-    // configure the actual launch4j task
-    // more details at https://github.com/TheBoegl/gradle-launch4j
-    config {
-        companyName = "My Awesome Company"
-    }
-}
-```
-
-> The [Launch4j plugin documentation](https://github.com/TheBoegl/gradle-launch4j) provides details on all the configuration options available.
+Of course, properties of the actual Launch4j task can still be configured as specified in the [Launch4j plugin documentation](https://github.com/TheBoegl/gradle-launch4j).

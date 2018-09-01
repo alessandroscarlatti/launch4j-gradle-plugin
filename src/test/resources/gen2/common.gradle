@@ -1,0 +1,11 @@
+import com.scarlatti.launch4j.task.Launch4jHelperTask
+
+buildscript {
+    repositories {jcenter()}
+}
+
+plugins {
+    id 'com.scarlatti.launch4j-helper'
+}
+
+apply plugin: 'java'

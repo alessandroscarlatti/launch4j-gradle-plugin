@@ -1,8 +1,9 @@
 package com.scarlatti.gradle.launch4j
 
 import com.scarlatti.gradle.launch4j.util.GradleTaskGenerator
-import coms.scarlatti.util.GradleBuildSpecification
+import com.scarlatti.testing.util.GradleBuildSpecification
 import org.gradle.testkit.runner.TaskOutcome
+import spock.lang.Ignore
 import spock.lang.Unroll
 
 /**
@@ -12,6 +13,7 @@ import spock.lang.Unroll
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 5/26/2018
  */
+@Ignore
 class PluginDirectoryResourceTest extends GradleBuildSpecification {
 
     def "exe directory not required for build"() {
@@ -19,6 +21,19 @@ class PluginDirectoryResourceTest extends GradleBuildSpecification {
             customGradleRunner()
                     .fromProjectDir("/src/test-projects/ProjectWithoutExeDirectoryShouldBeOK")
                     .appendBuildFileFromResource("/simpleUsage.gradle")
+                    .appendBuildFileContents(GradleTaskGenerator.assertExeCreatedTask("launch4jTask.exe"))
+                    .withTask("launch4jTask")
+                    .build()
+        and:
+            customGradleRunner().build("assertExeCreated")
+    }
+
+    def "exe directory not required for build with splash"() {
+        expect:
+            customGradleRunner()
+                    .fromProjectDir("/src/test-projects/ProjectWithoutExeDirectoryGui")
+                    .appendBuildFileFromResource("/simpleUsage.gradle")
+                    .appendBuildFileFromResource("/guiConfig.gradle")
                     .appendBuildFileContents(GradleTaskGenerator.assertExeCreatedTask("launch4jTask.exe"))
                     .withTask("launch4jTask")
                     .build()

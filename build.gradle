@@ -9,12 +9,11 @@ buildscript {
     }
 }
 
-apply plugin: BintrayPlugin
-
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'maven-publish'
+apply plugin: BintrayPlugin
 
 if (file('bintray.gradle').exists()) apply from: 'bintray.gradle'
 
@@ -29,6 +28,10 @@ repositories {
 
 dependencies {
     compile 'edu.sc.seis.gradle:launch4j:2.4.2'
+    compile 'io.github.lukehutch:fast-classpath-scanner:3.1.15'
+    compile 'org.reflections:reflections:0.9.10'
+    compile 'net.sf.image4j:image4j:+'
+    compile 'com.talanlabs:avatar-generator:1.1.0'
     testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
         exclude module: 'groovy-all'
     }
@@ -55,7 +58,6 @@ task pluginDistributionAssemble {
     dependsOn = [pluginDistributionZip, pluginDistributionJar]
     group = 'distribution'
     description = 'Put both the plugin .jar and .zip archives in the distribution dir.'
-    inputs.file("asdf")
 }
 
 pluginDistributionJar.destinationDir
@@ -87,5 +89,12 @@ publishing {
             artifactId 'launch4j-gradle-plugin'
             version project.version
         }
+    }
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
     }
 }

@@ -5,6 +5,7 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.junit.rules.TestName
+import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
@@ -14,6 +15,7 @@ import spock.lang.Specification
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 5/19/2018
  */
+@Ignore
 class SimpleUsageTest extends Specification {
     @Rule
     TemporaryFolder tempDir = new TemporaryFolder()

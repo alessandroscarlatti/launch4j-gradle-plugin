@@ -1,0 +1,4 @@
+import com.scarlatti.gradle.launch4j.Launch4jTemplateTask
+
+task launch4jTask(type: Launch4jTemplateTask) {
+}
