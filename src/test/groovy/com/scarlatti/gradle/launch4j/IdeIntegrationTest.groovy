@@ -2,6 +2,7 @@ package com.scarlatti.gradle.launch4j
 
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.nio.file.Paths
@@ -13,6 +14,7 @@ import java.nio.file.Paths
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Friday, 7/20/2018
  */
+@Ignore
 class IdeIntegrationTest extends Specification {
 
     def "run :tasks"() {

@@ -3,6 +3,7 @@ package com.scarlatti.gradle.launch4j
 import com.scarlatti.gradle.launch4j.util.GradleTaskGenerator
 import com.scarlatti.testing.util.GradleBuildSpecification
 import org.gradle.testkit.runner.TaskOutcome
+import spock.lang.Ignore
 import spock.lang.Unroll
 
 /**
@@ -12,6 +13,7 @@ import spock.lang.Unroll
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 5/26/2018
  */
+@Ignore
 class PluginDirectoryResourceTest extends GradleBuildSpecification {
 
     def "exe directory not required for build"() {

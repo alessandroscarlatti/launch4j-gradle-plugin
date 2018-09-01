@@ -2,6 +2,7 @@ package com.scarlatti.launch4j
 
 import com.scarlatti.testing.util.GradleBuildSpecification
 import org.gradle.testkit.runner.TaskOutcome
+import spock.lang.Ignore
 
 import static BuildTemplates.applyLaunch4jPlugin
 import static BuildTemplates.common
@@ -17,6 +18,7 @@ import static com.scarlatti.launch4j.task.Launch4jHelperTask.fillInLaunch4jTempl
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Monday, 7/23/2018
  */
+@Ignore
 class HelperTaskNameTest extends GradleBuildSpecification {
 
     def "helper task description uses default name when not connected to task"() {

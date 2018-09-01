@@ -2,6 +2,7 @@ package com.scarlatti.gradle.launch4j
 
 import com.scarlatti.gradle.launch4j.util.GradleTaskGenerator
 import com.scarlatti.testing.util.GradleBuildSpecification
+import spock.lang.Ignore
 import spock.lang.IgnoreIf
 import spock.util.environment.OperatingSystem
 
@@ -12,6 +13,7 @@ import spock.util.environment.OperatingSystem
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Monday, 5/28/2018
  */
+@Ignore
 class ExeRunsMainClassTest extends GradleBuildSpecification {
 
     @IgnoreIf({!OperatingSystem.current.windows})
